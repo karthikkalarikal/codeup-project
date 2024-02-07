@@ -1,0 +1,18 @@
+FROM golang:1.21.6-alpine AS build
+
+
+WORKDIR /app
+
+COPY . /app
+
+RUN go build -o py-code-execution-service
+
+FROM python:3.9-alpine
+
+WORKDIR /app
+
+COPY --from=build /app/py-code-execution-service /app/py-code-execution-service
+
+EXPOSE 8080
+
+CMD ["./py-code-execution-service"]

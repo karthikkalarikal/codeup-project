@@ -1,0 +1,18 @@
+FROM golang:1.21.6-alpine3.18 AS build
+
+
+WORKDIR /app
+
+COPY . /app/
+
+RUN go build -o cpp-code-execution-service
+
+FROM gcc:latest
+
+WORKDIR /app
+
+COPY --from=build /app/cpp-code-execution-service /app/cpp-code-execution-service
+
+EXPOSE 8080
+
+CMD ["./cpp-code-execution-service"]
