@@ -1,0 +1,14 @@
+version: '3'
+
+services:
+  
+  api-gateway:
+    build:
+      context: ./api-gateway
+      dockerfile: api-gateway.dockerfile
+    restart: always
+    ports:
+      - "8080:80"
+    deploy:
+      mode: replicated
+      replicas: 1
