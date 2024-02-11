@@ -2,4 +2,8 @@
 
 go 1.21.6
 
-use ./api-gateway
+use (
+    ./api-gateway
+    ./front-end
+    ./authentication-service
+    )
