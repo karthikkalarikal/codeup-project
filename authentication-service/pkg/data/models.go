@@ -1,9 +1,11 @@
 package data
 
 import (
+	"authentication/pkg/domain"
 	"context"
 	"database/sql"
 	"errors"
+	"fmt"
 	"time"
 
 	"github.com/go-playground/validator"
@@ -36,6 +38,45 @@ type User struct {
 	Password        string         `json:"password"`
 	ConfirmPassword string         `json:"confirmpassword"`
 	Name            sql.NullString `json:"name"` // for proper representaion of null value in go sql.Null is used
+}
+
+type TempUser struct {
+	Id              int            `json:"id"`
+	FirstName       string         `json:"first_name"`
+	LastName        string         `json:"last_name"`
+	Username        sql.NullString `json:"username"`
+	Email           string         `json:"email"`
+	Password        string         `json:"password"`
+	ConfirmPassword string         `json:"confirmpassword"`
+	Name            sql.NullString `json:"name"`
+}
+
+func (u *User) GetByEmail(email string) (*domain.User, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), dbTimeout)
+	defer cancel()
+
+	query := `select id, email, password, created_at, updated_at from users where email = $1`
+
+	var user domain.User
+
+	row := db.QueryRowContext(ctx, query, email)
+	fmt.Println("row  ", row)
+	fmt.Println("email: ", email)
+	err := row.Scan(
+		&user.ID,
+		&user.Email,
+		// &user.Username,
+		&user.Password,
+		// &user.Name,
+		&user.CreatedAt,
+		&user.UpdatedAt,
+	)
+	fmt.Println("error in row. Scan", err)
+	if err != nil {
+		return nil, err
+	}
+
+	return &user, nil
 }
 
 func (u *User) UserSignUp(user User) (int, error) {

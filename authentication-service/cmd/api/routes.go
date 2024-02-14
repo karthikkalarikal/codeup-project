@@ -22,5 +22,6 @@ func (app *Config) routes() http.Handler {
 		MaxAge:           300,
 	}))
 
+	e.POST("/authenticate", app.Authenticate)
 	return e
 }

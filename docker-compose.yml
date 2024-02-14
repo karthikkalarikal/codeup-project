@@ -2,6 +2,18 @@ version: '3'
 
 services:
   
+  # frontend-service:
+  #   build:
+  #     context: ./front-end
+  #     dockerfile: frontend.dockerfile
+  #   restart: always
+  #   ports:
+  #     - "8082:80"
+  #   deploy:
+  #     mode: replicated
+  #     replicas: 1
+
+
   api-gateway:
     build:
       context: ./api-gateway
@@ -12,6 +24,23 @@ services:
     deploy:
       mode: replicated
       replicas: 1
+
+
+  authentication-service:
+    build:
+      context: ./authentication-service
+      dockerfile: ./authentication-service.dockerfile
+    restart: always
+    ports:
+      - "8081:80"
+    deploy:
+      mode: replicated
+      replicas: 1
+    environment:
+      DSN: "host=postgres port=5432 user=postgres password=password dbname=postgres sslmode=disable timezone=UTC connect_timeout=5"
+
+
+
   postgres:
     image: 'postgres:14.2'
     ports:

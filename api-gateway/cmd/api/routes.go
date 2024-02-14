@@ -25,5 +25,7 @@ func (app *Config) Routes() *echo.Echo {
 
 	e.POST("/", app.Api)
 
+	e.POST("/handle", app.HandleSubmission)
+
 	return e
 }

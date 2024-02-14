@@ -1,24 +1,28 @@
 #base go image
 FROM golang:1.22-alpine3.19 AS builder
 
-#to create directory
 RUN mkdir /app
-
-COPY . /app
 
 WORKDIR /app
 
-RUN CGO_ENABLED=0 go build -o api-gateway ./cmd/api
+COPY go.mod go.sum ./
+RUN go mod download
 
-#give permission 
-RUN chmod +x /app/api-gateway
+COPY cmd/api cmd/api
+COPY pkg pkg
+
+RUN go build -o gatewayApp ./cmd/api
 
 FROM alpine:3.19
 
 RUN mkdir /app
+WORKDIR /app
 
-COPY --from=builder /app/api-gateway /app
+COPY --from=builder /app/gatewayApp .
 
-CMD ["/app/api-gateway"]
+CMD ["./gatewayApp"]
+
+
+
 
 
