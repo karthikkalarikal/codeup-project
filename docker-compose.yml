@@ -39,7 +39,14 @@ services:
     environment:
       DSN: "host=postgres port=5432 user=postgres password=password dbname=postgres sslmode=disable timezone=UTC connect_timeout=5"
 
-
+  problem-service:
+    build:
+      context: ./problem-service
+      dockerfile: problem-service.dockerfile
+    restart: always
+    deploy:
+      mode: replicated
+      replicas: 1
 
   postgres:
     image: 'postgres:14.2'
@@ -54,3 +61,16 @@ services:
      POSTGRES_DB: users
     volumes:
       - ./db-data/postgres/:/var/lib/postgresql/data/
+
+
+  mongo:
+    image: 'mongo:4.2.16-bionic'
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_DATABASE: 
+      MONGO_INITDB_ROOT_USERNAME:
+      MONGO_INITDB_ROOT_PASSWORD:
+    volumes:
+      - ./db-data/mongo/:/data/db
+    

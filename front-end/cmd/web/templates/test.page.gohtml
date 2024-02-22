@@ -8,7 +8,7 @@
                 <hr>
                 <a id="testBtn" class="btn btn-outline-secondary" href="javascript:void(0);">Test</a>
                 <a id="authBtn" class="btn btn-outline-secondary" href="javascript:void(0);">Test Auth</a>
-
+                <a id="problemBtn" class="btn btn-outline-secondary" href="javascript:void(0);">Test Problem</a>
                 <div id="output" class="mt-5" style="outline: 1px solid silver; padding: 2em;">
                     <span class="text-muted">Output shows here...</span>
                 </div>
@@ -35,9 +35,53 @@
     <script>
         let testBtn = document.getElementById("testBtn");
         let authBtn = document.getElementById("authBtn");
+        let problemBtn = document.getElementById("problemBtn");
         let output = document.getElementById("output");
         let sent = document.getElementById("payload");
         let received = document.getElementById("received")
+
+problemBtn.addEventListener("click", function() {
+    const payload = {
+        action: "problem",
+        problem: {
+            title: "Two Sum",
+            description: "Given two numbers, calculate their sum.",
+            difficulty: "easy",
+            testcases: [
+                { input: "2, 5", output: "7" },
+                { input: "-3, 10", output: "7" },
+                { input: "0, 0", output: "0" }
+            ],
+            time_limit: 1000, // Example - 1 second time limit
+            memory_limit: 64, // Example - 64 megabytes memory limit 
+            tags: ["math", "addition"]
+        }
+    }; // <-- Missing comma here
+
+    const headers = new Headers();
+    headers.append("Content-Type", "application/json");
+
+    const body = {
+        method: "POST",
+        body: JSON.stringify(payload),
+        headers: headers
+    };
+
+    fetch("http:\/\/localhost:8080/handle", body)
+        .then((response) => response.json())
+        .then((data) => {
+            sent.innerHTML = JSON.stringify(payload, undefined, 4);
+            received.innerHTML = JSON.stringify(data, undefined, 4);
+            if (data.error) {
+                output.innerHTML += `<br><strong>Error:</strong> ${data.message}`;
+            } else {
+                output.innerHTML += `<br><strong> Response from broker service</strong>: ${data.message}`;
+            }
+        })
+        .catch((error) => {
+            output.innerHTML += "<br><br>Error " + error;
+        });
+});
 
         authBtn.addEventListener("click", function(){
 
@@ -45,7 +89,7 @@
                 action : "auth",
                 auth : {
                     email: "admin@example.com",
-                    password: "verysecret",
+                    password: "userpassword",
                 }
                
             }

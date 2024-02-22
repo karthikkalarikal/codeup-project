@@ -15,6 +15,25 @@ type jsonResponse struct {
 	Data    any    `json:"data,omitempty"`
 }
 
+type User struct {
+	ID        int64      `json:"id"`
+	Username  NullString `json:"username"`
+	Email     NullString `json:"email"`
+	Name      NullString `json:"name"`
+	CreatedAt Timestamp  `json:"created_at"`
+	UpdatedAt Timestamp  `json:"updated_at"`
+}
+
+type NullString struct {
+	String string `json:"String"`
+	Valid  bool   `json:"Valid"`
+}
+
+type Timestamp struct {
+	Time  string `json:"Time"`
+	Valid bool   `json:"Valid"`
+}
+
 func (app *Config) readJSON(c echo.Context, data any) error {
 	maxBytes := 1048576 //one megabyte
 

@@ -23,5 +23,6 @@ func (app *Config) routes() http.Handler {
 	}))
 
 	e.POST("/authenticate", app.Authenticate)
+	e.POST("/signup", app.SignUp)
 	return e
 }
