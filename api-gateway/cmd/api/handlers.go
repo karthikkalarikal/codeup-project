@@ -14,7 +14,7 @@ import (
 
 type requestPayload struct {
 	Action  string         `json:"action"`
-	Auth    AuthPayload    `json:"auth"`
+	Auth    AuthPayload    `json:"auth,omitempty"`
 	Problem problemPayload `json:"problem,omitempty"` //in case there is a problem with auth comment this line
 }
 
@@ -90,7 +90,7 @@ func (app *Config) HandleSubmission(c echo.Context) error {
 		fmt.Println("payload", requestPayload)
 		app.authenticate(c, requestPayload)
 	case "problem":
-		fmt.Println("problem")
+		fmt.Println("problem: ", requestPayload.Problem)
 		app.problemItem(c, requestPayload.Problem)
 
 	default:
@@ -264,6 +264,7 @@ func (app *Config) signUp(c echo.Context, a requestSignUpPayload) error {
 // problem service
 
 func (app *Config) problemItem(c echo.Context, entry problemPayload) error {
+	fmt.Println("in problem item ")
 	jsonData, _ := json.MarshalIndent(entry, "", "\t") // user marshal in production,
 
 	problemServiceURL := "http://problem-service/write"
@@ -273,16 +274,20 @@ func (app *Config) problemItem(c echo.Context, entry problemPayload) error {
 		app.errorJSON(c, err)
 		return err
 	}
-
+	fmt.Println("here - in problem item", request)
 	request.Header.Set("Content-Type", "application/json")
 
 	client := &http.Client{}
 
 	response, err := client.Do(request)
 	if err != nil {
+		log.Println(err)
 		app.errorJSON(c, err)
+
 		return err
+
 	}
+	fmt.Println("here -- do problem item", response)
 
 	defer response.Body.Close()
 

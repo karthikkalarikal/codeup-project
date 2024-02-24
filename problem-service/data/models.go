@@ -11,23 +11,25 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-var client *mongo.Client
+type Models struct {
+	Problem Problem
+	Client  *mongo.Client
+}
 
 func New(mongo *mongo.Client) Models {
-	client = mongo
-
+	// client = mongo
+	if mongo == nil {
+		log.Panic("Cannot create data models with a nil MongoDB client")
+	}
 	return Models{
 		Problem: Problem{},
+		Client:  mongo,
 	}
 }
 
 type TestCase struct {
 	Input  string `bson:"input" json:"input"`
 	Output string `bson:"output" json:"output"`
-}
-
-type Models struct {
-	Problem Problem
 }
 
 type Problem struct {
@@ -43,8 +45,8 @@ type Problem struct {
 }
 
 // insert
-func (l *Problem) Insert(entry Problem) error {
-	collection := client.Database("problems").Collection("problems")
+func (l *Models) Insert(entry Problem) error {
+	collection := l.Client.Database("problems").Collection("problems")
 
 	if entry.CreatedAt.IsZero() {
 		entry.CreatedAt = time.Now()
@@ -59,11 +61,11 @@ func (l *Problem) Insert(entry Problem) error {
 }
 
 // view all
-func (l *Problem) All() ([]*Problem, error) {
+func (l *Models) All() ([]*Problem, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
 	defer cancel()
 
-	collection := client.Database("problems").Collection("problems")
+	collection := l.Client.Database("problems").Collection("problems")
 
 	opts := options.Find()
 
@@ -95,11 +97,11 @@ func (l *Problem) All() ([]*Problem, error) {
 }
 
 // view one by id
-func (l *Problem) GetOne(id string) (*Problem, error) {
+func (l *Models) GetOne(id string) (*Problem, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
 	defer cancel()
 
-	collection := client.Database("problems").Collection("problems")
+	collection := l.Client.Database("problems").Collection("problems")
 
 	docId, err := primitive.ObjectIDFromHex(id)
 	if err != nil {
@@ -117,11 +119,11 @@ func (l *Problem) GetOne(id string) (*Problem, error) {
 }
 
 // drop the collection
-func (l *Problem) DropCollection() error {
+func (l *Models) DropCollection() error {
 	ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
 	defer cancel()
 
-	collection := client.Database("problems").Collection("problems")
+	collection := l.Client.Database("problems").Collection("problems")
 
 	if err := collection.Drop(ctx); err != nil {
 		return err

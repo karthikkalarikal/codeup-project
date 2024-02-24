@@ -35,7 +35,7 @@ func (app *Config) WriteTest(e echo.Context) error {
 		Tags:        requestPayload.Tags,
 	}
 
-	err := app.Models.Problem.Insert(event)
+	err := app.Models.Insert(event)
 	if err != nil {
 		app.errorJSON(e, err)
 		return err
