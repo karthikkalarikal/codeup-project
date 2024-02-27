@@ -53,7 +53,7 @@ func (l *Models) Insert(entry Problem) error {
 	}
 	_, err := collection.InsertOne(context.TODO(), entry)
 	if err != nil {
-		log.Println("error inerting into logs: ", err)
+		log.Println("error inerting into problems: ", err)
 		return err
 	}
 

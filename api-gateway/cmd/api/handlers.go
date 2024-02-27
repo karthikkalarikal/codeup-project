@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"net/rpc"
 
 	"github.com/labstack/echo/v4"
 )
@@ -92,7 +93,9 @@ func (app *Config) HandleSubmission(c echo.Context) error {
 	case "problem":
 		fmt.Println("problem: ", requestPayload.Problem)
 		app.problemItem(c, requestPayload.Problem)
-
+	case "displayProblems":
+		fmt.Println("displayProblems")
+		app.displayProblems(c)
 	default:
 		app.errorJSON(c, errors.New("unknown error"))
 	}
@@ -299,6 +302,35 @@ func (app *Config) problemItem(c echo.Context, entry problemPayload) error {
 	var payload jsonResponse
 	payload.Error = false
 	payload.Message = "inserted"
+
+	app.writeJSON(c, http.StatusAccepted, payload)
+
+	return nil
+}
+
+type RPCProblme struct{}
+
+func (app *Config) displayProblems(c echo.Context) error {
+	client, err := rpc.Dial("tcp", "problem-service:5001")
+	if err != nil {
+		app.errorJSON(c, err)
+		return err
+	}
+	rpcPayload := RPCProblme{}
+
+	var result []problemPayload
+
+	err = client.Call("RPCServer.All", rpcPayload, &result)
+	if err != nil {
+		app.errorJSON(c, err)
+		return err
+	}
+
+	payload := jsonResponse{
+		Error:   false,
+		Message: "problem list",
+		Data:    result,
+	}
 
 	app.writeJSON(c, http.StatusAccepted, payload)
 
