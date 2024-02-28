@@ -12,6 +12,10 @@ import (
 type Utils struct {
 }
 
+func NewUtils() *Utils {
+	return &Utils{}
+}
+
 type jsonResponse struct {
 	Error   bool   `json:"error"`
 	Message string `json:"message"`
