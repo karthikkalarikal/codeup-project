@@ -10,6 +10,14 @@ type Config struct {
 	AuthServiceUrl string `mapstructure:"AUTH_SERVICE_URL"`
 }
 
+func NewConfig() (*Config, error) {
+	cfg, err := LoadConfig()
+	if err != nil {
+		return nil, err
+	}
+	return &cfg, nil
+}
+
 var envs = []string{"PORT", "AUTH_SERVICE_URL"}
 
 func LoadConfig() (Config, error) {

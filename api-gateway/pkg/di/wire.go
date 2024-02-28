@@ -10,6 +10,7 @@ import (
 	"github.com/karthikkalarikal/api-gateway/pkg/client"
 	"github.com/karthikkalarikal/api-gateway/pkg/config"
 	"github.com/karthikkalarikal/api-gateway/pkg/rpc"
+	"github.com/karthikkalarikal/api-gateway/pkg/utils"
 )
 
 func InitializeAPI(cfg config.Config) (*api.Server, error) {
@@ -19,6 +20,11 @@ func InitializeAPI(cfg config.Config) (*api.Server, error) {
 		handlers.NewAuthHandler,
 
 		rpc.NewAuthService,
+
+		utils.NewUtils,
+
+		config.NewConfig,
+
 		api.NewServerHTTP,
 	)
 	return &api.Server{}, nil
