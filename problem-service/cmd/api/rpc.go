@@ -19,17 +19,7 @@ type RPCServer struct {
 // 	Output string `bson:"output" json:"output"`
 // }
 
-type RPCProblme struct {
-	// ID          primitive.ObjectID `bson:"_id,omitempty" json:"id,omitempty"`
-	// Title       string             `bson:"title" json:"title"`
-	// Description string             `bson:"description" json:"description"`
-	// Difficulty  string             `bson:"difficulty" json:"difficulty"`
-	// TestCases   []TestCase         `bson:"test_cases" json:"test_cases"`
-	// TimeLimit   int                `bson:"time_limit" json:"time_limit"`
-	// MemoryLimit int                `bson:"memory_limit" json:"memory_limit"`
-	// Tags        []string           `bson:"tags" json:"tags"`
-	// CreatedAt   time.Time          `bson:"created_at" json:"created_at"`
-}
+type RPCProblme struct{}
 
 func (r *RPCServer) All(payload RPCProblme, resp *[]data.Problem) error {
 	fmt.Println("here in handler")

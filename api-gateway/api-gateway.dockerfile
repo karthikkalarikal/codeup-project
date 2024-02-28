@@ -10,6 +10,7 @@ RUN go mod download
 
 COPY cmd/api cmd/api
 COPY pkg pkg
+COPY api-gateway.env api-gateway.env
 
 RUN go build -o gatewayApp ./cmd/api
 
