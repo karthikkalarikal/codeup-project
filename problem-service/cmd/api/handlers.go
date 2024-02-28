@@ -37,7 +37,7 @@ func (app *Config) WriteTest(e echo.Context) error {
 
 	err := app.Models.Insert(event)
 	if err != nil {
-		app.errorJSON(e, err)
+		app.ErrorJson(e, err)
 		return err
 	}
 
