@@ -38,7 +38,7 @@ func (app *Config) Authenticate(e echo.Context) error {
 	// err := app.readJSON(e, &payload)
 	// fmt.Println("err in auth --:", err)
 	if err != nil {
-		app.errorJSON(e, err, http.StatusBadRequest)
+		app.ErrorJson(e, err, http.StatusBadRequest)
 		return err
 	}
 	fmt.Println("payload", payload.Action)
@@ -48,7 +48,7 @@ func (app *Config) Authenticate(e echo.Context) error {
 	user, err := app.Models.User.GetByEmail(payload.Auth.Email)
 	fmt.Println("user:", user)
 	if err != nil {
-		app.errorJSON(e, err, http.StatusBadRequest)
+		app.ErrorJson(e, err, http.StatusBadRequest)
 		return err
 	}
 	app.writeJSON(e, http.StatusAccepted, user)
@@ -71,7 +71,7 @@ func (app *Config) SignUp(e echo.Context) error {
 	// err := app.readJSON(e, &payload)
 	// fmt.Println("err in auth --:", err)
 	if err != nil {
-		app.errorJSON(e, err, http.StatusBadRequest)
+		app.ErrorJson(e, err, http.StatusBadRequest)
 		return err
 	}
 	fmt.Println("payload", payload.Action)
@@ -81,12 +81,12 @@ func (app *Config) SignUp(e echo.Context) error {
 	user, err := app.Models.User.GetByEmail(payload.SignUpData.Email.String)
 	fmt.Println("user:", user)
 	if err == nil {
-		app.errorJSON(e, err, http.StatusBadRequest)
+		app.ErrorJson(e, err, http.StatusBadRequest)
 		return err
 	}
 	data, err := app.Models.User.UserSignUp(payload.SignUpData)
 	if err != nil {
-		app.errorJSON(e, err, http.StatusBadRequest)
+		app.ErrorJson(e, err, http.StatusBadRequest)
 		return err
 	}
 

@@ -1,24 +1,37 @@
 package main
 
 import (
-	"fmt"
 	"log"
+
+	"github.com/karthikkalarikal/api-gateway/pkg/config"
+	"github.com/karthikkalarikal/api-gateway/pkg/di"
 )
 
-const webPort = "80"
-
-type Config struct{}
+// const webPort = "80"
 
 func main() {
-	app := Config{}
 
-	log.Printf("start service on port %s", webPort)
-
-	err := app.Routes().Start(fmt.Sprintf(":%s", webPort))
+	cfg, err := config.LoadConfig()
 	if err != nil {
-		fmt.Println("here", err.Error())
-		log.Panic(err)
+		log.Fatalf("failed to load config error: %s", err.Error())
+
 	}
+
+	service, err := di.InitializeAPI(cfg)
+	if err != nil {
+		log.Fatalf("failed initialize api error: %s", err.Error())
+	}
+	service.Start()
+
+	// app := Config{}
+
+	// log.Printf("start service on port %s", webPort)
+
+	// err := app.Routes().Start(fmt.Sprintf(":%s", webPort))
+	// if err != nil {
+	// 	fmt.Println("here", err.Error())
+	// 	log.Panic(err)
+	// }
 }
 
 // func hello(c echo.Context) error {

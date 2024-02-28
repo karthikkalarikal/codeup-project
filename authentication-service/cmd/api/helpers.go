@@ -62,7 +62,7 @@ func (app *Config) writeJSON(c echo.Context, status int, data any, headers ...ht
 
 }
 
-func (app *Config) errorJSON(c echo.Context, err error, status ...int) error {
+func (app *Config) ErrorJson(c echo.Context, err error, status ...int) error {
 	statusCode := http.StatusBadRequest
 
 	if len(status) > 0 {
