@@ -29,7 +29,7 @@ func NewAuthHandler(client client.AuthClient, utils *utils.Utils) interfaces.Aut
 
 func (u *authHandlerImpl) UserSignUp(e echo.Context) error {
 	fmt.Println("inside user sign up handler 1")
-	var user request.UserSignUp
+	var user request.UserSignUpRequest
 
 	if err := e.Bind(&user); err != nil {
 		u.utils.ErrorJson(e, err, http.StatusBadRequest)

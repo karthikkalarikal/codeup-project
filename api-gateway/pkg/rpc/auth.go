@@ -19,7 +19,7 @@ func NewAuthService(cfg *config.Config) interfaces.AuthService {
 	return &authServiceImpl{cfg: *cfg}
 }
 
-func (c *authServiceImpl) UserSignUp(ctx echo.Context, in request.UserSignUp) (*response.UserSignUp, error) {
+func (c *authServiceImpl) UserSignUp(ctx echo.Context, in request.UserSignUpRequest) (*response.UserSignUpResponse, error) {
 
 	client, err := rpc.Dial("tcp", c.cfg.AuthServiceUrl)
 	if err != nil {
@@ -27,7 +27,7 @@ func (c *authServiceImpl) UserSignUp(ctx echo.Context, in request.UserSignUp) (*
 		return nil, err
 	}
 
-	out := new(response.UserSignUp)
+	out := new(response.UserSignUpResponse)
 	err = client.Call("User.SignUp", in, out)
 	if err != nil {
 		fmt.Println("err in the end", err)

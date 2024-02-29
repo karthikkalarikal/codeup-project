@@ -18,10 +18,10 @@ func NewAuthClient(service service.AuthService) interfaces.AuthClient {
 	}
 }
 
-func (auth *authClientImpl) UserSignUp(e echo.Context, in request.UserSignUp) (*response.UserSignUp, error) {
+func (auth *authClientImpl) UserSignUp(e echo.Context, in request.UserSignUpRequest) (*response.UserSignUpResponse, error) {
 	res, err := auth.client.UserSignUp(e, in)
 	if err != nil {
-		return &response.UserSignUp{}, err
+		return &response.UserSignUpResponse{}, err
 	}
 	return res, err
 

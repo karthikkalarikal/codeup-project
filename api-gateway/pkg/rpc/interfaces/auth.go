@@ -7,5 +7,5 @@ import (
 )
 
 type AuthService interface {
-	UserSignUp(echo.Context, request.UserSignUp) (*response.UserSignUp, error)
+	UserSignUp(echo.Context, request.UserSignUpRequest) (*response.UserSignUpResponse, error)
 }

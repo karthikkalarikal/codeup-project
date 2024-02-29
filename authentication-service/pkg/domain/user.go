@@ -1,13 +1,16 @@
 package domain
 
-import "database/sql"
+import (
+	"time"
+)
 
 type User struct {
-	ID        int            `json:"id"`
-	Username  sql.NullString `json:"username"`
-	Email     sql.NullString `json:"email"`
-	Password  string         `json:"-"`    // Omit password in JSON responses
-	Name      sql.NullString `json:"name"` // for proper representaion of null value in go sql.Null is used
-	CreatedAt sql.NullTime   `json:"created_at"`
-	UpdatedAt sql.NullTime   `json:"updated_at"`
+	ID        int       `json:"id" gorm:"primarykey;autoIncrement"`
+	Username  string    `json:"username" gorm:"not null;unique"`
+	Email     string    `json:"email" gorm:"not null"`
+	Password  string    `json:"-" gorm:"not null"` // Omit password in JSON responses
+	FirstName string    `json:"first_name" gorm:"not null"`
+	LastName  string    `json:"last_name" gorm:"not null"` // for proper representaion of null value in go sql.Null is used
+	CreatedAt time.Time `json:"created_at" gorm:"not null"`
+	UpdatedAt time.Time `json:"updated_at" gorm:"not null"`
 }
