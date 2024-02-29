@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"log"
 
 	"github.com/karthikkalarikal/api-gateway/pkg/config"
@@ -12,17 +13,21 @@ import (
 func main() {
 
 	cfg, err := config.LoadConfig()
+	fmt.Println("here in main 1")
 	if err != nil {
 		log.Fatalf("failed to load config error: %s", err.Error())
 
 	}
 
 	service, err := di.InitializeAPI(cfg)
+	fmt.Println("here in main 2")
 	if err != nil {
 		log.Fatalf("failed initialize api error: %s", err.Error())
 	}
-	service.Start()
+	fmt.Println("here 3")
 
+	service.Start()
+	fmt.Println("here 4")
 	// app := Config{}
 
 	// log.Printf("start service on port %s", webPort)

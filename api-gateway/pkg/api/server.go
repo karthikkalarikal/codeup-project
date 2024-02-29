@@ -2,6 +2,7 @@ package api
 
 import (
 	"fmt"
+	"log"
 	"net/http"
 
 	handler "github.com/karthikkalarikal/api-gateway/pkg/api/handlers/interfaces"
@@ -17,7 +18,7 @@ type Server struct {
 }
 
 func NewServerHTTP(cfg *config.Config, authHandler handler.AuthHandler) *Server {
-	fmt.Println("here")
+	fmt.Println("here in server")
 	e := echo.New()
 
 	e.Use(middleware.Logger())
@@ -40,5 +41,8 @@ func NewServerHTTP(cfg *config.Config, authHandler handler.AuthHandler) *Server 
 
 func (c *Server) Start() {
 	// c.engine.Run(c.port)
-	c.engine.Start(c.port)
+	fmt.Println("port", c.port)
+	if err := c.engine.Start(fmt.Sprintf(":%s", c.port)); err != http.ErrServerClosed {
+		log.Fatal(err)
+	}
 }

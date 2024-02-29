@@ -30,6 +30,7 @@ func (c *authServiceImpl) UserSignUp(ctx echo.Context, in request.UserSignUp) (*
 	out := new(response.UserSignUp)
 	err = client.Call("User.SignUp", in, out)
 	if err != nil {
+		fmt.Println("err in the end", err)
 		// app.ErrorJson(c, err)
 		return nil, err
 	}

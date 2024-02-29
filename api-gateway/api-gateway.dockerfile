@@ -20,8 +20,9 @@ RUN mkdir /app
 WORKDIR /app
 
 COPY --from=builder /app/gatewayApp .
+COPY api-gateway.env .
 
-CMD ["./gatewayApp"]
+CMD ["sh","-c","echo $PORT && ./gatewayApp"]
 
 
 

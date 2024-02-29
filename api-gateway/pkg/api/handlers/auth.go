@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"errors"
+	"fmt"
 	"net/http"
 
 	"github.com/go-playground/validator/v10"
@@ -27,18 +28,28 @@ func NewAuthHandler(client client.AuthClient, utils *utils.Utils) interfaces.Aut
 }
 
 func (u *authHandlerImpl) UserSignUp(e echo.Context) error {
+	fmt.Println("inside user sign up handler 1")
 	var user request.UserSignUp
 
 	if err := e.Bind(&user); err != nil {
 		u.utils.ErrorJson(e, err, http.StatusBadRequest)
 		return err
 	}
+
+	fmt.Println("user ", user)
 	if user.FirstName == "" || user.Email == "" || user.Password == "" || user.ConfirmPassword == "" || user.Username == "" || user.LastName == "" {
 		err := errors.New(customerrors.NoEmptyValueError)
 		u.utils.ErrorJson(e, err, http.StatusBadRequest)
 		return err
 	}
 
+	if user.ConfirmPassword != user.Password {
+		err := errors.New(customerrors.NoMatchingPasswordError)
+		u.utils.ErrorJson(e, err, http.StatusBadRequest)
+		return err
+	}
+
+	fmt.Println("inside user sign up handler 2")
 	validate := validator.New(validator.WithRequiredStructEnabled())
 
 	if err := validate.Struct(user); err != nil {

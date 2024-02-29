@@ -18,7 +18,7 @@ import (
 // Injectors from wire.go:
 
 func InitializeAPI(cfg config.Config) (*api.Server, error) {
-	configConfig, err := config.NewConfig()
+	configConfig, err := config.NewConfig() 
 	if err != nil {
 		return nil, err
 	}
