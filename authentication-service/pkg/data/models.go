@@ -1,126 +1,114 @@
 package data
 
-import (
-	"authentication/pkg/domain"
-	"context"
-	"database/sql"
-	"errors"
-	"fmt"
-	"time"
+// const dbTimeout = time.Second * 3
+// const (
+// 	nullError     = "no empty values"
+// 	errorPassword = "the passwords don't match"
+// )
 
-	"github.com/go-playground/validator"
-	"golang.org/x/crypto/bcrypt"
-)
+// var db *sql.DB
 
-const dbTimeout = time.Second * 3
-const (
-	nullError     = "no empty values"
-	errorPassword = "the passwords don't match"
-)
+// func New(dbPool *sql.DB) Models {
+// 	db = dbPool
 
-var db *sql.DB
+// 	return Models{
+// 		User: User{},
+// 	}
+// }
 
-func New(dbPool *sql.DB) Models {
-	db = dbPool
+// type Models struct {
+// 	User User
+// }
 
-	return Models{
-		User: User{},
-	}
-}
+// type User struct {
+// 	Username        sql.NullString `json:"username"`
+// 	Email           sql.NullString `json:"email"`
+// 	Password        string         `json:"password"`
+// 	ConfirmPassword string         `json:"confirmpassword"`
+// 	Name            sql.NullString `json:"name"` // for proper representaion of null value in go sql.Null is used
+// }
 
-type Models struct {
-	User User
-}
+// type TempUser struct {
+// 	Id              int            `json:"id"`
+// 	FirstName       string         `json:"first_name"`
+// 	LastName        string         `json:"last_name"`
+// 	Username        sql.NullString `json:"username"`
+// 	Email           string         `json:"email"`
+// 	Password        string         `json:"password"`
+// 	ConfirmPassword string         `json:"confirmpassword"`
+// 	Name            sql.NullString `json:"name"`
+// }
 
-type User struct {
-	Username        sql.NullString `json:"username"`
-	Email           sql.NullString `json:"email"`
-	Password        string         `json:"password"`
-	ConfirmPassword string         `json:"confirmpassword"`
-	Name            sql.NullString `json:"name"` // for proper representaion of null value in go sql.Null is used
-}
+// func (u *User) GetByEmail(email string) (*domain.User, error) {
+// 	ctx, cancel := context.WithTimeout(context.Background(), dbTimeout)
+// 	defer cancel()
 
-type TempUser struct {
-	Id              int            `json:"id"`
-	FirstName       string         `json:"first_name"`
-	LastName        string         `json:"last_name"`
-	Username        sql.NullString `json:"username"`
-	Email           string         `json:"email"`
-	Password        string         `json:"password"`
-	ConfirmPassword string         `json:"confirmpassword"`
-	Name            sql.NullString `json:"name"`
-}
+// 	query := `select id, email, password, created_at, updated_at from users where email = $1`
 
-func (u *User) GetByEmail(email string) (*domain.User, error) {
-	ctx, cancel := context.WithTimeout(context.Background(), dbTimeout)
-	defer cancel()
+// 	var user domain.User
 
-	query := `select id, email, password, created_at, updated_at from users where email = $1`
+// 	row := db.QueryRowContext(ctx, query, email)
+// 	fmt.Println("row  ", row)
+// 	fmt.Println("email: ", email)
+// 	err := row.Scan(
+// 		&user.ID,
+// 		&user.Email,
+// 		// &user.Username,
+// 		&user.Password,
+// 		// &user.Name,
+// 		&user.CreatedAt,
+// 		&user.UpdatedAt,
+// 	)
+// 	fmt.Println("error in row. Scan", err)
+// 	if err != nil {
+// 		return nil, err
+// 	}
 
-	var user domain.User
+// 	return &user, nil
+// }
 
-	row := db.QueryRowContext(ctx, query, email)
-	fmt.Println("row  ", row)
-	fmt.Println("email: ", email)
-	err := row.Scan(
-		&user.ID,
-		&user.Email,
-		// &user.Username,
-		&user.Password,
-		// &user.Name,
-		&user.CreatedAt,
-		&user.UpdatedAt,
-	)
-	fmt.Println("error in row. Scan", err)
-	if err != nil {
-		return nil, err
-	}
+// func (u *User) UserSignUp(user User) (int, error) {
+// 	ctx, cancel := context.WithTimeout(context.Background(), dbTimeout)
+// 	defer cancel()
 
-	return &user, nil
-}
+// 	if user.Password != user.ConfirmPassword {
+// 		return 0, errors.New(errorPassword)
+// 	}
 
-func (u *User) UserSignUp(user User) (int, error) {
-	ctx, cancel := context.WithTimeout(context.Background(), dbTimeout)
-	defer cancel()
+// 	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(user.Password), 12)
+// 	if err != nil {
+// 		return 0, err
+// 	}
 
-	if user.Password != user.ConfirmPassword {
-		return 0, errors.New(errorPassword)
-	}
+// 	var newId int
 
-	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(user.Password), 12)
-	if err != nil {
-		return 0, err
-	}
+// 	if user.Name.String == "" || user.Email.String == "" || user.Password == "" {
+// 		return 0, errors.New(nullError)
+// 	}
 
-	var newId int
+// 	//checking validity
 
-	if user.Name.String == "" || user.Email.String == "" || user.Password == "" {
-		return 0, errors.New(nullError)
-	}
+// 	err = validator.New().Struct(user)
+// 	if err != nil {
 
-	//checking validity
+// 		return 0, err
 
-	err = validator.New().Struct(user)
-	if err != nil {
+// 	}
+// 	stmt := `insert into users
+// 	 (username,email,password,name,created_at,updated_at)
+// 	 values ($1,$2,$3,$4,$5,$6,$7)`
+// 	err = db.QueryRowContext(ctx, stmt,
+// 		user.Username,
+// 		user.Email,
 
-		return 0, err
+// 		hashedPassword,
+// 		user.Name,
+// 		time.Now(),
+// 		time.Now(),
+// 	).Scan(&newId)
+// 	if err != nil {
+// 		return 0, err
+// 	}
+// 	return newId, nil
 
-	}
-	stmt := `insert into users
-	 (username,email,password,name,created_at,updated_at)
-	 values ($1,$2,$3,$4,$5,$6,$7)`
-	err = db.QueryRowContext(ctx, stmt,
-		user.Username,
-		user.Email,
-
-		hashedPassword,
-		user.Name,
-		time.Now(),
-		time.Now(),
-	).Scan(&newId)
-	if err != nil {
-		return 0, err
-	}
-	return newId, nil
-
-}
+// }

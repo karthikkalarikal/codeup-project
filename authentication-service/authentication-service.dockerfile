@@ -17,5 +17,6 @@ RUN mkdir /app
 WORKDIR /app
 
 COPY --from=builder /app/authApp .
+COPY .env .
 
 CMD ["./authApp"]

@@ -1,84 +1,90 @@
 package main
 
 import (
-	"authentication/pkg/data"
-	"database/sql"
-	"fmt"
+	"authentication/pkg/config"
+	"authentication/pkg/di"
 	"log"
-	"net/http"
-	"os"
-	"time"
-
-	_ "github.com/jackc/pgconn"
-	_ "github.com/jackc/pgx/v5"
-	_ "github.com/jackc/pgx/v5/stdlib"
 )
 
-const webPort = "80"
-
-var counts int64
-
-type Config struct {
-	DB     *sql.DB
-	Models data.Models
-}
-
 func main() {
-	log.Println("starting authentication service")
+	cfg, err := config.LoadConfig()
 
-	conn := connectToDB()
-	if conn == nil {
-		log.Panic("can't connect to postgres")
-	}
-
-	app := Config{
-		DB:     conn,
-		Models: data.New(conn),
-	}
-
-	srv := &http.Server{
-		Addr:    fmt.Sprintf(":%s", webPort),
-		Handler: app.routes(),
-	}
-
-	err := srv.ListenAndServe()
 	if err != nil {
-		log.Panic(err)
+		log.Fatalf("failed to load config: %s", err.Error())
 	}
-}
-func openDB(dsn string) (*sql.DB, error) {
-	db, err := sql.Open("pgx", dsn)
+	service, err := di.InitializeServices(cfg)
 	if err != nil {
-		return nil, err
+		log.Fatalf("failed to initialize service :%s", err.Error())
 	}
-	err = db.Ping()
-	if err != nil {
-		return nil, err
-	}
+	service.Start()
 
-	return db, nil
 }
 
-func connectToDB() *sql.DB {
-	dsn := os.Getenv("DSN")
+// const webPort = "80"
 
-	for {
-		connection, err := openDB(dsn)
-		if err != nil {
-			log.Println("postgres no yet ready...")
-			counts++
-		} else {
-			log.Println("connected to postgres")
-			return connection
-		}
+// var counts int64
 
-		if counts > 10 {
-			log.Println(err)
-			return nil
-		}
+// type Config struct {
+// 	DB     *sql.DB
+// 	Models data.Models
+// }
 
-		log.Println("backing off for 2 seconds...S")
-		time.Sleep(2 * time.Second)
-		continue
-	}
-}
+// func main() {
+// 	log.Println("starting authentication service")
+
+// 	conn := connectToDB()
+// 	if conn == nil {
+// 		log.Panic("can't connect to postgres")
+// 	}
+
+// 	app := Config{
+// 		DB:     conn,
+// 		Models: data.New(conn),
+// 	}
+
+// 	srv := &http.Server{
+// 		Addr:    fmt.Sprintf(":%s", webPort),
+// 		Handler: app.routes(),
+// 	}
+
+// 	err := srv.ListenAndServe()
+// 	if err != nil {
+// 		log.Panic(err)
+// 	}
+// }
+// func openDB(dsn string) (*sql.DB, error) {
+// 	db, err := sql.Open("pgx", dsn)
+// 	if err != nil {
+// 		return nil, err
+// 	}
+// 	err = db.Ping()
+// 	if err != nil {
+// 		return nil, err
+// 	}
+
+// 	return db, nil
+// }
+
+// func connectToDB() *sql.DB {
+// 	dsn := os.Getenv("DSN")
+
+// 	for {
+// 		connection, err := openDB(dsn)
+// 		if err != nil {
+// 			log.Println("postgres no yet ready...")
+// 			counts++
+// 		} else {
+// 			log.Println("connected to postgres")
+// 			return connection
+// 		}
+
+// 		if counts > 10 {
+// 			log.Println(err)
+// 			return nil
+// 		}
+
+// 		log.Println("backing off for 2 seconds...S")
+// 		time.Sleep(2 * time.Second)
+// 		continue
+// 	}
+// }

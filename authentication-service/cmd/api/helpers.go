@@ -1,77 +1,67 @@
 package main
 
-import (
-	"encoding/json"
-	"errors"
-	"fmt"
-	"io"
-	"net/http"
+// type jsonResponse struct {
+// 	Error   bool   `json:"error"`
+// 	Message string `json:"message"`
+// 	Data    any    `json:"data,omitempty"`
+// }
 
-	"github.com/labstack/echo/v4"
-)
+// func (app *Config) readJSON(c echo.Context, data any) error {
+// 	maxBytes := 1048576 //one megabyte
 
-type jsonResponse struct {
-	Error   bool   `json:"error"`
-	Message string `json:"message"`
-	Data    any    `json:"data,omitempty"`
-}
+// 	c.Request().Body = http.MaxBytesReader(c.Response(), c.Request().Body, int64(maxBytes))
 
-func (app *Config) readJSON(c echo.Context, data any) error {
-	maxBytes := 1048576 //one megabyte
+// 	dec := json.NewDecoder(c.Request().Body)
+// 	fmt.Println("dec ", dec)
+// 	err := dec.Decode(data)
+// 	fmt.Println("data", data)
 
-	c.Request().Body = http.MaxBytesReader(c.Response(), c.Request().Body, int64(maxBytes))
+// 	if err != nil {
+// 		return err
+// 	}
 
-	dec := json.NewDecoder(c.Request().Body)
-	fmt.Println("dec ", dec)
-	err := dec.Decode(data)
-	fmt.Println("data", data)
+// 	err = dec.Decode(&struct{}{})
+// 	if err != io.EOF {
+// 		return errors.New("body must have only a single JSON value")
 
-	if err != nil {
-		return err
-	}
+// 	}
+// 	return nil
+// }
 
-	err = dec.Decode(&struct{}{})
-	if err != io.EOF {
-		return errors.New("body must have only a single JSON value")
+// func (app *Config) writeJSON(c echo.Context, status int, data any, headers ...http.Header) error {
+// 	out, err := json.Marshal(data)
+// 	if err != nil {
+// 		return err
+// 	}
 
-	}
-	return nil
-}
+// 	if len(headers) > 0 {
+// 		for key, value := range headers[0] {
+// 			c.Response().Header()[key] = value
+// 		}
+// 	}
 
-func (app *Config) writeJSON(c echo.Context, status int, data any, headers ...http.Header) error {
-	out, err := json.Marshal(data)
-	if err != nil {
-		return err
-	}
+// 	c.Response().Header().Set("Content-Type", "application/json")
+// 	c.Response().WriteHeader(status)
+// 	_, err = c.Response().Write(out)
 
-	if len(headers) > 0 {
-		for key, value := range headers[0] {
-			c.Response().Header()[key] = value
-		}
-	}
+// 	if err != nil {
+// 		return err
+// 	}
 
-	c.Response().Header().Set("Content-Type", "application/json")
-	c.Response().WriteHeader(status)
-	_, err = c.Response().Write(out)
+// 	return nil
 
-	if err != nil {
-		return err
-	}
+// }
 
-	return nil
+// func (app *Config) ErrorJson(c echo.Context, err error, status ...int) error {
+// 	statusCode := http.StatusBadRequest
 
-}
+// 	if len(status) > 0 {
+// 		statusCode = status[0]
+// 	}
 
-func (app *Config) ErrorJson(c echo.Context, err error, status ...int) error {
-	statusCode := http.StatusBadRequest
+// 	var payload jsonResponse
+// 	payload.Error = true
+// 	payload.Message = err.Error()
 
-	if len(status) > 0 {
-		statusCode = status[0]
-	}
-
-	var payload jsonResponse
-	payload.Error = true
-	payload.Message = err.Error()
-
-	return app.writeJSON(c, statusCode, payload)
-}
+// 	return app.writeJSON(c, statusCode, payload)
+// }
