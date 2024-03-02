@@ -21,6 +21,7 @@ func InitializeServices(cfg *config.Config) (*api.RpcServer, error) {
 		client.NewUserService,
 		repository.NewUserRepository,
 		usecase.NewUserUseCase,
+
 		api.NewRPCServer,
 	)
 

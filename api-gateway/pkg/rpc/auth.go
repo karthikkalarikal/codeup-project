@@ -20,15 +20,16 @@ func NewAuthService(cfg *config.Config) interfaces.AuthService {
 }
 
 func (c *authServiceImpl) UserSignUp(ctx echo.Context, in request.UserSignUpRequest) (*response.UserSignUpResponse, error) {
-
+	fmt.Println("tcp", c.cfg.AuthServiceUrl)
 	client, err := rpc.Dial("tcp", c.cfg.AuthServiceUrl)
+	fmt.Println("err", err)
 	if err != nil {
 
 		return nil, err
 	}
 
 	out := new(response.UserSignUpResponse)
-	err = client.Call("User.SignUp", in, out)
+	err = client.Call("AuthUserService.SignUp", in, out)
 	if err != nil {
 		fmt.Println("err in the end", err)
 		// app.ErrorJson(c, err)

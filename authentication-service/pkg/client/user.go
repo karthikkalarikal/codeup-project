@@ -11,17 +11,20 @@ type AuthUserService struct {
 	useCase user.UserUseCase
 }
 
-func NewUserService(user user.UserUseCase) AuthUserService {
-	return AuthUserService{
+func NewUserService(user user.UserUseCase) *AuthUserService {
+	return &AuthUserService{
 		useCase: user,
 	}
 }
 
-func (u *AuthUserService) SignUp(ctx context.Context, req request.UserSignUpRequest) (domain.User, error) {
+func (u *AuthUserService) SignUp(req request.UserSignUpRequest, reply *domain.User) error {
+	ctx := context.Background()
 	body, err := u.useCase.UserSignUp(ctx, req)
 
 	if err != nil {
-		return domain.User{}, err
+		return err
 	}
-	return body, nil
+
+	*reply = body
+	return nil
 }

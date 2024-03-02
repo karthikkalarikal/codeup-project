@@ -7,6 +7,7 @@ import (
 	"authentication/pkg/utils/request"
 	"context"
 	"errors"
+	"fmt"
 	"time"
 
 	"gorm.io/gorm"
@@ -42,9 +43,12 @@ func (u *userDatabase) UserSignUp(ctx context.Context, user request.UserSignUpRe
 		CreatedAt: time.Now(),
 		UpdatedAt: time.Now(),
 	}
+	fmt.Println("user", tx)
 
 	// to check for duplicate values
+	fmt.Println("email1", user.Email)
 	_, err = u.FindUserByEmail(ctxDeadline, user.Email)
+	fmt.Println("err ", err, "gorm error:", gorm.ErrRecordNotFound)
 	if !errors.Is(err, gorm.ErrRecordNotFound) {
 		return domain.User{}, errors.New(customErrors.UserAlreadyExists)
 	}
@@ -63,7 +67,7 @@ func (u *userDatabase) UserSignUp(ctx context.Context, user request.UserSignUpRe
 	}
 	// useing transaction for data safty
 	tx.Commit()
-
+	fmt.Println("email2", user.Email)
 	userResponse, err := u.FindUserByEmail(ctxDeadline, user.Email)
 	if err != nil {
 		return domain.User{}, err
@@ -78,18 +82,19 @@ func (u *userDatabase) UserSignUp(ctx context.Context, user request.UserSignUpRe
 func (u *userDatabase) FindUserByEmail(ctx context.Context, email string) (domain.User, error) {
 	ctxDeadline, cancel := context.WithTimeout(ctx, 5*time.Second)
 	defer cancel()
-
+	fmt.Println("email3", email)
 	var user domain.User
 
 	tx := u.DB.WithContext(ctxDeadline).Begin()
 
 	result := tx.
-		Where("email = ?", user.Email).
+		Where("email = ?", email).
 		First(&user)
 
 	if result.Error != nil {
+		fmt.Println("err ", result.Error)
 		return domain.User{}, result.Error
 	}
-
+	fmt.Println("user", user)
 	return user, nil
 }
