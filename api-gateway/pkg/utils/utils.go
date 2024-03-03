@@ -1,11 +1,14 @@
 package utils
 
 import (
+	"authentication/pkg/domain"
 	"encoding/json"
 	"errors"
 	"io"
 	"net/http"
+	"time"
 
+	"github.com/golang-jwt/jwt/v5"
 	"github.com/labstack/echo/v4"
 )
 
@@ -14,6 +17,34 @@ type Utils struct {
 
 func NewUtils() *Utils {
 	return &Utils{}
+}
+
+type JwtCustomClaims struct {
+	Id int `json:"id"`
+	// Admin bool   `json:"admin"`
+
+	jwt jwt.RegisteredClaims
+}
+
+func (u *Utils) GetTokenString(user domain.User) (string, error) {
+
+	claims := &jwtCustomClaims{
+		Id: user.ID,
+
+		jwt: jwt.RegisteredClaims{
+			ExpiresAt: jwt.NewNumericDate(time.Now().Add(time.Hour * 72)),
+			IssuedAt:  jwt.NewNumericDate(time.Now()),
+		},
+	}
+
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims.jwt)
+
+	t, err := token.SignedString([]byte("secret"))
+	if err != nil {
+		return "", err
+	}
+
+	return t, nil
 }
 
 type jsonResponse struct {

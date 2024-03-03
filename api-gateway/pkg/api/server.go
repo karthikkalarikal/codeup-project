@@ -20,7 +20,11 @@ type Server struct {
 func NewServerHTTP(cfg *config.Config, authHandler handler.AuthHandler) *Server {
 	fmt.Println("here in server")
 	e := echo.New()
-
+	// config := echojwt.Config{
+	// 	NewClaimsFunc: func(c echo.Context) jwt.Claims {
+	// 		return new(JwtCustomClaims)
+	// 	},
+	// }
 	e.Use(middleware.Logger())
 	e.Use(middleware.Recover())
 	e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
