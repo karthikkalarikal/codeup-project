@@ -64,8 +64,44 @@ func (u *authHandlerImpl) UserSignUp(e echo.Context) error {
 		u.utils.ErrorJson(e, err, http.StatusBadRequest)
 		return err
 	}
+	token, err := u.utils.GetTokenString(userCreated.ID)
+	if err != nil {
+		u.utils.ErrorJson(e, err, http.StatusBadRequest)
+		return err
+	}
 
-	u.utils.WriteJSON(e, http.StatusCreated, userCreated)
+	u.utils.WriteJSON(e, http.StatusCreated, []interface{}{userCreated, token})
 	return nil
 
+}
+
+func (u *authHandlerImpl) UserSignIn(e echo.Context) error {
+	fmt.Println("inside user sign up handler 1")
+	var user request.UserSignInRequest
+
+	if err := e.Bind(&user); err != nil {
+		u.utils.ErrorJson(e, err, http.StatusBadRequest)
+		return err
+	}
+
+	if user.Email == "" && user.Username == "" || user.Password == "" {
+		err := errors.New(customerrors.NoEmptyValueError)
+		u.utils.ErrorJson(e, err, http.StatusBadRequest)
+		return err
+	}
+
+	userSignedIn, err := u.client.UserSignIn(e, user)
+	if err != nil {
+		// err := errors.New(customerrors.ValidatorError + err.Error())
+		u.utils.ErrorJson(e, err, http.StatusBadRequest)
+		return err
+	}
+	token, err := u.utils.GetTokenString(userSignedIn.ID)
+	if err != nil {
+		u.utils.ErrorJson(e, err, http.StatusBadRequest)
+		return err
+	}
+
+	u.utils.WriteJSON(e, http.StatusCreated, []interface{}{userSignedIn, token})
+	return nil
 }

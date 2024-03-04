@@ -3,6 +3,7 @@ package rpc
 import (
 	"fmt"
 	"net/rpc"
+	"sync"
 
 	"github.com/karthikkalarikal/api-gateway/pkg/config"
 	"github.com/karthikkalarikal/api-gateway/pkg/rpc/interfaces"
@@ -12,30 +13,61 @@ import (
 )
 
 type authServiceImpl struct {
-	cfg config.Config
+	cfg      config.Config
+	authPool *sync.Pool // a different way to initialize rpc connections
 }
 
 func NewAuthService(cfg *config.Config) interfaces.AuthService {
-	return &authServiceImpl{cfg: *cfg}
+	return &authServiceImpl{
+		cfg: *cfg,
+		authPool: &sync.Pool{
+			New: func() interface{} {
+				client, err := rpc.Dial("tcp", cfg.AuthServiceUrl)
+				if err != nil {
+					panic(err)
+				}
+				return client
+			},
+		},
+	}
 }
 
+// sign up
 func (c *authServiceImpl) UserSignUp(ctx echo.Context, in request.UserSignUpRequest) (*response.UserSignUpResponse, error) {
-	fmt.Println("tcp", c.cfg.AuthServiceUrl)
-	client, err := rpc.Dial("tcp", c.cfg.AuthServiceUrl)
-	fmt.Println("err", err)
-	if err != nil {
+	// fmt.Println("tcp", c.cfg.AuthServiceUrl)
+	// client, err := rpc.Dial("tcp", c.cfg.AuthServiceUrl)
+	// fmt.Println("err", err)
+	// if err != nil {
 
-		return nil, err
-	}
+	// 	return nil, err
+	// }
+	client := c.authPool.Get().(*rpc.Client)
+	defer c.authPool.Put(client)
 
 	out := new(response.UserSignUpResponse)
-	err = client.Call("AuthUserService.SignUp", in, out)
+	err := client.Call("AuthUserService.SignUp", in, out)
 	if err != nil {
 		fmt.Println("err in the end", err)
 		// app.ErrorJson(c, err)
 		return nil, err
 	}
 
+	fmt.Println("out", out)
+	return out, nil
+}
+
+// sign in
+func (c *authServiceImpl) UserSignIn(ctx echo.Context, in request.UserSignInRequest) (*response.UserSignInResponse, error) {
+
+	client := c.authPool.Get().(*rpc.Client)
+	defer c.authPool.Put(client)
+
+	out := new(response.UserSignInResponse)
+	err := client.Call("AuthUserService.UserSignIn", in, out)
+	if err != nil {
+		fmt.Println("err ", err)
+		return nil, err
+	}
 	fmt.Println("out", out)
 	return out, nil
 }

@@ -14,3 +14,8 @@ type UserSignUpResponse struct {
 	CreatedAt time.Time `json:"created_at"`
 	UpdatedAt time.Time `json:"updated_at"`
 }
+
+type UserSignInResponse struct {
+	ID    int    `json:"id"`
+	Email string `json:"email"`
+}

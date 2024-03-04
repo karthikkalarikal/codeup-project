@@ -8,3 +8,9 @@ type UserSignUpRequest struct {
 	FirstName       string `json:"first_name"`
 	LastName        string `json:"last_name"`
 }
+
+type UserSignInRequest struct {
+	Username string `json:"username"`
+	Email    string `json:"email"`
+	Password string `json:"password"`
+}
