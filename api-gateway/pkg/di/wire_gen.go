@@ -18,7 +18,7 @@ import (
 // Injectors from wire.go:
 
 func InitializeAPI(cfg config.Config) (*api.Server, error) {
-	configConfig, err := config.NewConfig() 
+	configConfig, err := config.NewConfig()
 	if err != nil {
 		return nil, err
 	}
@@ -26,6 +26,9 @@ func InitializeAPI(cfg config.Config) (*api.Server, error) {
 	authClient := client.NewAuthClient(authService)
 	utilsUtils := utils.NewUtils()
 	authHandler := handlers.NewAuthHandler(authClient, utilsUtils)
-	server := api.NewServerHTTP(configConfig, authHandler)
+	userRPCService := rpc.NewUserService(configConfig)
+	userClient := client.NewUserClient(userRPCService)
+	userHandler := handlers.NewUserHandler(userClient, utilsUtils)
+	server := api.NewServerHTTP(configConfig, authHandler, userHandler)
 	return server, nil
 }

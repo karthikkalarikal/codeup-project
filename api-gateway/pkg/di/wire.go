@@ -16,10 +16,13 @@ import (
 func InitializeAPI(cfg config.Config) (*api.Server, error) {
 	wire.Build(
 		client.NewAuthClient,
+		client.NewUserClient,
 
 		handlers.NewAuthHandler,
+		handlers.NewUserHandler,
 
 		rpc.NewAuthService,
+		rpc.NewUserService,
 
 		utils.NewUtils,
 
