@@ -17,7 +17,7 @@ type Server struct {
 	engine *echo.Echo
 }
 
-func NewServerHTTP(cfg *config.Config, authHandler handler.AuthHandler) *Server {
+func NewServerHTTP(cfg *config.Config, authHandler handler.AuthHandler, userHandler handler.UserHandler) *Server {
 	fmt.Println("here in server")
 	e := echo.New()
 	// config := echojwt.Config{
@@ -35,7 +35,7 @@ func NewServerHTTP(cfg *config.Config, authHandler handler.AuthHandler) *Server 
 		AllowCredentials: true,
 		MaxAge:           300,
 	})) // to allow front end to connect
-	routes.SetupUserRoutes(e.Group("/user"), authHandler)
+	routes.SetupUserRoutes(e.Group("/user"), authHandler, userHandler)
 
 	return &Server{
 		engine: e,

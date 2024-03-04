@@ -5,11 +5,12 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
-func SetupUserRoutes(e *echo.Group, authHandler handler.AuthHandler) {
+func SetupUserRoutes(e *echo.Group, authHandler handler.AuthHandler, userHandler handler.UserHandler) {
 	// auth := e.Group("/user")
 
 	e.POST("/signup", authHandler.UserSignUp)
 	e.POST("/signin", authHandler.UserSignIn)
+	e.GET("/view", userHandler.ViewAllProblems)
 	// signup.Use(middleware.UserMiddleware)
 	// {
 	// 	signup.POST("/", authHandler.UserSignUp)

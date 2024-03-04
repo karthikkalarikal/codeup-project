@@ -8,9 +8,10 @@ import (
 )
 
 type Config struct {
-	Port           string `mapstructure:"PORT"`
-	AuthServiceUrl string `mapstructure:"AUTH_SERVICE_URL"`
-	JWT            *echojwt.Config
+	Port              string `mapstructure:"PORT"`
+	AuthServiceUrl    string `mapstructure:"AUTH_SERVICE_URL"`
+	ProblemServiceUrl string `mapstructure:"PROBLEM_SERVICE_URL"`
+	JWT               *echojwt.Config
 }
 
 func NewConfig() (*Config, error) {
