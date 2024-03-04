@@ -8,3 +8,10 @@ type UserSignUpRequest struct {
 	FirstName       string `json:"first_name" validate:"required,min=3"`
 	LastName        string `json:"last_name" validate:"required,min=3"`
 }
+
+
+type UserSignInRequest struct {
+	Username string `json:"username"`
+	Email    string `json:"email"`
+	Password string `json:"password"`
+}

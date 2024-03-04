@@ -13,4 +13,5 @@ type User struct {
 	LastName  string    `json:"last_name" gorm:"not null"` // for proper representaion of null value in go sql.Null is used
 	CreatedAt time.Time `json:"created_at" gorm:"not null"`
 	UpdatedAt time.Time `json:"updated_at" gorm:"not null"`
+	Admin     bool      `json:"isadmin" gorm:"default:false"`
 }

@@ -2,12 +2,15 @@ package config
 
 import (
 	"github.com/go-playground/validator/v10"
+
+	echojwt "github.com/labstack/echo-jwt/v4"
 	"github.com/spf13/viper"
 )
 
 type Config struct {
 	Port           string `mapstructure:"PORT"`
 	AuthServiceUrl string `mapstructure:"AUTH_SERVICE_URL"`
+	JWT            *echojwt.Config
 }
 
 func NewConfig() (*Config, error) {
@@ -15,6 +18,7 @@ func NewConfig() (*Config, error) {
 	if err != nil {
 		return nil, err
 	}
+
 	return &cfg, nil
 }
 

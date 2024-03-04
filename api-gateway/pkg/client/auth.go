@@ -26,3 +26,11 @@ func (auth *authClientImpl) UserSignUp(e echo.Context, in request.UserSignUpRequ
 	return res, err
 
 }
+
+func (auth *authClientImpl) UserSignIn(ctx echo.Context, in request.UserSignInRequest) (*response.UserSignInResponse, error) {
+	res, err := auth.client.UserSignIn(ctx, in)
+	if err != nil {
+		return &response.UserSignInResponse{}, err
+	}
+	return res, err
+}

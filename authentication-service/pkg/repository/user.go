@@ -10,6 +10,7 @@ import (
 	"fmt"
 	"time"
 
+	"golang.org/x/crypto/bcrypt"
 	"gorm.io/gorm"
 )
 
@@ -33,12 +34,18 @@ func (u *userDatabase) UserSignUp(ctx context.Context, user request.UserSignUpRe
 
 	defer cancel()
 
+	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(user.Password), bcrypt.DefaultCost)
+
+	if err != nil {
+		return domain.User{}, err
+	}
+
 	tx := u.DB.WithContext(ctxDeadline).Begin()
 	userToCreate := domain.User{
 		FirstName: user.FirstName,
 		LastName:  user.LastName,
 		Username:  user.Username,
-		Password:  user.Password,
+		Password:  string(hashedPassword),
 		Email:     user.Email,
 		CreatedAt: time.Now(),
 		UpdatedAt: time.Now(),
