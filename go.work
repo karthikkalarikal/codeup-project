@@ -1,11 +1,9 @@
-
-
 go 1.21.6
 
+
 use (
-    ./api-gateway
-    ./front-end
-    ./authentication-service
-    ./problem-service
-    ./sandboxs/sandbox-python
-    )
+        ./api-gateway
+        ./authentication-service
+        ./problem-service
+        
+        )

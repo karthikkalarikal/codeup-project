@@ -17,4 +17,10 @@ func NewUserUseCase(repo interfaces.UserRepository) user.UserUseCase {
 	}
 }
 
-func (u *userUseCase) ViewAllProblems(ctx context.Context) ([]*domain.Problem, error)
+func (u *userUseCase) ViewAllProblems(ctx context.Context) ([]domain.Problem, error) {
+	body, err := u.repo.ViewAllProblems(ctx)
+	if err != nil {
+		return []domain.Problem{}, err
+	}
+	return body, nil
+}

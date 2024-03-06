@@ -7,7 +7,8 @@ COPY go.mod go.sum ./
 RUN go mod download
 
 COPY cmd/api cmd/api
-COPY data data
+COPY pkg pkg
+COPY .env .env
 
 RUN go build -o testApp ./cmd/api
 
@@ -17,5 +18,6 @@ RUN mkdir /app
 WORKDIR /app
 
 COPY --from=builder /app/testApp .
+COPY .env .
 
 CMD ["./testApp"]
