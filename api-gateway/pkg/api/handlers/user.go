@@ -21,6 +21,19 @@ func NewUserHandler(user interfaces.UserClient, utils *utils.Utils) handler.User
 	}
 }
 
+// Problem godoc
+//
+//	@Summary		View problems
+//	@Description	View all problems code-up
+//	@Tags			user,admin
+//	@Accept			json
+//	@Produce		json
+//	@Success		200	{object}	[]response.Problem
+//	@Failure		400	{object}	[]response.Problem
+//	@Failure		401	{object}	[]response.Problem
+//	@Failure		404	{object}	[]response.Problem
+//	@Failure		500	{object}	[]response.Problem
+//	@Router			/user/view [get]
 func (u *userHandlerImp) ViewAllProblems(e echo.Context) error {
 
 	body, err := u.user.ViewAllProblems(struct{}{})

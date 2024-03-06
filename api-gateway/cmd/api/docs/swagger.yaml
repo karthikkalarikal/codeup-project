@@ -1,0 +1,238 @@
+definitions:
+  request.UserSignInRequest:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+      username:
+        type: string
+    type: object
+  request.UserSignUpRequest:
+    properties:
+      confirmpassword:
+        minLength: 8
+        type: string
+      email:
+        type: string
+      first_name:
+        minLength: 3
+        type: string
+      last_name:
+        minLength: 3
+        type: string
+      password:
+        minLength: 8
+        type: string
+      username:
+        maxLength: 50
+        minLength: 6
+        type: string
+    required:
+    - confirmpassword
+    - email
+    - first_name
+    - last_name
+    - password
+    - username
+    type: object
+  response.Problem:
+    properties:
+      created_at:
+        type: string
+      description:
+        type: string
+      difficulty:
+        type: string
+      id:
+        type: string
+      memory_limit:
+        type: integer
+      tags:
+        items:
+          type: string
+        type: array
+      test_cases:
+        items:
+          $ref: '#/definitions/response.TestCase'
+        type: array
+      time_limit:
+        type: integer
+      title:
+        type: string
+    type: object
+  response.SignUpWrapper:
+    properties:
+      token:
+        type: string
+      user:
+        $ref: '#/definitions/response.UserSignUpResponse'
+    type: object
+  response.TestCase:
+    properties:
+      input:
+        type: string
+      output:
+        type: string
+    type: object
+  response.UserSignUpResponse:
+    properties:
+      created_at:
+        type: string
+      email:
+        type: string
+      first_name:
+        type: string
+      id:
+        type: integer
+      last_name:
+        description: for proper representaion of null value in go sql.Null is used
+        type: string
+      updated_at:
+        type: string
+      username:
+        type: string
+    type: object
+info:
+  contact:
+    email: support@swagger.io
+    name: API Support
+    url: http://www.swagger.io/support
+  description: This is a sample code execution platform.
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  termsOfService: http://swagger.io/
+  title: Code Up Project API Documentation
+  version: "1.0"
+paths:
+  /user/signin:
+    post:
+      consumes:
+      - application/json
+      description: signin to code-up
+      parameters:
+      - description: user details
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/request.UserSignInRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.SignUpWrapper'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.SignUpWrapper'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/response.SignUpWrapper'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/response.SignUpWrapper'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.SignUpWrapper'
+      summary: User signin
+      tags:
+      - user
+      - admin
+  /user/signup:
+    post:
+      consumes:
+      - application/json
+      description: signup to code-up
+      parameters:
+      - description: user details
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/request.UserSignUpRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.SignUpWrapper'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.SignUpWrapper'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/response.SignUpWrapper'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/response.SignUpWrapper'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.SignUpWrapper'
+      summary: User signup
+      tags:
+      - user
+  /user/view:
+    get:
+      consumes:
+      - application/json
+      description: View all problems code-up
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/response.Problem'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            items:
+              $ref: '#/definitions/response.Problem'
+            type: array
+        "401":
+          description: Unauthorized
+          schema:
+            items:
+              $ref: '#/definitions/response.Problem'
+            type: array
+        "404":
+          description: Not Found
+          schema:
+            items:
+              $ref: '#/definitions/response.Problem'
+            type: array
+        "500":
+          description: Internal Server Error
+          schema:
+            items:
+              $ref: '#/definitions/response.Problem'
+            type: array
+      summary: View problems
+      tags:
+      - user
+      - admin
+securityDefinitions:
+  BasicAuth:
+    type: basic
+  OAuth2Application:
+    flow: application
+    scopes:
+      admin: Grants read and write access to administrative information
+      write: Grants write access
+    tokenUrl: https://example.com/oauth/token
+    type: oauth2
+swagger: "2.0"

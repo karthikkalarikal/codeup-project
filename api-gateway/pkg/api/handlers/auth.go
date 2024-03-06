@@ -12,6 +12,7 @@ import (
 	"github.com/karthikkalarikal/api-gateway/pkg/utils"
 	customerrors "github.com/karthikkalarikal/api-gateway/pkg/utils/customErrors"
 	"github.com/karthikkalarikal/api-gateway/pkg/utils/request"
+	"github.com/karthikkalarikal/api-gateway/pkg/utils/response"
 	"github.com/labstack/echo/v4"
 )
 
@@ -27,6 +28,20 @@ func NewAuthHandler(client client.AuthClient, utils *utils.Utils) interfaces.Aut
 	}
 }
 
+// Auth godoc
+//
+//	@Summary		User signup
+//	@Description	signup to code-up
+//	@Tags			user
+//	@Accept			json
+//	@Produce		json
+//	@Param			user	body		request.UserSignUpRequest	true	"user details"
+//	@Success		200		{object}	response.SignUpWrapper
+//	@Failure		400		{object}	response.SignUpWrapper
+//	@Failure		401		{object}	response.SignUpWrapper
+//	@Failure		404		{object}	response.SignUpWrapper
+//	@Failure		500		{object}	response.SignUpWrapper
+//	@Router			/user/signup [post]
 func (u *authHandlerImpl) UserSignUp(e echo.Context) error {
 	fmt.Println("inside user sign up handler 1")
 	var user request.UserSignUpRequest
@@ -70,11 +85,25 @@ func (u *authHandlerImpl) UserSignUp(e echo.Context) error {
 		return err
 	}
 
-	u.utils.WriteJSON(e, http.StatusCreated, []interface{}{userCreated, token})
+	u.utils.WriteJSON(e, http.StatusCreated, response.SignUpWrapper{User: *userCreated, Token: token})
 	return nil
 
 }
 
+// Auth godoc
+//
+//	@Summary		User signin
+//	@Description	signin to code-up
+//	@Tags			user,admin
+//	@Accept			json
+//	@Produce		json
+//	@Param			user	body		request.UserSignInRequest	true	"user details"
+//	@Success		200		{object}	response.SignUpWrapper
+//	@Failure		400		{object}	response.SignUpWrapper
+//	@Failure		401		{object}	response.SignUpWrapper
+//	@Failure		404		{object}	response.SignUpWrapper
+//	@Failure		500		{object}	response.SignUpWrapper
+//	@Router			/user/signin [post]
 func (u *authHandlerImpl) UserSignIn(e echo.Context) error {
 	fmt.Println("inside user sign up handler 1")
 	var user request.UserSignInRequest

@@ -19,3 +19,8 @@ type UserSignInResponse struct {
 	ID    int    `json:"id"`
 	Email string `json:"email"`
 }
+
+type SignUpWrapper struct {
+	User  UserSignUpResponse `json:"user"`
+	Token string             `json:"token"`
+}
