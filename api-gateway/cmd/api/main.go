@@ -4,12 +4,33 @@ import (
 	"fmt"
 	"log"
 
+	_ "github.com/karthikkalarikal/api-gateway/cmd/api/docs" // docs
 	"github.com/karthikkalarikal/api-gateway/pkg/config"
 	"github.com/karthikkalarikal/api-gateway/pkg/di"
 )
 
 // const webPort = "80"
 
+//	@title			Code Up Project API Documentation
+//	@version		1.0
+//	@description	This is a sample code execution platform.
+//	@termsOfService	http://swagger.io/
+
+//	@contact.name	API Support
+//	@contact.url	http://www.swagger.io/support
+//	@contact.email	support@swagger.io
+
+//	@license.name	Apache 2.0
+//	@license.url	http://www.apache.org/licenses/LICENSE-2.0.html
+
+//	@host
+
+//	@securityDefinitions.basic	BasicAuth
+
+// @securitydefinitions.oauth2.application	OAuth2Application
+// @tokenUrl								https://example.com/oauth/token
+// @scope.write							Grants write access
+// @scope.admin							Grants read and write access to administrative information
 func main() {
 
 	cfg, err := config.LoadConfig()
@@ -28,17 +49,5 @@ func main() {
 
 	service.Start()
 	fmt.Println("here 4")
-	// app := Config{}
 
-	// log.Printf("start service on port %s", webPort)
-
-	// err := app.Routes().Start(fmt.Sprintf(":%s", webPort))
-	// if err != nil {
-	// 	fmt.Println("here", err.Error())
-	// 	log.Panic(err)
-	// }
 }
-
-// func hello(c echo.Context) error {
-// 	return c.String(http.StatusOK, "Hello, World")
-// }

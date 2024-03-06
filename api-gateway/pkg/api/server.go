@@ -10,6 +10,7 @@ import (
 	"github.com/karthikkalarikal/api-gateway/pkg/config"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
+	echoSwagger "github.com/swaggo/echo-swagger"
 )
 
 type Server struct {
@@ -25,6 +26,8 @@ func NewServerHTTP(cfg *config.Config, authHandler handler.AuthHandler, userHand
 	// 		return new(JwtCustomClaims)
 	// 	},
 	// }
+
+	e.GET("/swagger/*", echoSwagger.WrapHandler)
 	e.Use(middleware.Logger())
 	e.Use(middleware.Recover())
 	e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
@@ -35,6 +38,7 @@ func NewServerHTTP(cfg *config.Config, authHandler handler.AuthHandler, userHand
 		AllowCredentials: true,
 		MaxAge:           300,
 	})) // to allow front end to connect
+
 	routes.SetupUserRoutes(e.Group("/user"), authHandler, userHandler)
 
 	return &Server{
