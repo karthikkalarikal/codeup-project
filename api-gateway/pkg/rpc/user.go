@@ -37,7 +37,7 @@ func (u *userServiceImpl) ViewAllProblems(in request.AllProbles) ([]response.Pro
 	defer u.problemPool.Put(client)
 
 	out := new([]response.Problem)
-	err := client.Call("RPCServer.All", in, out)
+	err := client.Call("ProblemUserClient.ViewAllProblems", in, out)
 	if err != nil {
 		fmt.Println("err in the end", err)
 		// app.ErrorJson(c, err)

@@ -6,5 +6,5 @@ import (
 )
 
 type UserRepository interface {
-	ViewAllProblems(context.Context) ([]*domain.Problem, error)
+	ViewAllProblems(context.Context) ([]domain.Problem, error)
 }

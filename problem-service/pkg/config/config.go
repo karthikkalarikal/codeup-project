@@ -1,14 +1,18 @@
 package config
 
-import "github.com/spf13/viper"
+import (
+	"fmt"
+
+	"github.com/spf13/viper"
+)
 
 type Config struct {
 	ProblemServicePort string `mapstructure:"PROBLEM_SERVICE_PORT"`
-	MongoURL           string `mapstructuure:"MONGO_URL"`
-	Username           string `mapstructuure:"MONGO_INITDB_DATABASE"`
-	Password           string `mapstructuure:"MONGO_INITDB_ROOT_USERNAME"`
-	AuthSource         string `mapstructuure:"MONGO_INITDB_ROOT_PASSWORD"`
-	AuthMechanism      string `mapstructuure:"AUTH_MECHANISM"`
+	MongoURL           string `mapstructure:"MONGO_URL"`
+	MongoDataBase      string `mapstructure:"MONGO_INITDB_DATABASE"`
+	Username           string `mapstructure:"MONGO_INITDB_ROOT_USERNAME"`
+	Password           string `mapstructure:"MONGO_INITDB_ROOT_PASSWORD"`
+	AuthMechanism      string `mapstructure:"AUTH_MECHANISM"`
 }
 
 var envs = []string{
@@ -28,6 +32,8 @@ func LoadConfig() (config *Config, err error) {
 
 	for _, env := range envs {
 		if err = viper.BindEnv(env); err != nil {
+			fmt.Println("here")
+			fmt.Println("err", err)
 			return // naked return
 		}
 	}

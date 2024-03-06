@@ -2,6 +2,7 @@ package db
 
 import (
 	"context"
+	"fmt"
 	"log"
 	"problem-service/pkg/config"
 
@@ -11,13 +12,13 @@ import (
 
 func ConnectToMongo(cfg *config.Config) (*mongo.Client, error) {
 	// create connection options
-
+	fmt.Println("mongo url", cfg.MongoURL, cfg)
 	clientOptions := options.Client().ApplyURI(cfg.MongoURL)
 
 	clientOptions.SetAuth(options.Credential{
 		Username:      cfg.Username,
 		Password:      cfg.Password,
-		AuthSource:    cfg.AuthSource,
+		AuthSource:    cfg.Username,
 		AuthMechanism: cfg.AuthMechanism,
 	}) // remembet to take these  values from env when fine tuning the code.
 

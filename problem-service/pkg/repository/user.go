@@ -22,7 +22,7 @@ func NewUserRepository(DB *mongo.Client) interfaces.UserRepository {
 	}
 }
 
-func (p *problemDatabase) ViewAllProblems(ctx context.Context) ([]*domain.Problem, error) {
+func (p *problemDatabase) ViewAllProblems(ctx context.Context) ([]domain.Problem, error) {
 
 	ctxTO, cancel := context.WithTimeout(ctx, 15*time.Second)
 	defer cancel()
@@ -41,7 +41,7 @@ func (p *problemDatabase) ViewAllProblems(ctx context.Context) ([]*domain.Proble
 
 	defer cursor.Close(ctxTO)
 
-	var problems []*domain.Problem
+	var problems []domain.Problem
 
 	for cursor.Next(ctx) {
 		var item domain.Problem
@@ -51,7 +51,7 @@ func (p *problemDatabase) ViewAllProblems(ctx context.Context) ([]*domain.Proble
 			log.Println("error decoding problems into slices", err)
 			return nil, err
 		} else {
-			problems = append(problems, &item)
+			problems = append(problems, item)
 		}
 
 	}
