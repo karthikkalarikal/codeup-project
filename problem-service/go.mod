@@ -4,6 +4,7 @@ go 1.21.6
 
 require (
 	github.com/google/wire v0.6.0
+	github.com/jinzhu/copier v0.4.0
 	github.com/spf13/viper v1.18.2
 	go.mongodb.org/mongo-driver v1.14.0
 )

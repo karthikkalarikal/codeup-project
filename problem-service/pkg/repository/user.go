@@ -22,6 +22,24 @@ func NewUserRepository(DB *mongo.Client) interfaces.UserRepository {
 	}
 }
 
+// // insert
+// func (p *problemDatabase) InsertProblem(ctx context.Context, entry request.Problem) (int, error) {
+// 	collection := p.DB.Database("problems").Collection("problems")
+// 	var problem domain.Problem
+// 	copier.Copy(problem, entry)
+// 	problem.CreatedAt = time.Now()
+
+// 	body, err := collection.InsertOne(context.TODO(), problem)
+
+// 	if err != nil {
+// 		log.Println("error inerting into problems: ", err)
+// 		return body.InsertedID.(int), err
+// 	}
+
+// 	return body.InsertedID.(int), err
+// }
+
+// view all
 func (p *problemDatabase) ViewAllProblems(ctx context.Context) ([]domain.Problem, error) {
 
 	ctxTO, cancel := context.WithTimeout(ctx, 15*time.Second)
@@ -52,8 +70,14 @@ func (p *problemDatabase) ViewAllProblems(ctx context.Context) ([]domain.Problem
 			return nil, err
 		} else {
 			problems = append(problems, item)
+			log.Println("appended item: ", item.Title)
+		}
+		if err := cursor.Err(); err != nil {
+			log.Println("cursor error: ", err)
+			return nil, err
 		}
 
 	}
+	log.Println("total problems found :", len(problems))
 	return problems, nil
 }

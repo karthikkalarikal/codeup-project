@@ -13,6 +13,7 @@ import (
 func ConnectToMongo(cfg *config.Config) (*mongo.Client, error) {
 	// create connection options
 	fmt.Println("mongo url", cfg.MongoURL, cfg)
+	fmt.Println(cfg.Username, cfg.Password, cfg.AuthMechanism)
 	clientOptions := options.Client().ApplyURI(cfg.MongoURL)
 
 	clientOptions.SetAuth(options.Credential{

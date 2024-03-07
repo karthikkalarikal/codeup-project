@@ -17,8 +17,14 @@ import (
 func InitializeServices(cfg *config.Config) (*server.RpcServer, error) {
 	wire.Build(
 		db.ConnectToMongo,
+
 		client.NewUserClient,
+		client.NewAdminClient,
+
+		repository.NewAdmimRepository,
 		repository.NewUserRepository,
+
+		usecase.NewAdminUseCase,
 		usecase.NewUserUseCase,
 
 		server.NewRPCServer,

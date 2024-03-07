@@ -22,3 +22,9 @@ type Problem struct {
 	Tags        []string           `bson:"tags" json:"tags"`
 	CreatedAt   time.Time          `bson:"created_at" json:"created_at"`
 }
+
+type JsonResponse struct {
+	Error   bool   `json:"error"`
+	Message string `json:"message"`
+	Data    any    `json:"data,omitempty"`
+}

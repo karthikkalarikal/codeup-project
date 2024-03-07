@@ -25,6 +25,9 @@ func InitializeServices(cfg *config.Config) (*server.RpcServer, error) {
 	userRepository := repository.NewUserRepository(mongoClient)
 	userUseCase := usecase.NewUserUseCase(userRepository)
 	problemUserClient := client.NewUserClient(userUseCase)
-	rpcServer := server.NewRPCServer(cfg, problemUserClient)
+	adminRepository := repository.NewAdmimRepository(mongoClient)
+	adminUseCase := usecase.NewAdminUseCase(adminRepository)
+	adminClientImpl := client.NewAdminClient(adminUseCase)
+	rpcServer := server.NewRPCServer(cfg, problemUserClient, adminClientImpl)
 	return rpcServer, nil
 }

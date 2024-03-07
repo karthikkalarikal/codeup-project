@@ -1,4 +1,32 @@
 definitions:
+  request.InsertProblem:
+    properties:
+      description:
+        type: string
+      difficulty:
+        type: string
+      memory_limit:
+        type: integer
+      tags:
+        items:
+          type: string
+        type: array
+      test_cases:
+        items:
+          $ref: '#/definitions/request.TestCase'
+        type: array
+      time_limit:
+        type: integer
+      title:
+        type: string
+    type: object
+  request.TestCase:
+    properties:
+      input:
+        type: string
+      output:
+        type: string
+    type: object
   request.UserSignInRequest:
     properties:
       email:
@@ -35,6 +63,14 @@ definitions:
     - last_name
     - password
     - username
+    type: object
+  response.JsonResponse:
+    properties:
+      data: {}
+      error:
+        type: boolean
+      message:
+        type: string
     type: object
   response.Problem:
     properties:
@@ -106,6 +142,40 @@ info:
   title: Code Up Project API Documentation
   version: "1.0"
 paths:
+  /admin/problem/:
+    post:
+      consumes:
+      - application/json
+      description: Admin create a problem
+      parameters:
+      - description: create problem
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/request.InsertProblem'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: 'Success: Problem created'
+          schema:
+            $ref: '#/definitions/response.JsonResponse'
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/response.JsonResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/response.JsonResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/response.JsonResponse'
+      summary: Create a Problem
+      tags:
+      - admin
   /user/signin:
     post:
       consumes:

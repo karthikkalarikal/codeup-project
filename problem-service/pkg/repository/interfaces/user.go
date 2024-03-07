@@ -7,4 +7,5 @@ import (
 
 type UserRepository interface {
 	ViewAllProblems(context.Context) ([]domain.Problem, error)
+	// InsertProblem(context.Context, request.Problem) (int, error)
 }
