@@ -29,6 +29,9 @@ func InitializeAPI(cfg config.Config) (*api.Server, error) {
 	userRPCService := rpc.NewUserService(configConfig)
 	userClient := client.NewUserClient(userRPCService)
 	userHandler := handlers.NewUserHandler(userClient, utilsUtils)
-	server := api.NewServerHTTP(configConfig, authHandler, userHandler)
+	adminRPCService := rpc.NewAdminService(configConfig)
+	adminClient := client.NewAdminClient(adminRPCService)
+	adminHandler := handlers.NewAdminHandler(adminClient, utilsUtils)
+	server := api.NewServerHTTP(configConfig, authHandler, userHandler, adminHandler)
 	return server, nil
 }

@@ -8,6 +8,7 @@ import (
 	"time"
 
 	"github.com/golang-jwt/jwt/v5"
+	"github.com/karthikkalarikal/api-gateway/pkg/utils/response"
 
 	"github.com/labstack/echo/v4"
 )
@@ -47,11 +48,11 @@ func (u *Utils) GetTokenString(userId int) (string, error) {
 	return t, nil
 }
 
-type jsonResponse struct {
-	Error   bool   `json:"error"`
-	Message string `json:"message"`
-	Data    any    `json:"data,omitempty"`
-}
+// type JsonResponse struct {
+// 	Error   bool   `json:"error"`
+// 	Message string `json:"message"`
+// 	Data    any    `json:"data,omitempty"`
+// }
 
 func (app *Utils) ReadJSON(c echo.Context, data any) error {
 	maxBytes := 1048576 //one megabyte
@@ -104,7 +105,7 @@ func (app *Utils) ErrorJson(c echo.Context, err error, status ...int) error {
 		statusCode = status[0]
 	}
 
-	var payload jsonResponse
+	var payload response.JsonResponse
 	payload.Error = true
 	payload.Message = err.Error()
 

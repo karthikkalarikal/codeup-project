@@ -17,12 +17,15 @@ func InitializeAPI(cfg config.Config) (*api.Server, error) {
 	wire.Build(
 		client.NewAuthClient,
 		client.NewUserClient,
+		client.NewAdminClient,
 
 		handlers.NewAuthHandler,
 		handlers.NewUserHandler,
+		handlers.NewAdminHandler,
 
 		rpc.NewAuthService,
 		rpc.NewUserService,
+		rpc.NewAdminService,
 
 		utils.NewUtils,
 

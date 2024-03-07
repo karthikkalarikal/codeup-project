@@ -18,15 +18,10 @@ type Server struct {
 	engine *echo.Echo
 }
 
-func NewServerHTTP(cfg *config.Config, authHandler handler.AuthHandler, userHandler handler.UserHandler) *Server {
+func NewServerHTTP(cfg *config.Config, authHandler handler.AuthHandler, userHandler handler.UserHandler, adminHandler handler.AdminHandler) *Server {
 	fmt.Println("here in server")
 	e := echo.New()
-	// config := echojwt.Config{
-	// 	NewClaimsFunc: func(c echo.Context) jwt.Claims {
-	// 		return new(JwtCustomClaims)
-	// 	},
-	// }
-
+	// to do - use custom logger to make the echo's logging more appealing , zap package.
 	e.GET("/swagger/*", echoSwagger.WrapHandler)
 	e.Use(middleware.Logger())
 	e.Use(middleware.Recover())
@@ -40,6 +35,7 @@ func NewServerHTTP(cfg *config.Config, authHandler handler.AuthHandler, userHand
 	})) // to allow front end to connect
 
 	routes.SetupUserRoutes(e.Group("/user"), authHandler, userHandler)
+	routes.SetupAdminRoutes(e.Group("/admin"), adminHandler)
 
 	return &Server{
 		engine: e,
