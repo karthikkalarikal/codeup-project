@@ -1,9 +1,11 @@
 package executer
 
 import (
+	"context"
 	"os"
 	"os/exec"
 	"path/filepath"
+	"time"
 )
 
 type Executer struct {
@@ -23,6 +25,8 @@ func (e *Executer) GoCodeExec(request []byte, reply *[]byte) error {
 	// }
 
 	// Create a temporary directory
+	ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
+	defer cancel()
 	tempDir, err := os.MkdirTemp("", "gosandbox")
 	if err != nil {
 		// http.Error(w, "Error creating temporary directory", http.StatusInternalServerError)
@@ -38,7 +42,7 @@ func (e *Executer) GoCodeExec(request []byte, reply *[]byte) error {
 	}
 
 	// Run the Go code
-	output, err := runGoCode(tempDir)
+	output, err := runGoCode(ctx, tempDir)
 	if err != nil {
 		// http.Error(w, fmt.Sprintf("Error running code: %s", err), http.StatusInternalServerError)
 		return err
@@ -51,7 +55,7 @@ func (e *Executer) GoCodeExec(request []byte, reply *[]byte) error {
 	// w.Write(output)
 }
 
-func runGoCode(directory string) ([]byte, error) {
+func runGoCode(ctx context.Context, directory string) ([]byte, error) {
 	cmd := exec.Command("go", "run", filepath.Join(directory, "main.go"))
 
 	// Capture the output of the command
