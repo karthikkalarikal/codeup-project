@@ -21,17 +21,17 @@ func NewUtils() *Utils {
 }
 
 type JwtCustomClaims struct {
-	Id int `json:"id"`
-	// Admin bool   `json:"admin"`
+	Id    int  `json:"id"`
+	Admin bool `json:"admin"`
 
 	jwt.RegisteredClaims
 }
 
-func (u *Utils) GetTokenString(userId int) (string, error) {
+func (u *Utils) GetTokenString(userId int, admin bool) (string, error) {
 
 	claims := &JwtCustomClaims{
 		userId,
-
+		admin,
 		jwt.RegisteredClaims{
 			ExpiresAt: jwt.NewNumericDate(time.Now().Add(time.Hour * 72)),
 			IssuedAt:  jwt.NewNumericDate(time.Now()),

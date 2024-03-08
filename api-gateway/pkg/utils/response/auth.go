@@ -17,6 +17,7 @@ type UserSignUpResponse struct {
 
 type UserSignInResponse struct {
 	ID    int    `json:"id"`
+	Admin bool   `json:"admin"`
 	Email string `json:"email"`
 }
 
