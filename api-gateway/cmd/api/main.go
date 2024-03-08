@@ -25,12 +25,9 @@ import (
 
 //	@host
 
-//	@securityDefinitions.basic	BasicAuth
-
-// @securitydefinitions.oauth2.application	OAuth2Application
-// @tokenUrl								https://example.com/oauth/token
-// @scope.write							Grants write access
-// @scope.admin							Grants read and write access to administrative information
+// @securityDefinitions.apikey	BearerAuth
+// @in							header
+// @name						Authorization
 func main() {
 
 	cfg, err := config.LoadConfig()
