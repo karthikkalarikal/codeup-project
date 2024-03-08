@@ -2,9 +2,11 @@ package client
 
 import (
 	"context"
+	"fmt"
 	"log"
 	"problem-service/pkg/domain"
 	usecase "problem-service/pkg/usecase/interfaces"
+	"problem-service/pkg/utils/request"
 )
 
 type ProblemUserClient struct {
@@ -27,5 +29,19 @@ func (p *ProblemUserClient) ViewAllProblems(request struct{}, reply *[]domain.Pr
 	}
 	*reply = body
 	// copy(*reply, body)
+	return nil
+}
+
+// get one problem
+
+func (p *ProblemUserClient) GetProblemById(request request.ProblemById, reply *domain.Problem) error {
+	fmt.Println("get one problem")
+	ctx := context.Background()
+	body, err := p.user.GetProblemById(ctx, request)
+	if err != nil {
+		return err
+	}
+
+	*reply = body
 	return nil
 }

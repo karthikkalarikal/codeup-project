@@ -44,3 +44,7 @@ func (u *userHandlerImp) ViewAllProblems(e echo.Context) error {
 	u.utils.WriteJSON(e, http.StatusCreated, body)
 	return nil
 }
+
+// func (u *userHandlerImp) GetOneProblem(e echo.Context) error {
+// 	body,err :=
+// }
