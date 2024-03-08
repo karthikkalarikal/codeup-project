@@ -9,7 +9,7 @@ import (
 func SetupAdminRoutes(e *echo.Group, adminHandler handler.AdminHandler) {
 	// auth := e.Group("/user")
 	adminProblem := e.Group("/problem")
-	adminProblem.Use(middleware.UserMiddleware)
+	adminProblem.Use(middleware.AdminMiddleware)
 	{
 		adminProblem.POST("/", adminHandler.CreateProblem)
 		// problem.GET("/")
