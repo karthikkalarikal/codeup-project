@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"fmt"
 	"net/http"
 
 	handler "github.com/karthikkalarikal/api-gateway/pkg/api/handlers/interfaces"
@@ -8,6 +9,7 @@ import (
 	"github.com/karthikkalarikal/api-gateway/pkg/utils"
 	"github.com/karthikkalarikal/api-gateway/pkg/utils/request"
 	"github.com/labstack/echo/v4"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 type userHandlerImp struct {
@@ -46,13 +48,32 @@ func (u *userHandlerImp) ViewAllProblems(e echo.Context) error {
 	return nil
 }
 
+// Problem godoc
+//
+//	@Summary		get one problems
+//	@Description	get one problem to display
+//	@Tags			user, admin
+//	@Accept			json
+//	@Produce		json
+//	@Param			id	path		string	true	"Problem ID"
+//	@Success		200	{object}	response.Problem
+//	@Failure		400	{object}	response.Problem
+//	@Failure		401	{object}	response.Problem
+//	@Failure		404	{object}	response.Problem
+//	@Failure		500	{object}	response.Problem
+//	@Router			/user/problem/{id} [post]
 func (u *userHandlerImp) GetOneProblemById(e echo.Context) error {
-
-	var id request.GetOneProblemById
-	if err := e.Bind(&id); err != nil {
+	problemId := e.Param("id")
+	objectId, err := primitive.ObjectIDFromHex(problemId)
+	if err != nil {
+		fmt.Println("error in id", problemId)
 		u.utils.ErrorJson(e, err, http.StatusBadRequest)
 		return err
+
 	}
+
+	var id request.GetOneProblemById
+	id.ID = objectId
 	body, err := u.user.GetProblemById(e, id)
 	if err != nil {
 		u.utils.ErrorJson(e, err, http.StatusBadRequest)
