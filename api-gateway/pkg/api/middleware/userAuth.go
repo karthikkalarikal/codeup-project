@@ -2,18 +2,50 @@ package middleware
 
 import (
 	"errors"
+	"fmt"
+	"net/http"
+	"strings"
 
 	"github.com/golang-jwt/jwt"
 	customerrors "github.com/karthikkalarikal/api-gateway/pkg/utils/customErrors"
 	"github.com/labstack/echo/v4"
 )
 
+// type _getHeader struct {
+// 	Token string `header: "Authorization"`
+// }
+
 func UserMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
 	return func(c echo.Context) error {
-		token, ok := c.Get("Authorization").(*jwt.Token) // the default value is user
-		if !ok {
+		// a := new(_getHeader)
+		// b := &echo.DefaultBinder{}
+		// b.BindHeaders(c, a)
+		// fmt.Println("header token", a.Token)
+		// fmt.Println("auth", c.Request().Header.Get("Authorization"))
+		tokenString := c.Request().Header.Get("Authorization") // the default value is user
+		// if !ok {
+		// 	c.JSON(http.StatusUnauthorized, echo.Map{"error": customerrors.JwtTokenMissingError})
+		// 	return errors.New(customerrors.JwtTokenMissingError)
+		// }
+
+		fmt.Println("token ", tokenString)
+
+		if tokenString == "" {
+			c.JSON(http.StatusUnauthorized, echo.Map{"error": customerrors.JwtTokenMissingError})
 			return errors.New(customerrors.JwtTokenMissingError)
 		}
+
+		tokenString = strings.TrimPrefix(tokenString, "Bearer ")
+
+		token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
+			return []byte("secret"), nil
+		})
+		if err != nil || !token.Valid {
+			c.JSON(http.StatusUnauthorized, echo.Map{"error": customerrors.JwtTokenMissingError})
+			return err
+
+		}
+
 		claims, ok := token.Claims.(jwt.MapClaims)
 		if !ok {
 			return errors.New("failed to cast claims as jwt.MapClaims")
@@ -27,6 +59,7 @@ func UserMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
 		}
 
 		c.Set("id", int(id))
-		return nil
+
+		return next(c)
 	}
 }

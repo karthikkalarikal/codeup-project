@@ -32,6 +32,9 @@ func NewAdminHandler(client client.AdminClient, utils *utils.Utils) interfaces.A
 //	@Tags			admin
 //	@Accept			json
 //	@Produce		json
+//
+//	@Security		BearerAuth
+//
 //	@Param			user	body		request.InsertProblem	true	"create problem"
 //	@Success		201		{object}	response.JsonResponse	"Success: Problem created"
 //	@Failure		400		{object}	response.JsonResponse	"Bad request"
