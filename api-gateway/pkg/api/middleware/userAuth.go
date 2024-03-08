@@ -64,7 +64,7 @@ func UserMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
 	}
 }
 
-// admin auth 
+// admin auth
 
 func AdminMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
 	return func(c echo.Context) error {
@@ -113,7 +113,7 @@ func AdminMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
 			return errors.New("authorization error")
 		}
 
-		c.Set("id", int(id))
+		// c.Set("id", int(id))
 
 		return next(c)
 	}

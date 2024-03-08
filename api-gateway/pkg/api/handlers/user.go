@@ -6,6 +6,7 @@ import (
 	handler "github.com/karthikkalarikal/api-gateway/pkg/api/handlers/interfaces"
 	"github.com/karthikkalarikal/api-gateway/pkg/client/interfaces"
 	"github.com/karthikkalarikal/api-gateway/pkg/utils"
+	"github.com/karthikkalarikal/api-gateway/pkg/utils/request"
 	"github.com/labstack/echo/v4"
 )
 
@@ -45,6 +46,18 @@ func (u *userHandlerImp) ViewAllProblems(e echo.Context) error {
 	return nil
 }
 
-// func (u *userHandlerImp) GetOneProblem(e echo.Context) error {
-// 	body,err :=
-// }
+func (u *userHandlerImp) GetOneProblemById(e echo.Context) error {
+
+	var id request.GetOneProblemById
+	if err := e.Bind(&id); err != nil {
+		u.utils.ErrorJson(e, err, http.StatusBadRequest)
+		return err
+	}
+	body, err := u.user.GetProblemById(e, id)
+	if err != nil {
+		u.utils.ErrorJson(e, err, http.StatusBadRequest)
+		return err
+	}
+	u.utils.WriteJSON(e, http.StatusCreated, body)
+	return nil
+}
