@@ -1,5 +1,7 @@
 package request
 
+import "go.mongodb.org/mongo-driver/bson/primitive"
+
 type AllProbles struct {
 }
 
@@ -16,4 +18,8 @@ type InsertProblem struct {
 	TimeLimit   int        `bson:"time_limit" json:"time_limit"`
 	MemoryLimit int        `bson:"memory_limit" json:"memory_limit"`
 	Tags        []string   `bson:"tags" json:"tags"`
+}
+
+type GetOneProblemById struct {
+	ID primitive.ObjectID `bson:"_id,omitempty" json:"id,omitempty"`
 }
