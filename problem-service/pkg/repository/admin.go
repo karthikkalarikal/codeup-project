@@ -43,6 +43,7 @@ func (p *problemDatabaseAdmin) InsertProblem(ctx context.Context, entry request.
 		log.Println("error inerting into problems: ", err)
 		return primitive.ObjectID{}, err
 	}
+	fmt.Println("id", body.InsertedID)
 
 	return body.InsertedID.(primitive.ObjectID), err
 }

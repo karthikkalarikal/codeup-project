@@ -2,6 +2,7 @@ package repository
 
 import (
 	"context"
+	"fmt"
 	"log"
 	"problem-service/pkg/domain"
 	"problem-service/pkg/repository/interfaces"
@@ -87,8 +88,8 @@ func (p *problemDatabase) GetProblemById(ctx context.Context, id request.Problem
 	collection := p.DB.Database("problems").Collection("problems")
 
 	var entry domain.Problem
-
-	err := collection.FindOne(ctx, bson.M{"_id": id}).Decode(&entry)
+	fmt.Println("id", id)
+	err := collection.FindOne(ctx, bson.M{"_id": id.ID}).Decode(&entry)
 
 	if err != nil {
 		return domain.Problem{}, err

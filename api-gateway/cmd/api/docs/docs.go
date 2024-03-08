@@ -81,8 +81,13 @@ const docTemplate = `{
                 }
             }
         },
-        "/user/problem/{id}": {
+        "/user/problem/": {
             "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "get one problem to display",
                 "consumes": [
                     "application/json"

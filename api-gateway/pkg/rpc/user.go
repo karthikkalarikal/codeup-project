@@ -50,6 +50,7 @@ func (u *userServiceImpl) ViewAllProblems(in request.AllProbles) ([]response.Pro
 }
 
 func (u *userServiceImpl) GetProblemById(ctx echo.Context, in request.GetOneProblemById) (response.Problem, error) {
+	fmt.Println("in rpc ")
 	client := u.problemPool.Get().(*rpc.Client)
 
 	defer u.problemPool.Put(client)

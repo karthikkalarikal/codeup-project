@@ -59,7 +59,7 @@ func UserMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
 		}
 
 		c.Set("id", int(id))
-
+		fmt.Println("id", id)
 		return next(c)
 	}
 }

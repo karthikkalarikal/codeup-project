@@ -16,7 +16,8 @@ func SetupUserRoutes(e *echo.Group, authHandler handler.AuthHandler, userHandler
 	// userManagent := e.Group("/logout")
 	problem := e.Group("/problem")
 	problem.Use(middleware.UserMiddleware)
+
 	{
-		problem.POST("/{id}", userHandler.GetOneProblemById)
+		problem.POST("/:id", userHandler.GetOneProblemById)
 	}
 }

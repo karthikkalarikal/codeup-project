@@ -55,16 +55,21 @@ func (u *userHandlerImp) ViewAllProblems(e echo.Context) error {
 //	@Tags			user, admin
 //	@Accept			json
 //	@Produce		json
+//	@Security		BearerAuth
 //	@Param			id	path		string	true	"Problem ID"
 //	@Success		200	{object}	response.Problem
 //	@Failure		400	{object}	response.Problem
 //	@Failure		401	{object}	response.Problem
 //	@Failure		404	{object}	response.Problem
 //	@Failure		500	{object}	response.Problem
-//	@Router			/user/problem/{id} [post]
+//	@Router			/user/problem/ [post]
 func (u *userHandlerImp) GetOneProblemById(e echo.Context) error {
+	fmt.Println("here in get one problem by id handler")
 	problemId := e.Param("id")
+	// problemId := "adfasdf"
+	fmt.Println("problem id", problemId)
 	objectId, err := primitive.ObjectIDFromHex(problemId)
+	fmt.Println("object id", objectId)
 	if err != nil {
 		fmt.Println("error in id", problemId)
 		u.utils.ErrorJson(e, err, http.StatusBadRequest)

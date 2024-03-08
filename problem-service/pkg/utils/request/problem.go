@@ -18,5 +18,5 @@ type Problem struct {
 }
 
 type ProblemById struct {
-	ID primitive.ObjectID `json:"id,omitempty"`
+	ID primitive.ObjectID `bson:"_id,omitempty" json:"id,omitempty"`
 }

@@ -36,6 +36,7 @@ func (p *ProblemUserClient) ViewAllProblems(request struct{}, reply *[]domain.Pr
 
 func (p *ProblemUserClient) GetProblemById(request request.ProblemById, reply *domain.Problem) error {
 	fmt.Println("get one problem")
+	fmt.Println("request", request)
 	ctx := context.Background()
 	body, err := p.user.GetProblemById(ctx, request)
 	if err != nil {
