@@ -173,6 +173,8 @@ paths:
           description: Internal server error
           schema:
             $ref: '#/definitions/response.JsonResponse'
+      security:
+      - BearerAuth: []
       summary: Create a Problem
       tags:
       - admin
@@ -296,13 +298,8 @@ paths:
       - user
       - admin
 securityDefinitions:
-  BasicAuth:
-    type: basic
-  OAuth2Application:
-    flow: application
-    scopes:
-      admin: Grants read and write access to administrative information
-      write: Grants write access
-    tokenUrl: https://example.com/oauth/token
-    type: oauth2
+  BearerAuth:
+    in: header
+    name: Authorization
+    type: apiKey
 swagger: "2.0"
