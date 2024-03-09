@@ -17,9 +17,13 @@ RUN mkdir /app
 WORKDIR /app
 
 RUN apk --no-cache add ca-certificates go
+RUN adduser -D -s /bin/sh appuser   # Create non-root user
+USER appuser                        # Switch to non-root user for runtime
+
 
 COPY --from=builder /app/go-executer .
 COPY .env .env
+COPY golang-app-seccomp.json /etc/docker/seccomp/
 
 RUN echo $"PATH"
-CMD ["./go-executer"]
+CMD ["--security-opt","seccomp=golang-app-seccomp.json","./go-executer"]
