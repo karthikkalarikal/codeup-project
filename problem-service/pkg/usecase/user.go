@@ -5,6 +5,7 @@ import (
 	"problem-service/pkg/domain"
 	"problem-service/pkg/repository/interfaces"
 	user "problem-service/pkg/usecase/interfaces"
+	"problem-service/pkg/utils/request"
 )
 
 type userUseCase struct {
@@ -23,6 +24,16 @@ func (u *userUseCase) ViewAllProblems(ctx context.Context) ([]domain.Problem, er
 	body, err := u.repo.ViewAllProblems(ctx)
 	if err != nil {
 		return []domain.Problem{}, err
+	}
+	return body, nil
+}
+
+// get one
+
+func (u *userUseCase) GetProblemById(ctx context.Context, id request.ProblemById) (domain.Problem, error) {
+	body, err := u.repo.GetProblemById(ctx, id)
+	if err != nil {
+		return domain.Problem{}, err
 	}
 	return body, nil
 }

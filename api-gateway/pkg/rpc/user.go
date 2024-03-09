@@ -9,6 +9,7 @@ import (
 	"github.com/karthikkalarikal/api-gateway/pkg/rpc/interfaces"
 	"github.com/karthikkalarikal/api-gateway/pkg/utils/request"
 	"github.com/karthikkalarikal/api-gateway/pkg/utils/response"
+	"github.com/labstack/echo/v4"
 )
 
 type userServiceImpl struct {
@@ -48,3 +49,18 @@ func (u *userServiceImpl) ViewAllProblems(in request.AllProbles) ([]response.Pro
 	return *out, nil
 }
 
+func (u *userServiceImpl) GetProblemById(ctx echo.Context, in request.GetOneProblemById) (response.Problem, error) {
+	fmt.Println("in rpc ")
+	client := u.problemPool.Get().(*rpc.Client)
+
+	defer u.problemPool.Put(client)
+
+	out := new(response.Problem)
+	err := client.Call("ProblemUserClient.GetProblemById", in, out)
+	if err != nil {
+		fmt.Println("error at rpc connection :", err)
+		return response.Problem{}, err
+	}
+	fmt.Println("out", out)
+	return *out, nil
+}

@@ -134,7 +134,3 @@ func (u *authHandlerImpl) UserSignIn(e echo.Context) error {
 	u.utils.WriteJSON(e, http.StatusCreated, []interface{}{userSignedIn, token})
 	return nil
 }
-
-// func (u *authHandlerImpl) CreateProblem(e echo.Context) error {
-
-// }
