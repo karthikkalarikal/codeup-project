@@ -12,6 +12,7 @@ func SetupUserRoutes(e *echo.Group, authHandler handler.AuthHandler, userHandler
 	e.POST("/signup", authHandler.UserSignUp)
 	e.POST("/signin", authHandler.UserSignIn)
 	e.GET("/view", userHandler.ViewAllProblems)
+
 	// e.POST("/logout", authHandler.UserLogout)
 	// userManagent := e.Group("/logout")
 	problem := e.Group("/problem")
@@ -26,4 +27,7 @@ func SetupUserRoutes(e *echo.Group, authHandler handler.AuthHandler, userHandler
 		execGoCode.POST("/exec", userHandler.WriteCode)
 	}
 
+	{
+		problem.POST("/:id", userHandler.GetOneProblemById)
+	}
 }
