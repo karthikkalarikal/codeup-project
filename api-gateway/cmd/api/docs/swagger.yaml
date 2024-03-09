@@ -218,6 +218,47 @@ paths:
       tags:
       - user
       - admin
+  /user/go/exec:
+    post:
+      consumes:
+      - text/plain
+      description: The code the user sent will be executed by user
+      parameters:
+      - description: Go code to execute
+        in: body
+        name: code
+        required: true
+        schema:
+          type: string
+      produces:
+      - text/plain
+      responses:
+        "200":
+          description: success
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.JsonResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/response.JsonResponse'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/response.JsonResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.JsonResponse'
+      security:
+      - BearerAuth: []
+      summary: Execute code
+      tags:
+      - user
+  
   /user/signin:
     post:
       consumes:
