@@ -1,6 +1,8 @@
 package client
 
 import (
+	"fmt"
+
 	client "github.com/karthikkalarikal/api-gateway/pkg/client/interfaces"
 	"github.com/karthikkalarikal/api-gateway/pkg/rpc/interfaces"
 	"github.com/labstack/echo/v4"
@@ -16,7 +18,8 @@ func NewGoExecClient(client interfaces.GoCodeExecRPC) client.GoCodeExecClient {
 	}
 }
 
-func (c *goCodeExecClientImpl) WriteGoCode(e echo.Context, data []byte) ([]byte, error) {
+func (c *goCodeExecClientImpl) WriteGoCode(e echo.Context, data *[]byte) (*[]byte, error) {
+	fmt.Println("here 2")
 	body, err := c.client.WriteGoCode(e, data)
 	if err != nil {
 		return nil, err

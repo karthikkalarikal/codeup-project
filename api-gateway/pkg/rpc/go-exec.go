@@ -30,16 +30,17 @@ func NewGoExexRPC(cfg *config.Config) interfaces.GoCodeExecRPC {
 	}
 }
 
-func (u *goCodeExecRPC) WriteGoCode(e echo.Context, in []byte) ([]byte, error) {
+func (u *goCodeExecRPC) WriteGoCode(e echo.Context, in *[]byte) (*[]byte, error) {
 	client := u.goexecPool.Get().(*rpc.Client)
 	defer u.goexecPool.Put(client)
 
 	out := new([]byte)
+	fmt.Println("here 3")
 	err := client.Call("Executer.GoCodeExec", in, out)
 	if err != nil {
 		fmt.Println("err in the end", err)
-		return []byte{}, err
+		return nil, err
 	}
 	fmt.Println("out", out)
-	return *out, nil
+	return out, nil
 }

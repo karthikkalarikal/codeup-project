@@ -13,19 +13,8 @@ type Executer struct {
 }
 
 func (e *Executer) GoCodeExec(request []byte, reply *[]byte) error {
-	// if r.Method != http.MethodPost {
-	// 	http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
-	// 	return
-	// }
+	fmt.Println("using go executer", string(request))
 
-	// Read the submitted Go code
-	// code, err := io.ReadAll(r.Body)
-	// if err != nil {
-	// 	http.Error(w, "Error reading code", http.StatusInternalServerError)
-	// 	return
-	// }
-
-	// Create a temporary directory
 	ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
 	defer cancel()
 	tempDir, err := os.MkdirTemp("", "gosandbox")
@@ -48,6 +37,7 @@ func (e *Executer) GoCodeExec(request []byte, reply *[]byte) error {
 
 		return err
 	}
+	fmt.Println("err ", err)
 
 	*reply = output
 	return nil

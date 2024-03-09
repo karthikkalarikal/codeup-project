@@ -50,7 +50,8 @@ build_front:
 
 build_goexec:
 	@echo "build go exec service"
-	cd sandbox-go && env GOOS=linux CGO_ENABLED=0 go build -o ${GOEXEC_BINARY} ./cmd/api
+	cd sandbox-go && env GOOS=linux CGO_ENABLED=0 
+	@echo "Done!"
 
 ## start: starts the front end
 start: build_front

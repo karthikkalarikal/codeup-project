@@ -13,11 +13,12 @@ import (
 func main() {
 	// http.HandleFunc("/", handler)
 	// http.ListenAndServe(":80", nil)
+	fmt.Println("here in go-service")
 	cfg, err := config.LoadConfig()
 	if err != nil {
 		log.Panic(err)
 	}
-	exec := executer.Executer{}
+	exec := new(executer.Executer)
 	listen, err := net.Listen("tcp", fmt.Sprintf("0.0.0.0:%s", cfg.GoSandboxServer))
 	err = rpc.Register(exec)
 	if err != nil {

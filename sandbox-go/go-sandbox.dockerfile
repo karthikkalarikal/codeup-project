@@ -9,15 +9,17 @@ COPY main.go /app
 COPY pkg /app/pkg
 # COPY .env .env
 
-RUN go build -o main .
+RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o go-executer .
 
 FROM alpine:3.19
 
 RUN mkdir /app
 WORKDIR /app
 
-COPY --from=builder /app/main .
+RUN apk --no-cache add ca-certificates go
+
+COPY --from=builder /app/go-executer .
 COPY .env .env
 
-
-CMD ["./main"]
+RUN echo $"PATH"
+CMD ["./go-executer"]
