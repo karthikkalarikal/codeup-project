@@ -2,6 +2,7 @@ FRONT_END_BINARY=frontApp
 BROKER_BINARY=gatewayApp
 AUTH_BINARY=authApp
 PROBLEM_BINARY=testApp
+GOEXEC_BINARY=goexec
 ## up: starts all containers in the background without forcing build
 up:
 	@echo "Starting Docker images..."
@@ -9,7 +10,7 @@ up:
 	@echo "Docker images started!"
 
 ## up_build: stops docker-compose (if running), builds all projects and starts docker compose
-up_build: build_gateway build_auth build_problem_service
+up_build: build_gateway build_auth build_problem_service build_goexec
 	@echo "Stopping docker images (if running...)"
 	docker-compose down
 	@echo "Building (when required) and starting docker images..."
@@ -46,6 +47,10 @@ build_front:
 	@echo "Building front end binary..."
 	cd front-end && env CGO_ENABLED=0 go build -o ${FRONT_END_BINARY} ./cmd/web
 	@echo "Done!"
+
+build_goexec:
+	@echo "build go exec service"
+	cd sandbox-go && env GOOS=linux CGO_ENABLED=0 go build -o ${GOEXEC_BINARY} ./cmd/api
 
 ## start: starts the front end
 start: build_front

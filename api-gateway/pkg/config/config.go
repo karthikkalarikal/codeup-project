@@ -11,6 +11,7 @@ type Config struct {
 	Port              string `mapstructure:"PORT"`
 	AuthServiceUrl    string `mapstructure:"AUTH_SERVICE_URL"`
 	ProblemServiceUrl string `mapstructure:"PROBLEM_SERVICE_URL"`
+	GoSandboxUrl      string `mapstructure:"GO_SANDBOX_PORTAL"`
 	JWT               *echojwt.Config
 }
 
@@ -23,7 +24,7 @@ func NewConfig() (*Config, error) {
 	return &cfg, nil
 }
 
-var envs = []string{"PORT", "AUTH_SERVICE_URL"}
+var envs = []string{"PORT", "AUTH_SERVICE_URL", "GO_SANDBOX_PORTAL", "PROBLEM_SERVICE_URL"}
 
 func LoadConfig() (Config, error) {
 	var config Config

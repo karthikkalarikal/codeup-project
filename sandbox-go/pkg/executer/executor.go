@@ -2,6 +2,7 @@ package executer
 
 import (
 	"context"
+	"fmt"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -44,15 +45,13 @@ func (e *Executer) GoCodeExec(request []byte, reply *[]byte) error {
 	// Run the Go code
 	output, err := runGoCode(ctx, tempDir)
 	if err != nil {
-		// http.Error(w, fmt.Sprintf("Error running code: %s", err), http.StatusInternalServerError)
+
 		return err
 	}
 
 	*reply = output
 	return nil
-	// Send the output back to the user
-	// w.Header().Set("Content-Type", "text/plain")
-	// w.Write(output)
+
 }
 
 func runGoCode(ctx context.Context, directory string) ([]byte, error) {
@@ -61,6 +60,9 @@ func runGoCode(ctx context.Context, directory string) ([]byte, error) {
 	// Capture the output of the command
 	output, err := cmd.CombinedOutput()
 	if err != nil {
+		if ctx.Err() == context.DeadlineExceeded {
+			return nil, fmt.Errorf("code execution time out")
+		}
 		return nil, err
 	}
 
