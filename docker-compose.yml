@@ -46,6 +46,15 @@ services:
       mode: replicated
       replicas: 1
 
+  go-sandbox:
+    build:
+      context: ./sandbox-go
+      dockerfile: go-sandbox.dockerfile
+    restart: always
+    deploy:
+      mode: replicated
+      replicas: 1
+
   postgres:
     image: 'postgres:14.2'
     ports:

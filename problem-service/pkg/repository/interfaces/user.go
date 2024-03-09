@@ -3,9 +3,10 @@ package interfaces
 import (
 	"context"
 	"problem-service/pkg/domain"
+	"problem-service/pkg/utils/request"
 )
 
 type UserRepository interface {
 	ViewAllProblems(context.Context) ([]domain.Problem, error)
-	// InsertProblem(context.Context, request.Problem) (int, error)
+	GetProblemById(ctx context.Context, id request.ProblemById) (domain.Problem, error)
 }

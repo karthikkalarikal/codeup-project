@@ -2,9 +2,11 @@ package repository
 
 import (
 	"context"
+	"fmt"
 	"log"
 	"problem-service/pkg/domain"
 	"problem-service/pkg/repository/interfaces"
+	"problem-service/pkg/utils/request"
 	"time"
 
 	"go.mongodb.org/mongo-driver/bson"
@@ -80,4 +82,19 @@ func (p *problemDatabase) ViewAllProblems(ctx context.Context) ([]domain.Problem
 	}
 	log.Println("total problems found :", len(problems))
 	return problems, nil
+}
+
+func (p *problemDatabase) GetProblemById(ctx context.Context, id request.ProblemById) (domain.Problem, error) {
+	collection := p.DB.Database("problems").Collection("problems")
+
+	var entry domain.Problem
+	fmt.Println("id", id)
+	err := collection.FindOne(ctx, bson.M{"_id": id.ID}).Decode(&entry)
+
+	if err != nil {
+		return domain.Problem{}, err
+	}
+
+	return entry, nil
+
 }

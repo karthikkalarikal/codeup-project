@@ -18,6 +18,7 @@ func InitializeAPI(cfg config.Config) (*api.Server, error) {
 		client.NewAuthClient,
 		client.NewUserClient,
 		client.NewAdminClient,
+		client.NewGoExecClient,
 
 		handlers.NewAuthHandler,
 		handlers.NewUserHandler,
@@ -26,6 +27,7 @@ func InitializeAPI(cfg config.Config) (*api.Server, error) {
 		rpc.NewAuthService,
 		rpc.NewUserService,
 		rpc.NewAdminService,
+		rpc.NewGoExexRPC,
 
 		utils.NewUtils,
 
