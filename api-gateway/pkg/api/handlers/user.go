@@ -1,7 +1,6 @@
 package handlers
 
 import (
-	"fmt"
 	"errors"
 	"fmt"
 	"io"
@@ -49,46 +48,6 @@ func (u *userHandlerImp) ViewAllProblems(e echo.Context) error {
 		return err
 	}
 
-	u.utils.WriteJSON(e, http.StatusCreated, body)
-	return nil
-}
-
-// Problem godoc
-//
-//	@Summary		get one problems
-//	@Description	get one problem to display
-//	@Tags			user, admin
-//	@Accept			json
-//	@Produce		json
-//	@Security		BearerAuth
-//	@Param			id	path		string	true	"Problem ID"
-//	@Success		200	{object}	response.Problem
-//	@Failure		400	{object}	response.Problem
-//	@Failure		401	{object}	response.Problem
-//	@Failure		404	{object}	response.Problem
-//	@Failure		500	{object}	response.Problem
-//	@Router			/user/problem/ [post]
-func (u *userHandlerImp) GetOneProblemById(e echo.Context) error {
-	fmt.Println("here in get one problem by id handler")
-	problemId := e.Param("id")
-	// problemId := "adfasdf"
-	fmt.Println("problem id", problemId)
-	objectId, err := primitive.ObjectIDFromHex(problemId)
-	fmt.Println("object id", objectId)
-	if err != nil {
-		fmt.Println("error in id", problemId)
-		u.utils.ErrorJson(e, err, http.StatusBadRequest)
-		return err
-
-	}
-
-	var id request.GetOneProblemById
-	id.ID = objectId
-	body, err := u.user.GetProblemById(e, id)
-	if err != nil {
-		u.utils.ErrorJson(e, err, http.StatusBadRequest)
-		return err
-	}
 	u.utils.WriteJSON(e, http.StatusCreated, body)
 	return nil
 }

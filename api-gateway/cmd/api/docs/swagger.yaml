@@ -258,46 +258,7 @@ paths:
       summary: Execute code
       tags:
       - user
-  /user/problem/:
-    post:
-      consumes:
-      - application/json
-      description: get one problem to display
-      parameters:
-      - description: Problem ID
-        in: path
-        name: id
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/response.Problem'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/response.Problem'
-        "401":
-          description: Unauthorized
-          schema:
-            $ref: '#/definitions/response.Problem'
-        "404":
-          description: Not Found
-          schema:
-            $ref: '#/definitions/response.Problem'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/response.Problem'
-      security:
-      - BearerAuth: []
-      summary: get one problems
-      tags:
-      - user
-      - admin
+  
   /user/signin:
     post:
       consumes:
