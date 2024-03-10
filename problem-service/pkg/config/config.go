@@ -6,6 +6,15 @@ import (
 	"github.com/spf13/viper"
 )
 
+// func NewConfig() (*Config, error) {
+// 	cfg, err := LoadConfig()
+// 	if err != nil {
+// 		return nil, err
+// 	}
+
+// 	return cfg, nil
+// }
+
 type Config struct {
 	ProblemServicePort string `mapstructure:"PROBLEM_SERVICE_PORT"`
 	MongoURL           string `mapstructure:"MONGO_URL"`
@@ -13,6 +22,7 @@ type Config struct {
 	Username           string `mapstructure:"MONGO_INITDB_ROOT_USERNAME"`
 	Password           string `mapstructure:"MONGO_INITDB_ROOT_PASSWORD"`
 	AuthMechanism      string `mapstructure:"AUTH_MECHANISM"`
+	GoSandboxUrl       string `mapstructure:"GO_SANDBOX_URL"`
 }
 
 var envs = []string{
@@ -22,6 +32,7 @@ var envs = []string{
 	"MONGO_INITDB_ROOT_USERNAME",
 	"MONGO_INITDB_ROOT_PASSWORD",
 	"AUTH_MECHANISM",
+	"GO_SANDBOX_URL",
 }
 
 func LoadConfig() (config *Config, err error) {

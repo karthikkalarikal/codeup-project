@@ -84,6 +84,7 @@ func (p *problemDatabase) ViewAllProblems(ctx context.Context) ([]domain.Problem
 	return problems, nil
 }
 
+// execute problem
 func (p *problemDatabase) GetProblemById(ctx context.Context, id request.ProblemById) (domain.Problem, error) {
 	collection := p.DB.Database("problems").Collection("problems")
 
