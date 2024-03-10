@@ -51,7 +51,7 @@ func (a *adminHandlerImpl) CreateProblem(e echo.Context) error {
 	}
 
 	if problem.Description == "" && problem.Difficulty == "" || problem.Title == "" {
-		err := errors.New(customerrors.NoEmptyValueError)
+		err := errors.New(customerrors.NoEmptyValueError.String())
 		a.utils.ErrorJson(e, err, http.StatusBadRequest)
 		return err
 	}

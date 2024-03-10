@@ -37,3 +37,7 @@ func (u *userUseCase) GetProblemById(ctx context.Context, id request.ProblemById
 	}
 	return body, nil
 }
+
+func (u *userUseCase) SubmitCodeById(ctx context.Context, req request.SubmitCodeIdRequest) ([]byte, error) {
+	return nil, nil
+}
