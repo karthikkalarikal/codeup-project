@@ -23,3 +23,8 @@ type InsertProblem struct {
 type GetOneProblemById struct {
 	ID primitive.ObjectID `bson:"_id,omitempty" json:"id,omitempty"`
 }
+
+type SubmitCodeIdRequest struct {
+	ID   primitive.ObjectID `bson:"_id,omitempty" json:"id,omitempty"`
+	Code []byte             `json:"code"`
+}

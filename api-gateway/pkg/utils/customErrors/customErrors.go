@@ -8,6 +8,9 @@ const (
 	NoMatchingPasswordError
 	JwtTokenMissingError
 )
+const (
+	NilPointError string = "nil point error"
+)
 
 //go:generate stringer -type=ErrorCode
 // func (e ErrorCode) String() string {

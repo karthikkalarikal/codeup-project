@@ -88,7 +88,7 @@ const docTemplate = `{
                         "BearerAuth": []
                     }
                 ],
-                "description": "The code the user sent will be executed by user",
+                "description": "The code the user sent will be executed",
                 "consumes": [
                     "text/plain"
                 ],
@@ -144,8 +144,78 @@ const docTemplate = `{
                 }
             }
         },
-        "/user/problem/": {
+        "/user/go/{id}": {
             "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "The code the user sent will be executed and the result will be given",
+                "consumes": [
+                    "text/plain"
+                ],
+                "produces": [
+                    "text/plain"
+                ],
+                "tags": [
+                    "user"
+                ],
+                "summary": "Execute code",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Problem ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Go code to execute",
+                        "name": "code",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "success",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/response.JsonResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/response.JsonResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/response.JsonResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/response.JsonResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/user/problem/{id}": {
+            "get": {
                 "security": [
                     {
                         "BearerAuth": []
@@ -486,9 +556,7 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "data": {},
-                "error": {
-                    "type": "boolean"
-                },
+                "error": {},
                 "message": {
                     "type": "string"
                 }

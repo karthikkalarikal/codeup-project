@@ -3,11 +3,13 @@ package utils
 import (
 	"encoding/json"
 	"errors"
+	"fmt"
 	"io"
 	"net/http"
 	"time"
 
 	"github.com/golang-jwt/jwt/v5"
+	customerrors "github.com/karthikkalarikal/api-gateway/pkg/utils/customErrors"
 	"github.com/karthikkalarikal/api-gateway/pkg/utils/response"
 
 	"github.com/labstack/echo/v4"
@@ -106,8 +108,20 @@ func (app *Utils) ErrorJson(c echo.Context, err error, status ...int) error {
 	}
 
 	var payload response.JsonResponse
-	payload.Error = true
+	payload.Error = err
 	payload.Message = err.Error()
 
+	return app.WriteJSON(c, statusCode, payload)
+}
+
+func (app *Utils) CustomError(c echo.Context, errorId customerrors.ErrorCode, status ...int) error {
+	statusCode := http.StatusBadRequest
+
+	if len(status) > 0 {
+		statusCode = status[0]
+	}
+	var payload response.JsonResponse
+	payload.Error = errorId.String()
+	fmt.Println("payload error", payload.Error)
 	return app.WriteJSON(c, statusCode, payload)
 }

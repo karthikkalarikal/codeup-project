@@ -67,8 +67,7 @@ definitions:
   response.JsonResponse:
     properties:
       data: {}
-      error:
-        type: boolean
+      error: {}
       message:
         type: string
     type: object
@@ -178,11 +177,57 @@ paths:
       summary: Create a Problem
       tags:
       - admin
+  /user/go/{id}:
+    post:
+      consumes:
+      - text/plain
+      description: The code the user sent will be executed and the result will be
+        given
+      parameters:
+      - description: Problem ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Go code to execute
+        in: body
+        name: code
+        required: true
+        schema:
+          type: string
+      produces:
+      - text/plain
+      responses:
+        "200":
+          description: success
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.JsonResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/response.JsonResponse'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/response.JsonResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.JsonResponse'
+      security:
+      - BearerAuth: []
+      summary: Execute code
+      tags:
+      - user
   /user/go/exec:
     post:
       consumes:
       - text/plain
-      description: The code the user sent will be executed by user
+      description: The code the user sent will be executed
       parameters:
       - description: Go code to execute
         in: body
@@ -218,8 +263,8 @@ paths:
       summary: Execute code
       tags:
       - user
-  /user/problem/:
-    post:
+  /user/problem/{id}:
+    get:
       consumes:
       - application/json
       description: get one problem to display

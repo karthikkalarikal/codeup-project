@@ -2,7 +2,6 @@ package main
 
 import (
 	"log"
-	"problem-service/pkg/config"
 	"problem-service/pkg/di"
 
 	"github.com/sirupsen/logrus"
@@ -10,13 +9,13 @@ import (
 
 func main() {
 	logrus.SetLevel(logrus.DebugLevel)
-	cfg, err := config.LoadConfig()
+	// cfg, err := config.LoadConfig()
 
-	if err != nil {
-		log.Fatalf("failed to load config: %s", err)
-	}
+	// if err != nil {
+	// 	log.Fatalf("failed to load config: %s", err)
+	// }
 
-	service, err := di.InitializeServices(cfg)
+	service, err := di.InitializeServices()
 	if err != nil {
 		log.Fatalf("failed to initialize service : %s", err)
 	}

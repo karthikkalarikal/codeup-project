@@ -2,6 +2,7 @@ package usecase
 
 import (
 	"context"
+	"fmt"
 	"problem-service/pkg/domain"
 	"problem-service/pkg/repository/interfaces"
 	rpc "problem-service/pkg/rpc/interfaces"
@@ -50,7 +51,8 @@ func (u *userUseCase) SubmitCodeById(ctx context.Context, req request.SubmitCode
 	if err != nil {
 		return nil, err
 	}
-	finalCode := string(body.FirstHalfCode) + string(req.Code) + string(body.SecondHalfCode)
+	fmt.Println("body", body)
+	finalCode := string(req.Code) //string(body.FirstHalfCode) + string(req.Code) + string(body.SecondHalfCode)
 	code, err := u.rpc.ExecuteGoCode(ctx, []byte(finalCode))
 	if err != nil {
 		return nil, err

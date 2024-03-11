@@ -66,7 +66,7 @@ func (u *userHandlerImp) ViewAllProblems(e echo.Context) error {
 //	@Failure		401	{object}	response.Problem
 //	@Failure		404	{object}	response.Problem
 //	@Failure		500	{object}	response.Problem
-//	@Router			/user/problem/ [post]
+//	@Router			/user/problem/{id} [get]
 func (u *userHandlerImp) GetOneProblemById(e echo.Context) error {
 	fmt.Println("here in get one problem by id handler")
 	problemId := e.Param("id")
@@ -95,14 +95,13 @@ func (u *userHandlerImp) GetOneProblemById(e echo.Context) error {
 // Problem godoc
 //
 //	@Summary		Execute code
-//	@Description	The code the user sent will be executed by user
+//	@Description	The code the user sent will be executed
 //	@Tags			user
 //	@Accept			text/plain
 //	@Produce		text/plain
 //	@Security		BearerAuth
 //	@Param			code	body		string					true	"Go code to execute"
 //	@Success		200		{object}	string					"success"
-//
 //	@Failure		400		{object}	response.JsonResponse	"Bad Request"
 //	@Failure		401		{object}	response.JsonResponse	"Unauthorized"
 //	@Failure		403		{object}	response.JsonResponse	"Forbidden"
@@ -137,5 +136,66 @@ func (u *userHandlerImp) WriteCode(e echo.Context) error {
 	// fmt.Println("out sting ", outString)
 
 	e.Blob(http.StatusOK, "text/plain", *out)
+	return nil
+}
+
+// Problem godoc
+//
+//	@Summary		Execute code
+//	@Description	The code the user sent will be executed and the result will be given
+//	@Tags			user
+//	@Accept			text/plain
+//	@Produce		text/plain
+//	@Security		BearerAuth
+//	@Param			id		path		string					true	"Problem ID"
+//	@Param			code	body		string					true	"Go code to execute"
+//	@Success		200		{object}	string					"success"
+//	@Failure		400		{object}	response.JsonResponse	"Bad Request"
+//	@Failure		401		{object}	response.JsonResponse	"Unauthorized"
+//	@Failure		403		{object}	response.JsonResponse	"Forbidden"
+//	@Failure		500		{object}	response.JsonResponse	"Internal Server Error"
+//	@Router			/user/go/{id} [post]
+func (u *userHandlerImp) ExecuteGoCodyById(e echo.Context) error {
+	code := e.Request().Body
+	if code == nil {
+		err := errors.New("nil point error")
+		u.utils.ErrorJson(e, err, http.StatusBadRequest)
+		return errors.New("nil point error")
+	}
+	id := e.Param("id")
+	if id == "" {
+		err := errors.New("nil point error")
+		u.utils.ErrorJson(e, err, http.StatusBadRequest)
+		return errors.New("nil point error")
+	}
+
+	objectId, err := primitive.ObjectIDFromHex(id)
+
+	if err != nil {
+		err = errors.New("invalid id " + err.Error())
+		u.utils.ErrorJson(e, err, http.StatusBadGateway)
+		return err
+	}
+
+	body, err := io.ReadAll(code)
+	if err != nil {
+		u.utils.ErrorJson(e, err, http.StatusBadRequest)
+		return err
+	}
+	fmt.Println("here 1")
+	defer func() {
+		fmt.Println("err", err)
+	}()
+	out, err := u.user.ExecuteGoCodyById(e, request.SubmitCodeIdRequest{
+		ID:   objectId,
+		Code: body,
+	})
+
+	if err != nil {
+		u.utils.ErrorJson(e, err, http.StatusBadGateway)
+		return err
+	}
+
+	e.Blob(http.StatusOK, "text/plain", out)
 	return nil
 }

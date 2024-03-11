@@ -24,7 +24,7 @@ type Problem struct {
 }
 
 type JsonResponse struct {
-	Error   bool   `json:"error"`
+	Error   any    `json:"error"`
 	Message string `json:"message"`
 	Data    any    `json:"data,omitempty"`
 }
