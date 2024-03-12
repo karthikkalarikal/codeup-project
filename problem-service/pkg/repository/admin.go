@@ -83,7 +83,7 @@ func (p *problemDatabaseAdmin) InsertFirstHalfProblem(ctx context.Context, entry
 	if err != nil {
 		return domain.Problem{}, err
 	}
-
+	fmt.Println("out: ", string(out.FirstHalfCode))
 	return out, err
 }
 
@@ -107,6 +107,7 @@ func (p *problemDatabaseAdmin) InsertSecondHalfProblem(ctx context.Context, entr
 	if err != nil {
 		return domain.Problem{}, err
 	}
+	fmt.Println("out: ", string(out.SecondHalfCode))
 
 	return out, err
 

@@ -3,6 +3,7 @@ package handlers
 import (
 	"errors"
 	"fmt"
+	"io"
 	"net/http"
 
 	"github.com/karthikkalarikal/api-gateway/pkg/api/handlers/interfaces"
@@ -11,6 +12,7 @@ import (
 	customerrors "github.com/karthikkalarikal/api-gateway/pkg/utils/customErrors"
 	"github.com/karthikkalarikal/api-gateway/pkg/utils/request"
 	"github.com/labstack/echo/v4"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 type adminHandlerImpl struct {
@@ -63,5 +65,121 @@ func (a *adminHandlerImpl) CreateProblem(e echo.Context) error {
 	}
 
 	a.utils.WriteJSON(e, http.StatusCreated, body)
+	return nil
+}
+
+// Problem godoc
+//
+//	@Summary		Insert first half of problem
+//	@Description	Admin insert first half of problem
+//	@Tags			admin
+//	@Accept			text/plain
+//	@Produce		json
+//
+//	@Security		BearerAuth
+//
+//	@Param			id		path		string					true	"Problem ID"
+//	@Param			code	body		string					true	"insert into problem"
+//	@Success		201		{object}	response.JsonResponse	"Success: Problem Modified"
+//	@Failure		400		{object}	response.JsonResponse	"Bad request"
+//	@Failure		401		{object}	response.JsonResponse	"Unauthorized"
+//	@Failure		500		{object}	response.JsonResponse	"Internal server error"
+//	@Router			/admin/problem/first/{id} [put]
+func (a *adminHandlerImpl) InsertFirstHalfProblem(e echo.Context) error {
+	fmt.Println("insert first half of problem")
+
+	problemId := e.Param("id")
+	// problemId := "adfasdf"
+	fmt.Println("problem id", problemId)
+	objectId, err := primitive.ObjectIDFromHex(problemId)
+	fmt.Println("object id", objectId)
+	if err != nil {
+		fmt.Println("error in id", problemId)
+		a.utils.ErrorJson(e, err, http.StatusBadRequest)
+		return err
+
+	}
+	var problem request.FirstHalfCode
+
+	code := e.Request().Body
+	// code := e.Request().Body
+	if code == nil {
+		err := errors.New("nil point error")
+		a.utils.ErrorJson(e, err, http.StatusBadRequest)
+		return errors.New("nil point error")
+	}
+	body, err := io.ReadAll(code)
+	if err != nil {
+		a.utils.ErrorJson(e, err, http.StatusBadRequest)
+		return err
+	}
+	problem.ID = objectId
+	problem.FirstHalfCode = body
+
+	out, err := a.client.InsertFirstHalfProblem(e, problem)
+	if err != nil {
+		a.utils.ErrorJson(e, err, http.StatusBadRequest)
+		return err
+	}
+
+	a.utils.WriteJSON(e, http.StatusCreated, out)
+	return nil
+}
+
+// Problem godoc
+//
+//	@Summary		Insert second half of problem
+//	@Description	Admin insert second half of problem
+//	@Tags			admin
+//	@Accept			text/plain
+//	@Produce		json
+//
+//	@Security		BearerAuth
+//
+//	@Param			id		path		string					true	"Problem ID"
+//	@Param			code	body		string					true	"Modified problem"
+//	@Success		201		{object}	response.JsonResponse	"Success: Problem Modified"
+//	@Failure		400		{object}	response.JsonResponse	"Bad request"
+//	@Failure		401		{object}	response.JsonResponse	"Unauthorized"
+//	@Failure		500		{object}	response.JsonResponse	"Internal server error"
+//	@Router			/admin/problem/second/{id} [put]
+func (a *adminHandlerImpl) InsertSecondHalfProblem(e echo.Context) error {
+	fmt.Println("insert second half of problem")
+
+	var problem request.SecondHalfCode
+
+	problemId := e.Param("id")
+
+	fmt.Println("problem id", problemId)
+
+	objectId, err := primitive.ObjectIDFromHex(problemId)
+	if err != nil {
+		fmt.Println("error in id", problemId)
+		a.utils.ErrorJson(e, err, http.StatusBadRequest)
+		return err
+	}
+
+	code := e.Request().Body
+	// code := e.Request().Body
+	if code == nil {
+		err := errors.New("nil point error")
+		a.utils.ErrorJson(e, err, http.StatusBadRequest)
+		return errors.New("nil point error")
+	}
+	body, err := io.ReadAll(code)
+	if err != nil {
+		a.utils.ErrorJson(e, err, http.StatusBadRequest)
+		return err
+	}
+	problem.ID = objectId
+	problem.SecondHalfCode = body
+
+	out, err := a.client.InsertSecondHalfProblem(e, problem)
+	if err != nil {
+		a.utils.ErrorJson(e, err, http.StatusBadRequest)
+		return err
+	}
+
+	a.utils.WriteJSON(e, http.StatusCreated, out)
 	return nil
 }

@@ -2,6 +2,7 @@ package client
 
 import (
 	"context"
+	"fmt"
 	"log"
 	"problem-service/pkg/domain"
 	"problem-service/pkg/usecase/interfaces"
@@ -32,12 +33,14 @@ func (a *AdminClientImpl) InsertProblem(req request.Problem, reply *domain.Probl
 // first half
 func (a *AdminClientImpl) InsertFirstHalfProblem(req request.FirstHalfCode, reply *domain.Problem) error {
 	log.Println("Admin wants to insert first half of code")
+	fmt.Println("code ", string(req.FirstHalfCode))
 
 	ctx := context.Background()
 	body, err := a.admin.InsertFirstHalfProblem(ctx, req)
 	if err != nil {
 		return err
 	}
+	fmt.Println("body: ", string(reply.FirstHalfCode))
 	*reply = body
 	return nil
 }
@@ -54,6 +57,7 @@ func (a *AdminClientImpl) InsertSecondHalfProblem(req request.SecondHalfCode, re
 	if err != nil {
 		return err
 	}
+	fmt.Println("body: ", string(reply.FirstHalfCode))
 	*reply = body
 	return nil
 }

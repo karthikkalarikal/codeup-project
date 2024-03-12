@@ -51,3 +51,38 @@ func (u *adminServiceImpl) InsertProblem(ctx echo.Context, in request.InsertProb
 	fmt.Println("out", out)
 	return *out, nil
 }
+
+// insert first half problem
+func (u *adminServiceImpl) InsertFirstHalfProblem(e echo.Context, in request.FirstHalfCode) (response.InsertProblem, error) {
+
+	fmt.Println("inside rpc insert first prob")
+	client := u.problemPool.Get().(*rpc.Client)
+	defer u.problemPool.Put(client)
+
+	out := new(response.InsertProblem)
+
+	err := client.Call("AdminClientImpl.InsertFirstHalfProblem", in, out)
+	if err != nil {
+		fmt.Println("err in the end", err)
+		return response.InsertProblem{}, err
+	}
+	fmt.Println("out", out)
+	return *out, nil
+}
+
+// insert second half problem
+func (u *adminServiceImpl) InsertSecondHalfProblem(e echo.Context, in request.SecondHalfCode) (response.InsertProblem, error) {
+	fmt.Println("inside rpc insert first prob")
+	client := u.problemPool.Get().(*rpc.Client)
+	defer u.problemPool.Put(client)
+
+	out := new(response.InsertProblem)
+
+	err := client.Call("AdminClientImpl.InsertSecondHalfProblem", in, out)
+	if err != nil {
+		fmt.Println("err in the end", err)
+		return response.InsertProblem{}, err
+	}
+	fmt.Println("out", out)
+	return *out, nil
+}

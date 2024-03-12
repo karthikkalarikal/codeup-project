@@ -9,8 +9,6 @@ definitions:
         type: string
       first_half:
         type: string
-      id:
-        type: string
       memory_limit:
         type: integer
       second_half:
@@ -183,6 +181,88 @@ paths:
       security:
       - BearerAuth: []
       summary: Create a Problem
+      tags:
+      - admin
+  /admin/problem/first/{id}:
+    put:
+      consumes:
+      - text/plain
+      description: Admin insert first half of problem
+      parameters:
+      - description: Problem ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: insert into problem
+        in: body
+        name: code
+        required: true
+        schema:
+          type: string
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: 'Success: Problem Modified'
+          schema:
+            $ref: '#/definitions/response.JsonResponse'
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/response.JsonResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/response.JsonResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/response.JsonResponse'
+      security:
+      - BearerAuth: []
+      summary: Insert first half of problem
+      tags:
+      - admin
+  /admin/problem/second/{id}:
+    put:
+      consumes:
+      - text/plain
+      description: Admin insert second half of problem
+      parameters:
+      - description: Problem ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Modified problem
+        in: body
+        name: code
+        required: true
+        schema:
+          type: string
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: 'Success: Problem Modified'
+          schema:
+            $ref: '#/definitions/response.JsonResponse'
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/response.JsonResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/response.JsonResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/response.JsonResponse'
+      security:
+      - BearerAuth: []
+      summary: Insert second half of problem
       tags:
       - admin
   /user/go/{id}:

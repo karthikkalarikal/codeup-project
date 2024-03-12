@@ -28,3 +28,16 @@ type JsonResponse struct {
 	Message string `json:"message"`
 	Data    any    `json:"data,omitempty"`
 }
+
+type InsertProblem struct {
+	Title          string     `bson:"title" json:"title"`
+	Description    string     `bson:"description" json:"description"`
+	Difficulty     string     `bson:"difficulty" json:"difficulty"`
+	TestCases      []TestCase `bson:"test_cases" json:"test_cases"`
+	TimeLimit      int        `bson:"time_limit" json:"time_limit"`
+	MemoryLimit    int        `bson:"memory_limit" json:"memory_limit"`
+	FirstHalfCode  []byte     `bson:"first_half" json:"first_half"`
+	SecondHalfCode []byte     `bson:"second_half" json:"second_half"`
+	Tags           []string   `bson:"tags" json:"tags"`
+	CreatedAt      time.Time  `bson:"created_at" json:"created_at"`
+}

@@ -30,3 +30,21 @@ func (u *adminClientImpl) InsertProblem(e echo.Context, req request.InsertProble
 	}
 	return body, nil
 }
+
+// insert first half
+func (u *adminClientImpl) InsertFirstHalfProblem(e echo.Context, in request.FirstHalfCode) (response.InsertProblem, error) {
+	body, err := u.user.InsertFirstHalfProblem(e, in)
+	if err != nil {
+		return response.InsertProblem{}, err
+	}
+	return body, nil
+}
+
+// insert second half
+func (u *adminClientImpl) InsertSecondHalfProblem(e echo.Context, in request.SecondHalfCode) (response.InsertProblem, error) {
+	body, err := u.user.InsertSecondHalfProblem(e, in)
+	if err != nil {
+		return response.InsertProblem{}, err
+	}
+	return body, nil
+}
