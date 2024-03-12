@@ -46,3 +46,16 @@ func (p *ProblemUserClient) GetProblemById(request request.ProblemById, reply *d
 	*reply = body
 	return nil
 }
+
+func (p *ProblemUserClient) SubmitCodeById(req request.SubmitCodeIdRequest, reply *[]byte) error {
+	log.Println("in submit code by id")
+
+	ctx := context.Background()
+	body, err := p.user.SubmitCodeById(ctx, req)
+	if err != nil {
+		return err
+	}
+
+	*reply = body
+	return nil
+}

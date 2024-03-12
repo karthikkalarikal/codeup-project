@@ -12,10 +12,13 @@ func SetupAdminRoutes(e *echo.Group, adminHandler handler.AdminHandler) {
 	adminProblem.Use(middleware.AdminMiddleware)
 	{
 		adminProblem.POST("/", adminHandler.CreateProblem)
+		adminProblem.PUT("/first/:id", adminHandler.InsertFirstHalfProblem)
+		adminProblem.PUT("/second/:id", adminHandler.InsertSecondHalfProblem)
 		// problem.GET("/")
 		// problem.GET("/:id")
 		// problem.PATCH("/")
 		// problem.DELETE("/:id")
 		// problem.PUT("/:id")
 	}
+
 }

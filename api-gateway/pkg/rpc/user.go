@@ -64,3 +64,20 @@ func (u *userServiceImpl) GetProblemById(ctx echo.Context, in request.GetOneProb
 	fmt.Println("out", out)
 	return *out, nil
 }
+
+func (u *userServiceImpl) ExecuteGoCodyById(ctx echo.Context, in request.SubmitCodeIdRequest) (code []byte, err error) {
+	fmt.Println("api gateway rpc")
+
+	client := u.problemPool.Get().(*rpc.Client)
+
+	defer u.problemPool.Put(client)
+
+	out := new([]byte)
+	err = client.Call("ProblemUserClient.SubmitCodeById", in, out)
+	if err != nil {
+		fmt.Println("error at rpc connection :", err)
+		return
+	}
+	fmt.Println("out", out)
+	return *out, nil
+}

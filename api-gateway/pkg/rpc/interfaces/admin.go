@@ -8,4 +8,6 @@ import (
 
 type AdminRPCService interface {
 	InsertProblem(echo.Context, request.InsertProblem) (response.Problem, error)
+	InsertFirstHalfProblem(e echo.Context, in request.FirstHalfCode) (response.InsertProblem, error)
+	InsertSecondHalfProblem(e echo.Context, in request.SecondHalfCode) (response.InsertProblem, error)
 }

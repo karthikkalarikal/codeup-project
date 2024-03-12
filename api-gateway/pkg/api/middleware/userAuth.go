@@ -32,7 +32,7 @@ func UserMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
 
 		if tokenString == "" {
 			c.JSON(http.StatusUnauthorized, echo.Map{"error": customerrors.JwtTokenMissingError})
-			return errors.New(customerrors.JwtTokenMissingError)
+			return errors.New("")//customerrors.JwtTokenMissingError)
 		}
 
 		tokenString = strings.TrimPrefix(tokenString, "Bearer ")
@@ -83,7 +83,7 @@ func AdminMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
 
 		if tokenString == "" {
 			c.JSON(http.StatusUnauthorized, echo.Map{"error": customerrors.JwtTokenMissingError})
-			return errors.New(customerrors.JwtTokenMissingError)
+			return errors.New("")//customerrors.JwtTokenMissingError)
 		}
 
 		tokenString = strings.TrimPrefix(tokenString, "Bearer ")

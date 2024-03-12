@@ -7,19 +7,38 @@ RUN go mod download
 
 COPY main.go /app
 COPY pkg /app/pkg
+# COPY golang-app-seccomp.json .
+
+
 # COPY .env .env
 
 RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o go-executer .
 
 FROM alpine:3.19
 
-RUN mkdir /app
+# USER root 
+# RUN mkdir -p /etc/docker/seccomp
+# COPY golang-app-seccomp.json .
+
+
+RUN mkdir /app && \
+    apk --no-cache add ca-certificates go && \   
+    adduser -D -s /bin/sh appuser
+RUN mkdir -p /app/etc/docker/seccomp
+# RUN chmod 777 /etc/docker/seccomp/golang-app-seccomp.json
+
 WORKDIR /app
 
-RUN apk --no-cache add ca-certificates go
+
+USER appuser                        
+
 
 COPY --from=builder /app/go-executer .
 COPY .env .env
 
-RUN echo $"PATH"
+COPY golang-app-seccomp.json /app/etc/docker/seccomp/golang-app-seccomp.json
+
+# COPY golang-app-seccomp.json /etc/docker/seccomp/
+
+RUN echo "$PATH"
 CMD ["./go-executer"]
