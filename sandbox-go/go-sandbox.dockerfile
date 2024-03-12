@@ -25,7 +25,7 @@ RUN mkdir /app && \
     apk --no-cache add ca-certificates go && \   
     adduser -D -s /bin/sh appuser
 RUN mkdir -p /app/etc/docker/seccomp
-# RUN chmod +r /etc/docker/seccomp/golang-app-seccomp.json
+# RUN chmod 777 /etc/docker/seccomp/golang-app-seccomp.json
 
 WORKDIR /app
 

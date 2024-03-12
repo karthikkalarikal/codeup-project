@@ -1,6 +1,10 @@
 package request
 
-import "go.mongodb.org/mongo-driver/bson/primitive"
+import (
+	"time"
+
+	"go.mongodb.org/mongo-driver/bson/primitive"
+)
 
 type AllProbles struct {
 }
@@ -11,13 +15,16 @@ type TestCase struct {
 }
 
 type InsertProblem struct {
-	Title       string     `bson:"title" json:"title"`
-	Description string     `bson:"description" json:"description"`
-	Difficulty  string     `bson:"difficulty" json:"difficulty"`
-	TestCases   []TestCase `bson:"test_cases" json:"test_cases"`
-	TimeLimit   int        `bson:"time_limit" json:"time_limit"`
-	MemoryLimit int        `bson:"memory_limit" json:"memory_limit"`
-	Tags        []string   `bson:"tags" json:"tags"`
+	Title          string     `bson:"title" json:"title"`
+	Description    string     `bson:"description" json:"description"`
+	Difficulty     string     `bson:"difficulty" json:"difficulty"`
+	TestCases      []TestCase `bson:"test_cases" json:"test_cases"`
+	TimeLimit      int        `bson:"time_limit" json:"time_limit"`
+	MemoryLimit    int        `bson:"memory_limit" json:"memory_limit"`
+	FirstHalfCode  string     `bson:"first_half" json:"first_half"`
+	SecondHalfCode string     `bson:"second_half" json:"second_half"`
+	Tags           []string   `bson:"tags" json:"tags"`
+	CreatedAt      time.Time  `bson:"created_at" json:"created_at"`
 }
 
 type GetOneProblemById struct {

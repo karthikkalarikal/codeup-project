@@ -32,7 +32,7 @@ func NewUserHandler(user interfaces.UserClient, utils *utils.Utils, goexec inter
 //
 //	@Summary		View problems
 //	@Description	View all problems code-up
-//	@Tags			user,admin
+//	@Tags			general
 //	@Accept			json
 //	@Produce		json
 //	@Success		200	{object}	[]response.Problem
@@ -56,7 +56,7 @@ func (u *userHandlerImp) ViewAllProblems(e echo.Context) error {
 //
 //	@Summary		get one problems
 //	@Description	get one problem to display
-//	@Tags			user, admin
+//	@Tags			general
 //	@Accept			json
 //	@Produce		json
 //	@Security		BearerAuth

@@ -25,3 +25,14 @@ type SubmitCodeIdRequest struct {
 	ID   primitive.ObjectID `bson:"_id,omitempty" json:"id,omitempty"`
 	Code []byte             `json:"code"`
 }
+
+type FirstHalfCode struct {
+	ID            primitive.ObjectID `bson:"_id,omitempty" json:"id,omitempty"`
+	FirstHalfCode []byte             `bson:"first_half" json:"first_half"`
+	// SecondHalfCode []byte             `bson:"second_half" json:"second_half"`
+}
+type SecondHalfCode struct {
+	ID primitive.ObjectID `bson:"_id,omitempty" json:"id,omitempty"`
+	// FirstHalfCode  []byte             `bson:"first_half" json:"first_half"`
+	SecondHalfCode []byte `bson:"second_half" json:"second_half"`
+}

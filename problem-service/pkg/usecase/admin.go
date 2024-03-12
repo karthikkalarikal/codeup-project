@@ -37,3 +37,33 @@ func (u *adminUseCaseImpl) InsertProblem(ctx context.Context, req request.Proble
 	}
 	return body, nil
 }
+
+// insert first half
+func (u *adminUseCaseImpl) InsertFirstHalfProblem(ctx context.Context, entry request.FirstHalfCode) (domain.Problem, error) {
+	ctxWithTimeout, cancel := context.WithTimeout(ctx, 15*time.Second)
+	fmt.Println("inside usecase", entry)
+	defer cancel()
+
+	out, err := u.admin.InsertFirstHalfProblem(ctxWithTimeout, entry)
+	fmt.Println("id inside usecase", out)
+	if err != nil {
+		return domain.Problem{}, err
+	}
+
+	return out, nil
+}
+
+// insert second half
+func (u *adminUseCaseImpl) InsertSecondHalfProblem(ctx context.Context, entry request.SecondHalfCode) (domain.Problem, error) {
+	ctxWithTimeout, cancel := context.WithTimeout(ctx, 15*time.Second)
+	fmt.Println("inside usecase", entry)
+	defer cancel()
+
+	out, err := u.admin.InsertSecondHalfProblem(ctxWithTimeout, entry)
+	fmt.Println("id inside usecase", out)
+	if err != nil {
+		return domain.Problem{}, err
+	}
+
+	return out, nil
+}

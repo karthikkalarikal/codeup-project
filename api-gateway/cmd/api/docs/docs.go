@@ -229,8 +229,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "user",
-                    "admin"
+                    "general"
                 ],
                 "summary": "get one problems",
                 "parameters": [
@@ -403,8 +402,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "user",
-                    "admin"
+                    "general"
                 ],
                 "summary": "View problems",
                 "responses": {
@@ -461,14 +459,26 @@ const docTemplate = `{
         "request.InsertProblem": {
             "type": "object",
             "properties": {
+                "created_at": {
+                    "type": "string"
+                },
                 "description": {
                     "type": "string"
                 },
                 "difficulty": {
                     "type": "string"
                 },
+                "first_half": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
                 "memory_limit": {
                     "type": "integer"
+                },
+                "second_half": {
+                    "type": "string"
                 },
                 "tags": {
                     "type": "array",

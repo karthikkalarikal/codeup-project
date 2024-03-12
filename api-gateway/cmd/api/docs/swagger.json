@@ -221,8 +221,7 @@
                     "application/json"
                 ],
                 "tags": [
-                    "user",
-                    "admin"
+                    "general"
                 ],
                 "summary": "get one problems",
                 "parameters": [
@@ -395,8 +394,7 @@
                     "application/json"
                 ],
                 "tags": [
-                    "user",
-                    "admin"
+                    "general"
                 ],
                 "summary": "View problems",
                 "responses": {
@@ -453,14 +451,26 @@
         "request.InsertProblem": {
             "type": "object",
             "properties": {
+                "created_at": {
+                    "type": "string"
+                },
                 "description": {
                     "type": "string"
                 },
                 "difficulty": {
                     "type": "string"
                 },
+                "first_half": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
                 "memory_limit": {
                     "type": "integer"
+                },
+                "second_half": {
+                    "type": "string"
                 },
                 "tags": {
                     "type": "array",
