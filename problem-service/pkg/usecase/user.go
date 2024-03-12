@@ -52,7 +52,8 @@ func (u *userUseCase) SubmitCodeById(ctx context.Context, req request.SubmitCode
 		return nil, err
 	}
 	fmt.Println("body", body)
-	finalCode := string(req.Code) //string(body.FirstHalfCode) + string(req.Code) + string(body.SecondHalfCode)
+
+	finalCode := string(body.FirstHalfCode) + string(req.Code) + string(body.SecondHalfCode)
 	code, err := u.rpc.ExecuteGoCode(ctx, []byte(finalCode))
 	if err != nil {
 		return nil, err
