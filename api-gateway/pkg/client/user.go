@@ -38,3 +38,14 @@ func (u *userClientImpl) GetProblemById(ctx echo.Context, in request.GetOneProbl
 	}
 	return body, nil
 }
+
+// execute code by id
+func (u *userClientImpl) ExecuteGoCodyById(ctx echo.Context, in request.SubmitCodeIdRequest) (code []byte, err error) {
+	fmt.Println("in usecase exec code by id rpc")
+
+	body, err := u.user.ExecuteGoCodyById(ctx, in)
+	if err != nil {
+		return
+	}
+	return body, nil
+}

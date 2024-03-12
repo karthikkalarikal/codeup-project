@@ -81,25 +81,24 @@ const docTemplate = `{
                 }
             }
         },
-        "/user/problem/": {
-            "post": {
+        "/admin/problem/first/{id}": {
+            "put": {
                 "security": [
                     {
                         "BearerAuth": []
                     }
                 ],
-                "description": "get one problem to display",
+                "description": "Admin insert first half of problem",
                 "consumes": [
-                    "application/json"
+                    "text/plain"
                 ],
                 "produces": [
                     "application/json"
                 ],
                 "tags": [
-                    "user",
                     "admin"
                 ],
-                "summary": "get one problems",
+                "summary": "Insert first half of problem",
                 "parameters": [
                     {
                         "type": "string",
@@ -107,37 +106,104 @@ const docTemplate = `{
                         "name": "id",
                         "in": "path",
                         "required": true
+                    },
+                    {
+                        "description": "insert into problem",
+                        "name": "code",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
                     }
                 ],
                 "responses": {
-                    "200": {
-                        "description": "OK",
+                    "201": {
+                        "description": "Success: Problem Modified",
                         "schema": {
-                            "$ref": "#/definitions/response.Problem"
+                            "$ref": "#/definitions/response.JsonResponse"
                         }
                     },
                     "400": {
-                        "description": "Bad Request",
+                        "description": "Bad request",
                         "schema": {
-                            "$ref": "#/definitions/response.Problem"
+                            "$ref": "#/definitions/response.JsonResponse"
                         }
                     },
                     "401": {
                         "description": "Unauthorized",
                         "schema": {
-                            "$ref": "#/definitions/response.Problem"
-                        }
-                    },
-                    "404": {
-                        "description": "Not Found",
-                        "schema": {
-                            "$ref": "#/definitions/response.Problem"
+                            "$ref": "#/definitions/response.JsonResponse"
                         }
                     },
                     "500": {
-                        "description": "Internal Server Error",
+                        "description": "Internal server error",
                         "schema": {
-                            "$ref": "#/definitions/response.Problem"
+                            "$ref": "#/definitions/response.JsonResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/admin/problem/second/{id}": {
+            "put": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Admin insert second half of problem",
+                "consumes": [
+                    "text/plain"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "admin"
+                ],
+                "summary": "Insert second half of problem",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Problem ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Modified problem",
+                        "name": "code",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Success: Problem Modified",
+                        "schema": {
+                            "$ref": "#/definitions/response.JsonResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request",
+                        "schema": {
+                            "$ref": "#/definitions/response.JsonResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/response.JsonResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/response.JsonResponse"
                         }
                     }
                 }
@@ -150,7 +216,7 @@ const docTemplate = `{
                         "BearerAuth": []
                     }
                 ],
-                "description": "The code the user sent will be executed by user",
+                "description": "The code the user sent will be executed",
                 "consumes": [
                     "text/plain"
                 ],
@@ -206,8 +272,78 @@ const docTemplate = `{
                 }
             }
         },
-        "/user/problem/": {
+        "/user/go/{id}": {
             "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "The code the user sent will be executed and the result will be given",
+                "consumes": [
+                    "text/plain"
+                ],
+                "produces": [
+                    "text/plain"
+                ],
+                "tags": [
+                    "user"
+                ],
+                "summary": "Execute code",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Problem ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Go code to execute",
+                        "name": "code",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "success",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/response.JsonResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/response.JsonResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/response.JsonResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/response.JsonResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/user/problem/{id}": {
+            "get": {
                 "security": [
                     {
                         "BearerAuth": []
@@ -221,8 +357,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "user",
-                    "admin"
+                    "general"
                 ],
                 "summary": "get one problems",
                 "parameters": [
@@ -395,8 +530,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "user",
-                    "admin"
+                    "general"
                 ],
                 "summary": "View problems",
                 "responses": {
@@ -453,14 +587,23 @@ const docTemplate = `{
         "request.InsertProblem": {
             "type": "object",
             "properties": {
+                "created_at": {
+                    "type": "string"
+                },
                 "description": {
                     "type": "string"
                 },
                 "difficulty": {
                     "type": "string"
                 },
+                "first_half": {
+                    "type": "string"
+                },
                 "memory_limit": {
                     "type": "integer"
+                },
+                "second_half": {
+                    "type": "string"
                 },
                 "tags": {
                     "type": "array",
@@ -548,9 +691,7 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "data": {},
-                "error": {
-                    "type": "boolean"
-                },
+                "error": {},
                 "message": {
                     "type": "string"
                 }

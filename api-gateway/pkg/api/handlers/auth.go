@@ -53,13 +53,13 @@ func (u *authHandlerImpl) UserSignUp(e echo.Context) error {
 
 	fmt.Println("user ", user)
 	if user.FirstName == "" || user.Email == "" || user.Password == "" || user.ConfirmPassword == "" || user.Username == "" || user.LastName == "" {
-		err := errors.New(customerrors.NoEmptyValueError)
+		err := errors.New(customerrors.NoEmptyValueError.String())
 		u.utils.ErrorJson(e, err, http.StatusBadRequest)
 		return err
 	}
 
 	if user.ConfirmPassword != user.Password {
-		err := errors.New(customerrors.NoMatchingPasswordError)
+		err := errors.New(customerrors.NoMatchingPasswordError.String())
 		u.utils.ErrorJson(e, err, http.StatusBadRequest)
 		return err
 	}
@@ -68,7 +68,7 @@ func (u *authHandlerImpl) UserSignUp(e echo.Context) error {
 	validate := validator.New(validator.WithRequiredStructEnabled())
 
 	if err := validate.Struct(user); err != nil {
-		err := errors.New(customerrors.ValidatorError + err.Error())
+		err := errors.New(customerrors.ValidatorError.String() + err.Error())
 		u.utils.ErrorJson(e, err, http.StatusBadRequest)
 		return err
 	}
@@ -114,7 +114,8 @@ func (u *authHandlerImpl) UserSignIn(e echo.Context) error {
 	}
 
 	if user.Email == "" && user.Username == "" || user.Password == "" {
-		err := errors.New(customerrors.NoEmptyValueError)
+		errorString := customerrors.NoEmptyValueError
+		err := errors.New(errorString.String())
 		u.utils.ErrorJson(e, err, http.StatusBadRequest)
 		return err
 	}

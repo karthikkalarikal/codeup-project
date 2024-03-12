@@ -11,23 +11,36 @@ import (
 	"problem-service/pkg/config"
 	"problem-service/pkg/db"
 	"problem-service/pkg/repository"
+	"problem-service/pkg/rpc"
 	"problem-service/pkg/server"
 	"problem-service/pkg/usecase"
 )
 
 // Injectors from wire.go:
 
-func InitializeServices(cfg *config.Config) (*server.RpcServer, error) {
-	mongoClient, err := db.ConnectToMongo(cfg)
+func InitializeServices() (*server.RpcServer, error) {
+	config, err := provideConfig()
+	if err != nil {
+		return nil, err
+	}
+	mongoClient, err := db.ConnectToMongo(config)
 	if err != nil {
 		return nil, err
 	}
 	userRepository := repository.NewUserRepository(mongoClient)
-	userUseCase := usecase.NewUserUseCase(userRepository)
+	userRPCProblem := rpc.NewUserProblemRPC(config)
+	userUseCase := usecase.NewUserUseCase(userRepository, userRPCProblem)
 	problemUserClient := client.NewUserClient(userUseCase)
 	adminRepository := repository.NewAdmimRepository(mongoClient)
 	adminUseCase := usecase.NewAdminUseCase(adminRepository)
 	adminClientImpl := client.NewAdminClient(adminUseCase)
-	rpcServer := server.NewRPCServer(cfg, problemUserClient, adminClientImpl)
+	rpcServer := server.NewRPCServer(config, problemUserClient, adminClientImpl)
 	return rpcServer, nil
+}
+
+// wire.go:
+
+func provideConfig() (*config.Config, error) {
+
+	return config.LoadConfig()
 }

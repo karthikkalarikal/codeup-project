@@ -64,6 +64,55 @@ func (p *problemDatabaseAdmin) GetProblemById(ctx context.Context, id primitive.
 	return entry, nil
 }
 
+func (p *problemDatabaseAdmin) InsertFirstHalfProblem(ctx context.Context, entry request.FirstHalfCode) (domain.Problem, error) {
+	fmt.Println("here inside repository", entry)
+	collection := p.DB.Database("problems").Collection("problems")
+
+	body, err := collection.UpdateOne(
+		ctx,
+		bson.M{"_id": entry.ID},
+		bson.D{{Key: "$set", Value: bson.D{{Key: "first_half", Value: entry.FirstHalfCode}}}},
+	)
+	fmt.Println("body", body)
+	if err != nil {
+		log.Println("error inerting into problems: ", err)
+		return domain.Problem{}, err
+	}
+	fmt.Println("modified count", body.ModifiedCount)
+	out, err := p.GetProblemById(ctx, entry.ID)
+	if err != nil {
+		return domain.Problem{}, err
+	}
+	fmt.Println("out: ", string(out.FirstHalfCode))
+	return out, err
+}
+
+func (p *problemDatabaseAdmin) InsertSecondHalfProblem(ctx context.Context, entry request.SecondHalfCode) (domain.Problem, error) {
+
+	fmt.Println("here inside repository", entry)
+	collection := p.DB.Database("problems").Collection("problems")
+
+	body, err := collection.UpdateOne(
+		ctx,
+		bson.M{"_id": entry.ID},
+		bson.D{{Key: "$set", Value: bson.D{{Key: "second_half", Value: entry.SecondHalfCode}}}},
+	)
+	fmt.Println("body", body)
+	if err != nil {
+		log.Println("error inerting into problems: ", err)
+		return domain.Problem{}, err
+	}
+	fmt.Println("modified count", body.ModifiedCount)
+	out, err := p.GetProblemById(ctx, entry.ID)
+	if err != nil {
+		return domain.Problem{}, err
+	}
+	fmt.Println("out: ", string(out.SecondHalfCode))
+
+	return out, err
+
+}
+
 // drop the collection
 // func (l *Models) DropCollection() error {
 // 	ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)

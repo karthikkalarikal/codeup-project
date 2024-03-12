@@ -19,15 +19,13 @@ func SetupUserRoutes(e *echo.Group, authHandler handler.AuthHandler, userHandler
 	problem.Use(middleware.UserMiddleware)
 
 	{
-		problem.POST("/:id", userHandler.GetOneProblemById)
+		problem.GET("/:id", userHandler.GetOneProblemById)
 	}
 	execGoCode := e.Group("/go")
 	execGoCode.Use(middleware.UserMiddleware)
 	{
 		execGoCode.POST("/exec", userHandler.WriteCode)
+		execGoCode.POST("/:id", userHandler.ExecuteGoCodyById)
 	}
 
-	{
-		problem.POST("/:id", userHandler.GetOneProblemById)
-	}
 }

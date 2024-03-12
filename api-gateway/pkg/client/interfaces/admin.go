@@ -8,4 +8,6 @@ import (
 
 type AdminClient interface {
 	InsertProblem(e echo.Context, req request.InsertProblem) (response.Problem, error)
+	InsertFirstHalfProblem(e echo.Context, in request.FirstHalfCode) (response.InsertProblem, error)
+	InsertSecondHalfProblem(e echo.Context, in request.SecondHalfCode) (response.InsertProblem, error)
 }

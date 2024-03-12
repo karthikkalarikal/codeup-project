@@ -1,15 +1,29 @@
 package customerrors
 
+type ErrorCode int
+
 const (
-	NoEmptyValueError       = "the fields cannot be left empty"
-	ValidatorError          = "the fields are not valid"
-	NoMatchingPasswordError = "the passwords doesnot match"
-	JwtTokenMissingError    = "JWT token missing or invalid"
+	NoEmptyValueError ErrorCode = iota
+	ValidatorError
+	NoMatchingPasswordError
+	JwtTokenMissingError
+)
+const (
+	NilPointError string = "nil point error"
 )
 
-// type ConstantErrors struct {
-// }
-
-// func (e *ConstantErrors) NoEmptyValueError() string {
-// 	return "the fields cannot be left empty"
+//go:generate stringer -type=ErrorCode
+// func (e ErrorCode) String() string {
+// 	switch e {
+// 	case NoEmptyValueError:
+// 		return "the fields cannot be left empty"
+// 	case ValidatorError:
+// 		return "the fields are not valid"
+// 	case NoMatchingPasswordError:
+// 		return "the passwords does not match"
+// 	case JwtTokenMissingError:
+// 		return "JWT token missing or invalid"
+// 	default:
+// 		return fmt.Sprintf("Unknown error code (%d)", e)
+// 	}
 // }

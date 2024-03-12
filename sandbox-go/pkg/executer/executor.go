@@ -24,7 +24,6 @@ func (e *Executer) GoCodeExec(request []byte, reply *[]byte) error {
 	}
 	defer os.RemoveAll(tempDir) // Clean up the temporary directory
 
-	// Write the Go code to a temporary file
 	filePath := filepath.Join(tempDir, "main.go")
 	if err := os.WriteFile(filePath, request, 0644); err != nil {
 		// http.Error(w, "Error writing code to file", http.StatusInternalServerError)
@@ -37,7 +36,7 @@ func (e *Executer) GoCodeExec(request []byte, reply *[]byte) error {
 
 		return err
 	}
-	fmt.Println("err ", err)
+	fmt.Fprintln(os.Stdout, []any{"err ", err}...)
 
 	*reply = output
 	return nil
