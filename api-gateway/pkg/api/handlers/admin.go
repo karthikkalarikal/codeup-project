@@ -184,9 +184,24 @@ func (a *adminHandlerImpl) InsertSecondHalfProblem(e echo.Context) error {
 	return nil
 }
 
+// Problem godoc
+//
+//	@Summary		Get Users
+//	@Description	Admin Gets the list of all users
+//	@Tags			admin
+//	@Produce		json
+//
+//	@Security		BearerAuth
+//
+//	@Success		201	{object}	[]response.User	"Success: get all users"
+//	@Failure		400	{object}	[]response.User	"Bad request"
+//	@Failure		401	{object}	[]response.User	"Unauthorized"
+//	@Failure		500	{object}	[]response.User	"Internal server error"
+//	@Router			/admin/user/ [get]
 func (a *adminHandlerImpl) ViewUsers(e echo.Context) error {
 	out, err := a.client.ViewUsers(e)
 	if err != nil {
+		a.utils.ErrorJson(e, err, http.StatusBadRequest)
 		return err
 	}
 

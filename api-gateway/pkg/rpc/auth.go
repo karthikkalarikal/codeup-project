@@ -79,7 +79,7 @@ func (a *authServiceImpl) ViewUsers(e echo.Context) ([]response.User, error) {
 
 	out := new([]response.User)
 
-	err := client.Call("", struct{}{}, out)
+	err := client.Call("AuthUserService.GetAllUsers", struct{}{}, out)
 	if err != nil {
 		fmt.Println("err", err)
 		return nil, err
