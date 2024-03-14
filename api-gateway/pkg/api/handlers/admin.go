@@ -183,3 +183,13 @@ func (a *adminHandlerImpl) InsertSecondHalfProblem(e echo.Context) error {
 	a.utils.WriteJSON(e, http.StatusCreated, out)
 	return nil
 }
+
+func (a *adminHandlerImpl) ViewUsers(e echo.Context) error {
+	out, err := a.client.ViewUsers(e)
+	if err != nil {
+		return err
+	}
+
+	a.utils.WriteJSON(e, http.StatusCreated, out)
+	return nil
+}

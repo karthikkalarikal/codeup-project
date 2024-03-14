@@ -12,12 +12,14 @@ import (
 )
 
 type adminClientImpl struct {
-	user client.AdminClient
+	user interfaces.AdminRPCService
+	auth interfaces.AuthService
 }
 
-func NewAdminClient(user interfaces.AdminRPCService) client.AdminClient {
+func NewAdminClient(user interfaces.AdminRPCService, auth interfaces.AuthService) client.AdminClient {
 	return &adminClientImpl{
 		user: user,
+		auth: auth,
 	}
 }
 
@@ -45,6 +47,15 @@ func (u *adminClientImpl) InsertSecondHalfProblem(e echo.Context, in request.Sec
 	body, err := u.user.InsertSecondHalfProblem(e, in)
 	if err != nil {
 		return response.InsertProblem{}, err
+	}
+	return body, nil
+}
+
+// get all the users
+func (u *adminClientImpl) ViewUsers(e echo.Context) ([]response.User, error) {
+	body, err := u.auth.ViewUsers(e)
+	if err != nil {
+		return nil, err
 	}
 	return body, nil
 }

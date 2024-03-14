@@ -8,5 +8,6 @@ import (
 
 type AuthClient interface {
 	UserSignUp(echo.Context, request.UserSignUpRequest) (*response.UserSignUpResponse, error)
-	UserSignIn( echo.Context,request.UserSignInRequest) (*response.UserSignInResponse, error)
+	UserSignIn(echo.Context, request.UserSignInRequest) (*response.UserSignInResponse, error)
+	// ViewUsers(e echo.Context) ([]response.User, error)
 }

@@ -71,3 +71,19 @@ func (c *authServiceImpl) UserSignIn(ctx echo.Context, in request.UserSignInRequ
 	fmt.Println("out", out)
 	return out, nil
 }
+
+// view all users
+func (a *authServiceImpl) ViewUsers(e echo.Context) ([]response.User, error) {
+	client := a.authPool.Get().(*rpc.Client)
+	defer a.authPool.Put(client)
+
+	out := new([]response.User)
+
+	err := client.Call("", struct{}{}, out)
+	if err != nil {
+		fmt.Println("err", err)
+		return nil, err
+	}
+	fmt.Println("out ", out)
+	return *out, nil
+}
