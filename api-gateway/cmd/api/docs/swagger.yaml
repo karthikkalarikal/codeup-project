@@ -322,6 +322,52 @@ paths:
       summary: Get Users
       tags:
       - admin
+  /admin/user/{keyword}:
+    get:
+      description: Admin Gets the list of all users using keyworkd
+      parameters:
+      - description: keyword
+        in: path
+        name: keyword
+        type: string
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: 'Success: get all users'
+          schema:
+            items:
+              $ref: '#/definitions/response.User'
+            type: array
+        "204":
+          description: no users
+          schema:
+            items:
+              $ref: '#/definitions/response.User'
+            type: array
+        "400":
+          description: Bad request
+          schema:
+            items:
+              $ref: '#/definitions/response.User'
+            type: array
+        "401":
+          description: Unauthorized
+          schema:
+            items:
+              $ref: '#/definitions/response.User'
+            type: array
+        "500":
+          description: Internal server error
+          schema:
+            items:
+              $ref: '#/definitions/response.User'
+            type: array
+      security:
+      - BearerAuth: []
+      summary: Search Users
+      tags:
+      - admin
   /user/go/{id}:
     post:
       consumes:

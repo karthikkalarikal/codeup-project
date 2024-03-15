@@ -105,3 +105,51 @@ func (u *userDatabase) FindUserByEmail(ctx context.Context, email string) (domai
 	fmt.Println("user", user)
 	return user, nil
 }
+
+// get all user repo
+func (u *userDatabase) GetAllUsers(ctx context.Context) ([]domain.User, error) {
+	users := new([]domain.User)
+
+	err := u.DB.WithContext(ctx).Raw("select * from users").Scan(users).Error
+	if err != nil {
+		if errors.Is(err, context.DeadlineExceeded) {
+			return nil, fmt.Errorf("database query timed out")
+		}
+		return nil, err
+	}
+	return *users, nil
+}
+
+// get user by email
+func (u *userDatabase) SearchUserByEmail(ctx context.Context, email string) ([]domain.User, error) {
+	user := new([]domain.User)
+
+	query := "select * from users where email like ?"
+
+	err := u.DB.WithContext(ctx).Raw(query, "%"+email+"%").Scan(user).Error
+	if err != nil {
+		if errors.Is(err, context.DeadlineExceeded) {
+			return nil, fmt.Errorf("database query timed out: %w", err)
+		}
+		return nil, err
+	}
+
+	return *user, nil
+}
+
+// get user by username
+func (u *userDatabase) SearchUserByUsername(ctx context.Context, username string) ([]domain.User, error) {
+	users := new([]domain.User)
+
+	query := "select * from users where username like ?"
+	fmt.Println(query, username)
+	err := u.DB.WithContext(ctx).Raw(query, "%"+username+"%").Scan(users).Error
+	if err != nil {
+		if errors.Is(err, context.DeadlineExceeded) {
+			return nil, fmt.Errorf("database query timed out: %w", err)
+		}
+		return nil, err
+	}
+
+	return *users, nil
+}

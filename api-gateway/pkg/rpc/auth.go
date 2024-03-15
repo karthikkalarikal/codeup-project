@@ -87,3 +87,21 @@ func (a *authServiceImpl) ViewUsers(e echo.Context) ([]response.User, error) {
 	fmt.Println("out ", out)
 	return *out, nil
 }
+
+// search users by email, username
+func (a *authServiceImpl) SearchUser(e echo.Context, req request.Search) ([]response.User, error) {
+	fmt.Println("req usecase ", req)
+	client := a.authPool.Get().(*rpc.Client)
+	defer a.authPool.Put(client)
+
+	out := new([]response.User)
+
+	err := client.Call("AuthUserService.SearchUsers", req, out)
+	if err != nil {
+		fmt.Println("err ", err)
+		return nil, err
+	}
+
+	fmt.Println("out ", out)
+	return *out, nil
+}

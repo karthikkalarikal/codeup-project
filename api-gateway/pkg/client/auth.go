@@ -32,5 +32,5 @@ func (auth *authClientImpl) UserSignIn(ctx echo.Context, in request.UserSignInRe
 	if err != nil {
 		return &response.UserSignInResponse{}, err
 	}
-	return res, err
+	return res, nil
 }

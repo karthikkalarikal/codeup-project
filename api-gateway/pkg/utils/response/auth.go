@@ -25,3 +25,4 @@ type SignUpWrapper struct {
 	User  UserSignUpResponse `json:"user"`
 	Token string             `json:"token"`
 }
+

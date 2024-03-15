@@ -59,3 +59,13 @@ func (u *adminClientImpl) ViewUsers(e echo.Context) ([]response.User, error) {
 	}
 	return body, nil
 }
+
+// search users
+func (a *adminClientImpl) SearchUser(e echo.Context, req request.Search) ([]response.User, error) {
+	res, err := a.auth.SearchUser(e, req)
+	if err != nil {
+		return nil, err
+	}
+
+	return res, nil
+}

@@ -208,3 +208,43 @@ func (a *adminHandlerImpl) ViewUsers(e echo.Context) error {
 	a.utils.WriteJSON(e, http.StatusCreated, out)
 	return nil
 }
+
+// Problem godoc
+//
+//	@Summary		Search Users
+//	@Description	Admin Gets the list of all users using keyworkd
+//	@Tags			admin
+//	@Produce		json
+//
+//	@Security		BearerAuth
+//
+//	@Param			keyword	path		string			false	"keyword"
+//	@Success		201		{object}	[]response.User	"Success: get all users"
+//	@Success		204		{object}	[]response.User	"no users"
+//	@Failure		400		{object}	[]response.User	"Bad request"
+//	@Failure		401		{object}	[]response.User	"Unauthorized"
+//	@Failure		500		{object}	[]response.User	"Internal server error"
+//	@Router			/admin/user/{keyword} [get]
+func (a *adminHandlerImpl) SearchUser(e echo.Context) error {
+
+	keyword := e.Param("keyword")
+	fmt.Println("keyword ", keyword)
+	if keyword == "{keyword}" {
+		keyword = ""
+	}
+	out, err := a.client.SearchUser(e, request.Search{
+		Keyword:  keyword,
+		SearchBy: "email",
+	})
+
+	if err != nil {
+		a.utils.ErrorJson(e, err, http.StatusBadRequest)
+		return err
+	}
+	if out == nil {
+		return a.utils.WriteJSON(e, http.StatusNoContent, out)
+	}
+
+	a.utils.WriteJSON(e, http.StatusOK, out)
+	return nil
+}

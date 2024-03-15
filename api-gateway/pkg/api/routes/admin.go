@@ -24,6 +24,7 @@ func SetupAdminRoutes(e *echo.Group, adminHandler handler.AdminHandler) {
 	adminUser.Use(middleware.AdminMiddleware)
 	{
 		adminUser.GET("/", adminHandler.ViewUsers)
+		adminUser.GET("/:keyword", adminHandler.SearchUser)
 	}
 
 }
