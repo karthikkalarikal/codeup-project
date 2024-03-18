@@ -14,4 +14,6 @@ type UserRepository interface {
 	GetAllUsers(context.Context) ([]domain.User, error)
 	SearchUserByEmail(ctx context.Context, email string) ([]domain.User, error)
 	SearchUserByUsername(ctx context.Context, email string) ([]domain.User, error)
+	GetUserById(ctx context.Context, id int) (domain.User, error)
+	ForgetPassword(ctx context.Context, obj request.ForgotPassword) error
 }

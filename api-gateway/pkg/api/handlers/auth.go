@@ -127,8 +127,9 @@ func (u *authHandlerImpl) UserSignIn(e echo.Context) error {
 		u.utils.ErrorJson(e, err, http.StatusBadRequest)
 		return err
 	}
-
-	err = bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(userSignedIn.Password))
+	fmt.Println("Retrieved hashed password:", user.Password)  // Inspect this
+	fmt.Println("Plaintext password:", userSignedIn.Password) // Inspect this
+	err = bcrypt.CompareHashAndPassword([]byte(userSignedIn.Password), []byte(user.Password))
 	if err != nil {
 		if errors.Is(err, bcrypt.ErrMismatchedHashAndPassword) {
 			return errors.New("wrong password")

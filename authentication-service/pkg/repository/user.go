@@ -50,7 +50,8 @@ func (u *userDatabase) UserSignUp(ctx context.Context, user request.UserSignUpRe
 	defer cancel()
 
 	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(user.Password), bcrypt.DefaultCost)
-
+	fmt.Println("hashed password", hashedPassword)
+	fmt.Println("password ", user.Password)
 	if err != nil {
 		return domain.User{}, err
 	}
@@ -128,7 +129,7 @@ func (u *userDatabase) GetAllUsers(ctx context.Context) ([]domain.User, error) {
 	err := u.DB.WithContext(ctx).Raw("select * from users").Scan(users).Error
 	if err != nil {
 		if errors.Is(err, context.DeadlineExceeded) {
-			return nil, fmt.Errorf("database query timed out")
+			return nil, fmt.Errorf(customErrors.TimeOut)
 		}
 		return nil, err
 	}
@@ -144,7 +145,7 @@ func (u *userDatabase) SearchUserByEmail(ctx context.Context, email string) ([]d
 	err := u.DB.WithContext(ctx).Raw(query, "%"+email+"%").Scan(user).Error
 	if err != nil {
 		if errors.Is(err, context.DeadlineExceeded) {
-			return nil, fmt.Errorf("database query timed out: %w", err)
+			return nil, fmt.Errorf(customErrors.TimeOut+": %w", err)
 		}
 		return nil, err
 	}
@@ -171,10 +172,17 @@ func (u *userDatabase) SearchUserByUsername(ctx context.Context, username string
 
 // forgot password
 func (u *userDatabase) ForgetPassword(ctx context.Context, obj request.ForgotPassword) error {
+	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(obj.Password), bcrypt.DefaultCost)
+	fmt.Println("hashed password", hashedPassword)
+	fmt.Println("password ", obj.Password)
+	if err != nil {
+		return err
+	}
+
 	query := `UPDATE users
 	SET password = $1
 	WHERE id s= $2`
-	err := u.DB.Exec(query, obj.Id, obj.Password).Error
+	err = u.DB.Exec(query, string(hashedPassword), obj.Id).Error
 	if err != nil {
 		return err
 	}

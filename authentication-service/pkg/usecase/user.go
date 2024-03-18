@@ -100,3 +100,32 @@ func (u *userUseCase) SearchTheUser(ctx context.Context, s request.Search) ([]do
 	}
 
 }
+
+// forget password
+func (a *userUseCase) ForgotPassword(ctx context.Context, req request.ForgotPassword) (out domain.User, err error) {
+	fmt.Println("in usecase block user")
+	ctxDeadline, cancel := context.WithTimeout(ctx, 5*time.Second)
+	defer cancel()
+	// Transactions(func(UserRepository) error) error
+
+	err = a.repo.Transactions(func(repo repo.UserRepository) error {
+		_, err = a.repo.GetUserById(ctxDeadline, req.Id)
+		if err != nil {
+			return err
+		}
+		err = a.repo.ForgetPassword(ctxDeadline, req)
+		if err != nil {
+			return err
+		}
+		out, err = a.repo.GetUserById(ctxDeadline, req.Id)
+		if err != nil {
+			return err
+		}
+		return nil
+
+	})
+	if err != nil {
+		return domain.User{}, err
+	}
+	return out, err
+}
