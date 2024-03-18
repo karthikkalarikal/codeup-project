@@ -26,6 +26,21 @@ func NewUserRepository(DB *gorm.DB) interfaces.UserRepository {
 
 //  create a transactions function to further develop the database operations
 
+func (u *userDatabase) Transactions(tx func(interfaces.UserRepository) error) error {
+	fmt.Println("here in transactions")
+	trx := u.DB.Begin()
+	repo := NewUserRepository(trx)
+	err := tx(repo)
+	if err != nil {
+		return err
+	}
+	if err := trx.Commit().Error; err != nil {
+		return err
+	}
+	fmt.Println("err ", err)
+	return nil
+}
+
 // ------------------- user signup ----------------- \\
 func (u *userDatabase) UserSignUp(ctx context.Context, user request.UserSignUpRequest) (userDetails domain.User, err error) {
 
@@ -152,4 +167,35 @@ func (u *userDatabase) SearchUserByUsername(ctx context.Context, username string
 	}
 
 	return *users, nil
+}
+
+// forgot password
+func (u *userDatabase) ForgetPassword(ctx context.Context, obj request.ForgotPassword) error {
+	query := `UPDATE users
+	SET password = $1
+	WHERE id s= $2`
+	err := u.DB.Exec(query, obj.Id, obj.Password).Error
+	if err != nil {
+		return err
+	}
+
+	return nil
+
+}
+
+// get user by id
+func (u *userDatabase) GetUserById(ctx context.Context, id int) (domain.User, error) {
+	user := new(domain.User)
+
+	query := "select * from users where id=$1"
+
+	err := u.DB.WithContext(ctx).Raw(query, id).Scan(&user).Error
+	if err != nil {
+		if errors.Is(err, context.DeadlineExceeded) {
+			return domain.User{}, fmt.Errorf("database query timed out: %w", err)
+		}
+		return domain.User{}, err
+	}
+
+	return *user, nil
 }

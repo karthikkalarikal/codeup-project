@@ -7,6 +7,8 @@ import (
 )
 
 type UserRepository interface {
+	Transactions(func(UserRepository) error) error
+
 	UserSignUp(context.Context, request.UserSignUpRequest) (domain.User, error)
 	FindUserByEmail(context.Context, string) (domain.User, error)
 	GetAllUsers(context.Context) ([]domain.User, error)

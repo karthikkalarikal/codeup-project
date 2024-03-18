@@ -16,10 +16,11 @@ type UserSignUpResponse struct {
 }
 
 type UserSignInResponse struct {
-	ID      int    `json:"id"`
-	Admin   bool   `json:"admin"`
-	Email   string `json:"email"`
-	Blocked bool   `json:"blocked"`
+	ID       int    `json:"id"`
+	Admin    bool   `json:"admin"`
+	Email    string `json:"email"`
+	Password string `json:"password"`
+	Blocked  bool   `json:"blocked"`
 }
 
 type SignUpWrapper struct {

@@ -8,6 +8,7 @@ import (
 	"github.com/go-playground/validator/v10"
 	"github.com/karthikkalarikal/api-gateway/pkg/api/handlers/interfaces"
 	client "github.com/karthikkalarikal/api-gateway/pkg/client/interfaces"
+	"golang.org/x/crypto/bcrypt"
 
 	"github.com/karthikkalarikal/api-gateway/pkg/utils"
 	customerrors "github.com/karthikkalarikal/api-gateway/pkg/utils/customErrors"
@@ -126,6 +127,17 @@ func (u *authHandlerImpl) UserSignIn(e echo.Context) error {
 		u.utils.ErrorJson(e, err, http.StatusBadRequest)
 		return err
 	}
+
+	err = bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(userSignedIn.Password))
+	if err != nil {
+		if errors.Is(err, bcrypt.ErrMismatchedHashAndPassword) {
+			return errors.New("wrong password")
+		} else {
+			return err
+		}
+
+	}
+
 	token, err := u.utils.GetTokenString(userSignedIn.ID, userSignedIn.Admin, userSignedIn.Blocked)
 	if err != nil {
 		u.utils.ErrorJson(e, err, http.StatusBadRequest)
