@@ -39,7 +39,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "admin"
+                    "Problem Management"
                 ],
                 "summary": "Create a Problem",
                 "parameters": [
@@ -96,7 +96,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "admin"
+                    "Problem Management"
                 ],
                 "summary": "Insert first half of problem",
                 "parameters": [
@@ -160,7 +160,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "admin"
+                    "Problem Management"
                 ],
                 "summary": "Insert second half of problem",
                 "parameters": [
@@ -221,7 +221,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "admin"
+                    "User Management"
                 ],
                 "summary": "Get Users",
                 "responses": {
@@ -264,6 +264,64 @@ const docTemplate = `{
                 }
             }
         },
+        "/admin/user/{id}": {
+            "patch": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Admin Can block/unblock user by passing id",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "User Management"
+                ],
+                "summary": "Block user",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "user id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Success: get all users",
+                        "schema": {
+                            "$ref": "#/definitions/response.BlockedStatus"
+                        }
+                    },
+                    "204": {
+                        "description": "no users",
+                        "schema": {
+                            "$ref": "#/definitions/response.BlockedStatus"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request",
+                        "schema": {
+                            "$ref": "#/definitions/response.BlockedStatus"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/response.BlockedStatus"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/response.BlockedStatus"
+                        }
+                    }
+                }
+            }
+        },
         "/admin/user/{keyword}": {
             "get": {
                 "security": [
@@ -276,7 +334,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "admin"
+                    "User Management"
                 ],
                 "summary": "Search Users",
                 "parameters": [
@@ -351,7 +409,7 @@ const docTemplate = `{
                     "text/plain"
                 ],
                 "tags": [
-                    "user"
+                    "Problem Execution Service"
                 ],
                 "summary": "Execute code",
                 "parameters": [
@@ -414,7 +472,7 @@ const docTemplate = `{
                     "text/plain"
                 ],
                 "tags": [
-                    "user"
+                    "Problem Execution Service"
                 ],
                 "summary": "Execute code",
                 "parameters": [
@@ -484,7 +542,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "general"
+                    "Problem Execution Service"
                 ],
                 "summary": "get one problems",
                 "parameters": [
@@ -540,8 +598,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "user",
-                    "admin"
+                    "Authentication"
                 ],
                 "summary": "User signin",
                 "parameters": [
@@ -599,7 +656,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "user"
+                    "Authentication"
                 ],
                 "summary": "User signup",
                 "parameters": [
@@ -820,6 +877,17 @@ const docTemplate = `{
                 }
             }
         },
+        "response.BlockedStatus": {
+            "type": "object",
+            "properties": {
+                "blocked": {
+                    "type": "boolean"
+                },
+                "id": {
+                    "type": "integer"
+                }
+            }
+        },
         "response.JsonResponse": {
             "type": "object",
             "properties": {
@@ -893,6 +961,9 @@ const docTemplate = `{
         "response.User": {
             "type": "object",
             "properties": {
+                "blocked": {
+                    "type": "boolean"
+                },
                 "created_at": {
                     "type": "string"
                 },

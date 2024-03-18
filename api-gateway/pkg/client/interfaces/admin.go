@@ -12,4 +12,5 @@ type AdminClient interface {
 	InsertSecondHalfProblem(e echo.Context, in request.SecondHalfCode) (response.InsertProblem, error)
 	ViewUsers(e echo.Context) ([]response.User, error)
 	SearchUser(e echo.Context, req request.Search) ([]response.User, error)
+	BlockUser(e echo.Context, in int) (response.BlockedStatus, error)
 }

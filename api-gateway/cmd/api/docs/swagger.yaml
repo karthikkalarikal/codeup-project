@@ -74,6 +74,13 @@ definitions:
     - password
     - username
     type: object
+  response.BlockedStatus:
+    properties:
+      blocked:
+        type: boolean
+      id:
+        type: integer
+    type: object
   response.JsonResponse:
     properties:
       data: {}
@@ -122,6 +129,8 @@ definitions:
     type: object
   response.User:
     properties:
+      blocked:
+        type: boolean
       created_at:
         type: string
       email:
@@ -204,7 +213,7 @@ paths:
       - BearerAuth: []
       summary: Create a Problem
       tags:
-      - admin
+      - Problem Management
   /admin/problem/first/{id}:
     put:
       consumes:
@@ -245,7 +254,7 @@ paths:
       - BearerAuth: []
       summary: Insert first half of problem
       tags:
-      - admin
+      - Problem Management
   /admin/problem/second/{id}:
     put:
       consumes:
@@ -286,7 +295,7 @@ paths:
       - BearerAuth: []
       summary: Insert second half of problem
       tags:
-      - admin
+      - Problem Management
   /admin/user/:
     get:
       description: Admin Gets the list of all users
@@ -321,7 +330,44 @@ paths:
       - BearerAuth: []
       summary: Get Users
       tags:
-      - admin
+      - User Management
+  /admin/user/{id}:
+    patch:
+      description: Admin Can block/unblock user by passing id
+      parameters:
+      - description: user id
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: 'Success: get all users'
+          schema:
+            $ref: '#/definitions/response.BlockedStatus'
+        "204":
+          description: no users
+          schema:
+            $ref: '#/definitions/response.BlockedStatus'
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/response.BlockedStatus'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/response.BlockedStatus'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/response.BlockedStatus'
+      security:
+      - BearerAuth: []
+      summary: Block user
+      tags:
+      - User Management
   /admin/user/{keyword}:
     get:
       description: Admin Gets the list of all users using keyworkd
@@ -367,7 +413,7 @@ paths:
       - BearerAuth: []
       summary: Search Users
       tags:
-      - admin
+      - User Management
   /user/go/{id}:
     post:
       consumes:
@@ -413,7 +459,7 @@ paths:
       - BearerAuth: []
       summary: Execute code
       tags:
-      - user
+      - Problem Execution Service
   /user/go/exec:
     post:
       consumes:
@@ -453,7 +499,7 @@ paths:
       - BearerAuth: []
       summary: Execute code
       tags:
-      - user
+      - Problem Execution Service
   /user/problem/{id}:
     get:
       consumes:
@@ -492,7 +538,7 @@ paths:
       - BearerAuth: []
       summary: get one problems
       tags:
-      - general
+      - Problem Execution Service
   /user/signin:
     post:
       consumes:
@@ -530,8 +576,7 @@ paths:
             $ref: '#/definitions/response.SignUpWrapper'
       summary: User signin
       tags:
-      - user
-      - admin
+      - Authentication
   /user/signup:
     post:
       consumes:
@@ -569,7 +614,7 @@ paths:
             $ref: '#/definitions/response.SignUpWrapper'
       summary: User signup
       tags:
-      - user
+      - Authentication
   /user/view:
     get:
       consumes:

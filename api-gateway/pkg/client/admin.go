@@ -69,3 +69,12 @@ func (a *adminClientImpl) SearchUser(e echo.Context, req request.Search) ([]resp
 
 	return res, nil
 }
+
+// block user
+func (a *adminClientImpl) BlockUser(e echo.Context, id int) (response.BlockedStatus, error) {
+	res, err := a.auth.BlockUser(e, id)
+	if err != nil {
+		return response.BlockedStatus{}, err
+	}
+	return res, nil
+}

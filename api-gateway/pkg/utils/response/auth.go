@@ -16,13 +16,13 @@ type UserSignUpResponse struct {
 }
 
 type UserSignInResponse struct {
-	ID    int    `json:"id"`
-	Admin bool   `json:"admin"`
-	Email string `json:"email"`
+	ID      int    `json:"id"`
+	Admin   bool   `json:"admin"`
+	Email   string `json:"email"`
+	Blocked bool   `json:"blocked"`
 }
 
 type SignUpWrapper struct {
 	User  UserSignUpResponse `json:"user"`
 	Token string             `json:"token"`
 }
-

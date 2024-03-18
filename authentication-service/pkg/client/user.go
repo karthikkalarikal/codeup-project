@@ -2,6 +2,7 @@ package client
 
 import (
 	"authentication/pkg/domain"
+	"authentication/pkg/usecase/interfaces"
 	user "authentication/pkg/usecase/interfaces"
 	"authentication/pkg/utils/request"
 	"authentication/pkg/utils/response"
@@ -12,11 +13,13 @@ import (
 
 type AuthUserService struct {
 	useCase user.UserUseCase
+	admin   interfaces.AdminUsecase
 }
 
-func NewUserService(user user.UserUseCase) *AuthUserService {
+func NewUserService(user user.UserUseCase, admin interfaces.AdminUsecase) *AuthUserService {
 	return &AuthUserService{
 		useCase: user,
+		admin:   admin,
 	}
 }
 
@@ -81,4 +84,17 @@ func (u *AuthUserService) SearchUsers(req request.Search, reply *[]domain.User) 
 	}
 
 }
-// angia tech \\ //
+
+func (u *AuthUserService) BlockUser(req int, reply *domain.User) error {
+	fmt.Println("here in block user auth service ", req)
+	ctx := context.Background()
+
+	out, err := u.admin.BlockUser(ctx, req)
+	fmt.Println("err ", err)
+	if err != nil {
+		return err
+	}
+	fmt.Println("out ", out)
+	*reply = out
+	return nil
+}

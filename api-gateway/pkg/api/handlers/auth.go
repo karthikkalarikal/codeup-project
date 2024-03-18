@@ -32,7 +32,7 @@ func NewAuthHandler(client client.AuthClient, utils *utils.Utils) interfaces.Aut
 //
 //	@Summary		User signup
 //	@Description	signup to code-up
-//	@Tags			user
+//	@Tags			Authentication
 //	@Accept			json
 //	@Produce		json
 //	@Param			user	body		request.UserSignUpRequest	true	"user details"
@@ -79,7 +79,7 @@ func (u *authHandlerImpl) UserSignUp(e echo.Context) error {
 		u.utils.ErrorJson(e, err, http.StatusBadRequest)
 		return err
 	}
-	token, err := u.utils.GetTokenString(userCreated.ID, false)
+	token, err := u.utils.GetTokenString(userCreated.ID, false, false)
 	if err != nil {
 		u.utils.ErrorJson(e, err, http.StatusBadRequest)
 		return err
@@ -94,7 +94,7 @@ func (u *authHandlerImpl) UserSignUp(e echo.Context) error {
 //
 //	@Summary		User signin
 //	@Description	signin to code-up
-//	@Tags			user,admin
+//	@Tags			Authentication
 //	@Accept			json
 //	@Produce		json
 //	@Param			user	body		request.UserSignInRequest	true	"user details"
@@ -126,7 +126,7 @@ func (u *authHandlerImpl) UserSignIn(e echo.Context) error {
 		u.utils.ErrorJson(e, err, http.StatusBadRequest)
 		return err
 	}
-	token, err := u.utils.GetTokenString(userSignedIn.ID, userSignedIn.Admin)
+	token, err := u.utils.GetTokenString(userSignedIn.ID, userSignedIn.Admin, userSignedIn.Blocked)
 	if err != nil {
 		u.utils.ErrorJson(e, err, http.StatusBadRequest)
 		return err

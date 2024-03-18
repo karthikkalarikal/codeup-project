@@ -10,4 +10,5 @@ type AdminHandler interface {
 	InsertSecondHalfProblem(echo.Context) error
 	ViewUsers(echo.Context) error
 	SearchUser(echo.Context) error
+	BlockUser(echo.Context) error
 }

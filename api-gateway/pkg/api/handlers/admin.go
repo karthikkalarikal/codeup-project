@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"strconv"
 
 	"github.com/karthikkalarikal/api-gateway/pkg/api/handlers/interfaces"
 	client "github.com/karthikkalarikal/api-gateway/pkg/client/interfaces"
@@ -31,7 +32,7 @@ func NewAdminHandler(client client.AdminClient, utils *utils.Utils) interfaces.A
 //
 //	@Summary		Create a Problem
 //	@Description	Admin create a problem
-//	@Tags			admin
+//	@Tags			Problem Management
 //	@Accept			json
 //	@Produce		json
 //
@@ -72,7 +73,7 @@ func (a *adminHandlerImpl) CreateProblem(e echo.Context) error {
 //
 //	@Summary		Insert first half of problem
 //	@Description	Admin insert first half of problem
-//	@Tags			admin
+//	@Tags			Problem Management
 //	@Accept			text/plain
 //	@Produce		json
 //
@@ -130,7 +131,7 @@ func (a *adminHandlerImpl) InsertFirstHalfProblem(e echo.Context) error {
 //
 //	@Summary		Insert second half of problem
 //	@Description	Admin insert second half of problem
-//	@Tags			admin
+//	@Tags			Problem Management
 //	@Accept			text/plain
 //	@Produce		json
 //
@@ -188,7 +189,7 @@ func (a *adminHandlerImpl) InsertSecondHalfProblem(e echo.Context) error {
 //
 //	@Summary		Get Users
 //	@Description	Admin Gets the list of all users
-//	@Tags			admin
+//	@Tags			User Management
 //	@Produce		json
 //
 //	@Security		BearerAuth
@@ -209,11 +210,11 @@ func (a *adminHandlerImpl) ViewUsers(e echo.Context) error {
 	return nil
 }
 
-// Problem godoc
+// User godoc
 //
 //	@Summary		Search Users
 //	@Description	Admin Gets the list of all users using keyworkd
-//	@Tags			admin
+//	@Tags			User Management
 //	@Produce		json
 //
 //	@Security		BearerAuth
@@ -246,5 +247,41 @@ func (a *adminHandlerImpl) SearchUser(e echo.Context) error {
 	}
 
 	a.utils.WriteJSON(e, http.StatusOK, out)
+	return nil
+}
+
+// User godoc
+//
+//	@Summary		Block user
+//	@Description	Admin Can block/unblock user by passing id
+//	@Tags			User Management
+//	@Produce		json
+//
+//	@Security		BearerAuth
+//
+//	@Param			id	path		int						true	"user id"
+//	@Success		201	{object}	response.BlockedStatus	"Success: get all users"
+//	@Success		204	{object}	response.BlockedStatus	"no users"
+//	@Failure		400	{object}	response.BlockedStatus	"Bad request"
+//	@Failure		401	{object}	response.BlockedStatus	"Unauthorized"
+//	@Failure		500	{object}	response.BlockedStatus	"Internal server error"
+//	@Router			/admin/user/{id} [patch]
+func (a *adminHandlerImpl) BlockUser(e echo.Context) error {
+	idStr := e.Param("id")
+	fmt.Println("id ", idStr)
+	id, err := strconv.Atoi(idStr)
+	if err != nil {
+		a.utils.ErrorJson(e, err, http.StatusBadRequest)
+		return err
+	}
+	fmt.Println("id ", id)
+
+	out, err := a.client.BlockUser(e, id)
+	if err != nil {
+		a.utils.ErrorJson(e, err, http.StatusBadRequest)
+		return err
+	}
+
+	a.utils.WriteJSON(e, http.StatusAccepted, out)
 	return nil
 }
