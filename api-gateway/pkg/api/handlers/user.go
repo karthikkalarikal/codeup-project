@@ -56,7 +56,7 @@ func (u *userHandlerImp) ViewAllProblems(e echo.Context) error {
 //
 //	@Summary		get one problems
 //	@Description	get one problem to display
-//	@Tags			general
+//	@Tags			Problem Execution Service
 //	@Accept			json
 //	@Produce		json
 //	@Security		BearerAuth
@@ -96,7 +96,7 @@ func (u *userHandlerImp) GetOneProblemById(e echo.Context) error {
 //
 //	@Summary		Execute code
 //	@Description	The code the user sent will be executed
-//	@Tags			user
+//	@Tags			Problem Execution Service
 //	@Accept			text/plain
 //	@Produce		text/plain
 //	@Security		BearerAuth
@@ -143,7 +143,7 @@ func (u *userHandlerImp) WriteCode(e echo.Context) error {
 //
 //	@Summary		Execute code
 //	@Description	The code the user sent will be executed and the result will be given
-//	@Tags			user
+//	@Tags			Problem Execution Service
 //	@Accept			text/plain
 //	@Produce		text/plain
 //	@Security		BearerAuth

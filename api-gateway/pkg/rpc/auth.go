@@ -71,3 +71,58 @@ func (c *authServiceImpl) UserSignIn(ctx echo.Context, in request.UserSignInRequ
 	fmt.Println("out", out)
 	return out, nil
 }
+
+// view all users
+func (a *authServiceImpl) ViewUsers(e echo.Context) ([]response.User, error) {
+	client := a.authPool.Get().(*rpc.Client)
+	defer a.authPool.Put(client)
+
+	out := new([]response.User)
+
+	err := client.Call("AuthUserService.GetAllUsers", struct{}{}, out)
+	if err != nil {
+		fmt.Println("err", err)
+		return nil, err
+	}
+	fmt.Println("out ", out)
+	return *out, nil
+}
+
+// search users by email, username
+func (a *authServiceImpl) SearchUser(e echo.Context, req request.Search) ([]response.User, error) {
+	fmt.Println("req usecase ", req)
+	client := a.authPool.Get().(*rpc.Client)
+	defer a.authPool.Put(client)
+
+	out := new([]response.User)
+
+	err := client.Call("AuthUserService.SearchUsers", req, out)
+	if err != nil {
+		fmt.Println("err ", err)
+		return nil, err
+	}
+
+	fmt.Println("out ", out)
+	return *out, nil
+}
+
+func (a *authServiceImpl) BlockUser(e echo.Context, in int) (response.BlockedStatus, error) {
+	fmt.Println("block user rpc", in)
+
+	client := a.authPool.Get().(*rpc.Client)
+
+	defer a.authPool.Put(client)
+
+	out := new(response.User)
+	err := client.Call("AuthUserService.BlockUser", in, out)
+	if err != nil {
+		fmt.Println("err ", err)
+		// log.Panic(err)
+		return response.BlockedStatus{}, err
+	}
+	fmt.Println("out ", out)
+	return response.BlockedStatus{
+		ID:      out.ID,
+		Blocked: out.Blocked,
+	}, nil
+}

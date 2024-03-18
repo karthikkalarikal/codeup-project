@@ -55,3 +55,48 @@ func (u *userUseCase) UserSignIn(ctx context.Context, user request.UserSignInReq
 	fmt.Println("out: ", out)
 	return out, nil
 }
+
+// get all users
+func (u *userUseCase) GetAllUsers(ctx context.Context) ([]domain.User, error) {
+	ctxDeadline, cancel := context.WithTimeout(ctx, 5*time.Second)
+	defer cancel()
+
+	body, err := u.repo.GetAllUsers(ctxDeadline)
+	if err != nil {
+		return nil, err
+	}
+
+	return body, nil
+}
+
+// search by email , username
+func (u *userUseCase) SearchTheUser(ctx context.Context, s request.Search) ([]domain.User, error) {
+	ctxDeadlin, cancel := context.WithTimeout(ctx, 5*time.Second)
+	defer cancel()
+	switch s.SearchBy {
+	case "email":
+		body, err := u.repo.SearchUserByEmail(ctxDeadlin, s.Keyword)
+		if err != nil {
+			return nil, err
+		}
+		if body == nil {
+			s.SearchBy = "username"
+			body, err = u.SearchTheUser(ctxDeadlin, s)
+			if err != nil {
+				return nil, err
+			}
+			return body, nil
+		}
+		return body, err
+	case "username":
+		body, err := u.repo.SearchUserByUsername(ctxDeadlin, s.Keyword)
+		if err != nil {
+			return nil, err
+		}
+		return body, err
+	default:
+		err := fmt.Errorf("unsupported search type: %s", s.Keyword)
+		return nil, err
+	}
+
+}

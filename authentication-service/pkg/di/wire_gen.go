@@ -24,7 +24,9 @@ func InitializeServices(cfg *config.Config) (*api.RpcServer, error) {
 	}
 	userRepository := repository.NewUserRepository(gormDB)
 	userUseCase := usecase.NewUserUseCase(userRepository)
-	authUserService := client.NewUserService(userUseCase)
+	adminRepository := repository.NewAdminRepo(gormDB)
+	adminUsecase := usecase.NewAdminUsecase(adminRepository)
+	authUserService := client.NewUserService(userUseCase, adminUsecase)
 	rpcServer := api.NewRPCServer(cfg, authUserService)
 	return rpcServer, nil
 }

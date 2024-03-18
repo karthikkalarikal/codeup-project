@@ -32,7 +32,7 @@ func InitializeAPI(cfg config.Config) (*api.Server, error) {
 	goCodeExecClient := client.NewGoExecClient(goCodeExecRPC)
 	userHandler := handlers.NewUserHandler(userClient, utilsUtils, goCodeExecClient)
 	adminRPCService := rpc.NewAdminService(configConfig)
-	adminClient := client.NewAdminClient(adminRPCService)
+	adminClient := client.NewAdminClient(adminRPCService, authService)
 	adminHandler := handlers.NewAdminHandler(adminClient, utilsUtils)
 	server := api.NewServerHTTP(configConfig, authHandler, userHandler, adminHandler)
 	return server, nil

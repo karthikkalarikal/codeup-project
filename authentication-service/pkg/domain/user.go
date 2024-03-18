@@ -14,4 +14,5 @@ type User struct {
 	CreatedAt time.Time `json:"created_at" gorm:"not null"`
 	UpdatedAt time.Time `json:"updated_at" gorm:"not null"`
 	Admin     bool      `json:"isadmin" gorm:"default:false"`
+	Blocked   bool      `json:"blocked" gorm:"default:false"`
 }

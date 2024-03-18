@@ -32,7 +32,7 @@ func UserMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
 
 		if tokenString == "" {
 			c.JSON(http.StatusUnauthorized, echo.Map{"error": customerrors.JwtTokenMissingError})
-			return errors.New("")//customerrors.JwtTokenMissingError)
+			return errors.New("") //customerrors.JwtTokenMissingError)
 		}
 
 		tokenString = strings.TrimPrefix(tokenString, "Bearer ")
@@ -56,6 +56,11 @@ func UserMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
 
 			return errors.New("error error in retrieving id")
 
+		}
+		blocked, ok := claims["blocked"].(bool)
+		if !ok || blocked {
+			c.JSON(http.StatusUnauthorized, echo.Map{"error": "the user is blocked"})
+			return errors.New("use is blocked")
 		}
 
 		c.Set("id", int(id))
@@ -83,7 +88,7 @@ func AdminMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
 
 		if tokenString == "" {
 			c.JSON(http.StatusUnauthorized, echo.Map{"error": customerrors.JwtTokenMissingError})
-			return errors.New("")//customerrors.JwtTokenMissingError)
+			return errors.New("") //customerrors.JwtTokenMissingError)
 		}
 
 		tokenString = strings.TrimPrefix(tokenString, "Bearer ")

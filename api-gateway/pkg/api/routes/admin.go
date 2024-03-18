@@ -20,5 +20,12 @@ func SetupAdminRoutes(e *echo.Group, adminHandler handler.AdminHandler) {
 		// problem.DELETE("/:id")
 		// problem.PUT("/:id")
 	}
+	adminUser := e.Group("/user")
+	adminUser.Use(middleware.AdminMiddleware)
+	{
+		adminUser.GET("/", adminHandler.ViewUsers)
+		adminUser.GET("/:keyword", adminHandler.SearchUser)
+		adminUser.PATCH("/:id", adminHandler.BlockUser)
+	}
 
 }

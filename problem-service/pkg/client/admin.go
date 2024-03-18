@@ -61,3 +61,6 @@ func (a *AdminClientImpl) InsertSecondHalfProblem(req request.SecondHalfCode, re
 	*reply = body
 	return nil
 }
+
+
+// func (a *AdminClientImpl) GetAllUsers(req any,reply *doma)
