@@ -13,4 +13,5 @@ type UserUseCase interface {
 	GetAllUsers(context.Context) ([]domain.User, error)
 	SearchTheUser(context.Context, request.Search) ([]domain.User, error)
 	ForgotPassword(context.Context, request.ForgotPassword) (domain.User, error)
+	// EmailVerify(context.Context, int) (string, error)
 }

@@ -9,6 +9,7 @@ import (
 	handler "github.com/karthikkalarikal/api-gateway/pkg/api/handlers/interfaces"
 	"github.com/karthikkalarikal/api-gateway/pkg/client/interfaces"
 	"github.com/karthikkalarikal/api-gateway/pkg/utils"
+	customerrors "github.com/karthikkalarikal/api-gateway/pkg/utils/customErrors"
 	"github.com/karthikkalarikal/api-gateway/pkg/utils/request"
 	"github.com/labstack/echo/v4"
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -198,4 +199,55 @@ func (u *userHandlerImp) ExecuteGoCodyById(e echo.Context) error {
 
 	e.Blob(http.StatusOK, "text/plain", out)
 	return nil
+}
+
+// Problem godoc
+//
+//	@Summary		Forget Password
+//	@Description	to replace the password with new one
+//	@Tags			User Panal
+//	@Accept			json
+//	@Produce		json
+//	@Security		BearerAuth
+//	@Param			password	body		request.NewPassword		true	"new password"
+//	@Success		200			{object}	response.JsonResponse	"success"
+//	@Failure		400			{object}	response.JsonResponse	"Bad Request"
+//	@Failure		401			{object}	response.JsonResponse	"Unauthorized"
+//	@Failure		403			{object}	response.JsonResponse	"Forbidden"
+//	@Failure		500			{object}	response.JsonResponse	"Internal Server Error"
+//	@Router			/user/panal/password [put]
+func (u *userHandlerImp) ForgetPassword(e echo.Context) error {
+	fmt.Println("here in forget passoword")
+	passwordStr := new(request.NewPassword)
+
+	if err := e.Bind(passwordStr); err != nil {
+		u.utils.ErrorJson(e, err, http.StatusBadRequest)
+		return err
+	}
+
+	if passwordStr.ConfirmPassword != passwordStr.Password {
+		err := customerrors.NoMatchingPasswordError.String()
+		u.utils.ErrorJson(e, errors.New(err), http.StatusBadGateway)
+		return errors.New(err)
+	}
+
+	if passwordStr.Password == "" {
+		err := customerrors.NilPointError
+		u.utils.ErrorJson(e, errors.New(err), http.StatusBadGateway)
+		return errors.New(err)
+	}
+
+	body, err := u.user.ForgetPassword(e, request.ForgotPassword{
+		Id:       e.Get("id").(int),
+		Password: passwordStr.Password,
+	})
+
+	if err != nil {
+		u.utils.ErrorJson(e, err, http.StatusBadGateway)
+		return err
+	}
+
+	u.utils.WriteJSON(e, http.StatusOK, body)
+	return nil
+
 }

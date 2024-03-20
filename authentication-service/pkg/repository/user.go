@@ -181,7 +181,7 @@ func (u *userDatabase) ForgetPassword(ctx context.Context, obj request.ForgotPas
 
 	query := `UPDATE users
 	SET password = $1
-	WHERE id s= $2`
+	WHERE id = $2`
 	err = u.DB.Exec(query, string(hashedPassword), obj.Id).Error
 	if err != nil {
 		return err

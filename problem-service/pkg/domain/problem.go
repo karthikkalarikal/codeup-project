@@ -15,7 +15,7 @@ type Problem struct {
 	ID             primitive.ObjectID `bson:"_id,omitempty" json:"id,omitempty"`
 	Title          string             `bson:"title" json:"title"`
 	Description    string             `bson:"description" json:"description"`
-	Difficulty     string             `bson:"difficulty" json:"difficulty"`
+	Difficulty     string             `bson:"difficulty" json:"difficulty" validate:"oneof=easy medium hard"`
 	TestCases      []TestCase         `bson:"test_cases" json:"test_cases"`
 	TimeLimit      int                `bson:"time_limit" json:"time_limit"`
 	MemoryLimit    int                `bson:"memory_limit" json:"memory_limit"`

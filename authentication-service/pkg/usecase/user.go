@@ -7,9 +7,11 @@ import (
 	"authentication/pkg/utils/request"
 	"authentication/pkg/utils/response"
 	"context"
+	"errors"
 	"fmt"
 	"time"
 
+	emailverifier "github.com/AfterShip/email-verifier"
 	"github.com/jinzhu/copier"
 
 	"gorm.io/gorm"
@@ -25,13 +27,43 @@ func NewUserUseCase(repo repo.UserRepository) interfaces.UserUseCase {
 	}
 }
 
-func (u *userUseCase) UserSignUp(ctx context.Context, user request.UserSignUpRequest) (domain.User, error) {
-	body, err := u.repo.UserSignUp(ctx, user)
-	if err != nil {
-		return domain.User{}, err
-	}
+func (u *userUseCase) UserSignUp(ctx context.Context, user request.UserSignUpRequest) (body domain.User, err error) {
+	ctxDeadline, cancel := context.WithTimeout(ctx, 15*time.Second)
+	defer cancel()
+	// ch := make(chan error)
+	err = u.repo.Transactions(func(ur repo.UserRepository) error {
+		if err = EmailVerify(ctxDeadline, body); err != nil {
+			return err
+		}
 
+		body, err = u.repo.UserSignUp(ctxDeadline, user)
+		if err != nil {
+			return err
+		}
+		return nil
+		// select {
+		// case emailErr := <-ch:
+		// 	if emailErr != nil {
+		// 		return emailErr
+		// 	}
+		// case <-ctxDeadline.Done():
+		// 	return ctxDeadline.Err()
+		// default:
+		// 	return errors.New("time out")
+		// }
+		// return <-ch
+
+	})
+	if err != nil {
+		return
+	}
 	return body, nil
+	// body, err := u.repo.UserSignUp(ctx, user)
+	// if err != nil {
+	// 	return domain.User{}, err
+	// }
+
+	// return body, nil
 }
 
 func (u *userUseCase) UserSignIn(ctx context.Context, user request.UserSignInRequest) (out response.UserSignInResponse, err error) {
@@ -109,15 +141,15 @@ func (a *userUseCase) ForgotPassword(ctx context.Context, req request.ForgotPass
 	// Transactions(func(UserRepository) error) error
 
 	err = a.repo.Transactions(func(repo repo.UserRepository) error {
-		_, err = a.repo.GetUserById(ctxDeadline, req.Id)
+		_, err = repo.GetUserById(ctxDeadline, req.Id)
 		if err != nil {
 			return err
 		}
-		err = a.repo.ForgetPassword(ctxDeadline, req)
+		err = repo.ForgetPassword(ctxDeadline, req)
 		if err != nil {
 			return err
 		}
-		out, err = a.repo.GetUserById(ctxDeadline, req.Id)
+		out, err = repo.GetUserById(ctxDeadline, req.Id)
 		if err != nil {
 			return err
 		}
@@ -129,3 +161,39 @@ func (a *userUseCase) ForgotPassword(ctx context.Context, req request.ForgotPass
 	}
 	return out, err
 }
+
+func EmailVerify(ctx context.Context, body domain.User) (err error) {
+	verifier := emailverifier.NewVerifier()
+	ret, err := verifier.Verify(body.Email)
+	if err != nil {
+		err = errors.New("verify email address failed, error is: " + err.Error())
+		// ch <- err
+		return
+	}
+	if !ret.Syntax.Valid {
+		err = errors.New("email address syntax is invalid")
+		// ch <- err
+		return
+	}
+	// _, err = verifier.CheckSMTP("", "")
+	// if err != nil {
+	// 	err = errors.New("check smtp failed: " + err.Error())
+	// 	// ch <- err
+	// 	return
+	// }
+	// smtp.CatchAll
+	// ch <- nil
+	return nil
+
+}
+
+// verify email by generating otp
+// func (u *userUseCase) EmailVerify(ctx context.Context, id int) (string, error) {
+// 	err := u.repo.Transactions(func(ur repo.UserRepository) error {
+// 		body, err := ur.GetUserById(ctx, id)
+// 		if err != nil {
+// 			return err
+// 		}
+
+// 	})
+// }

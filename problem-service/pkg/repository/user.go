@@ -99,3 +99,86 @@ func (p *problemDatabase) GetProblemById(ctx context.Context, id request.Problem
 	return entry, nil
 
 }
+
+func (p *problemDatabase) GetProblemByDifficulty(ctx context.Context, difficulty string) ([]domain.Problem, error) {
+	collection := p.DB.Database("problems").Collection("problems")
+	// var entry []domain.Problem
+
+	filter := bson.D{{"difficulty", difficulty}}
+
+	opts := options.Find()
+
+	opts.SetSort(bson.D{{"created_at", -1}})
+	// opts.
+	cursor, err := collection.Find(ctx, filter, opts)
+	if err != nil {
+		log.Println("finding all docs error:", err)
+		return nil, err
+	}
+
+	defer cursor.Close(ctx)
+
+	var problems []domain.Problem
+
+	for cursor.Next(ctx) {
+		var item domain.Problem
+
+		err := cursor.Decode(&item)
+		if err != nil {
+			log.Println("error decoding problems into slices", err)
+			return nil, err
+		} else {
+			problems = append(problems, item)
+			log.Println("appended item: ", item.Title)
+		}
+		if err := cursor.Err(); err != nil {
+			log.Println("cursor error: ", err)
+			return nil, err
+		}
+
+	}
+	log.Println("total problems found :", len(problems))
+	return problems, nil
+}
+
+func (p *problemDatabase) GetProblemByTags(ctx context.Context, tag string) ([]domain.Problem, error) {
+	collection := p.DB.Database("problems").Collection("problems")
+	// var entry []domain.Problem
+
+	filter := bson.D{{"tags", tag}}
+
+	opts := options.Find()
+
+	opts.SetSort(bson.D{{"created_at", -1}})
+	// opts.
+	cursor, err := collection.Find(ctx, filter, opts)
+	if err != nil {
+		log.Println("finding all docs error:", err)
+		return nil, err
+	}
+
+	defer cursor.Close(ctx)
+
+	var problems []domain.Problem
+
+	for cursor.Next(ctx) {
+		var item domain.Problem
+
+		err := cursor.Decode(&item)
+		if err != nil {
+			log.Println("error decoding problems into slices", err)
+			return nil, err
+		} else {
+			problems = append(problems, item)
+			log.Println("appended item: ", item.Title)
+		}
+		if err := cursor.Err(); err != nil {
+			log.Println("cursor error: ", err)
+			return nil, err
+		}
+
+	}
+	log.Println("total problems found :", len(problems))
+	return problems, nil
+}
+

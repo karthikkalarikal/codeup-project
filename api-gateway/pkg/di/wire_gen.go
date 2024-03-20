@@ -27,7 +27,7 @@ func InitializeAPI(cfg config.Config) (*api.Server, error) {
 	utilsUtils := utils.NewUtils()
 	authHandler := handlers.NewAuthHandler(authClient, utilsUtils)
 	userRPCService := rpc.NewUserService(configConfig)
-	userClient := client.NewUserClient(userRPCService)
+	userClient := client.NewUserClient(userRPCService, authService)
 	goCodeExecRPC := rpc.NewGoExexRPC(configConfig)
 	goCodeExecClient := client.NewGoExecClient(goCodeExecRPC)
 	userHandler := handlers.NewUserHandler(userClient, utilsUtils, goCodeExecClient)
