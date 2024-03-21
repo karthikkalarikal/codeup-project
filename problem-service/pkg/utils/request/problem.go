@@ -36,3 +36,8 @@ type SecondHalfCode struct {
 	// FirstHalfCode  []byte             `bson:"first_half" json:"first_half"`
 	SecondHalfCode []byte `bson:"second_half" json:"second_half"`
 }
+
+type SearchBy struct {
+	Field  string `json:"field"`
+	Search string `json:"search"`
+}

@@ -51,7 +51,7 @@ func (p *problemDatabase) ViewAllProblems(ctx context.Context) ([]domain.Problem
 
 	opts := options.Find()
 
-	opts.SetSort(bson.D{{"created_at", -1}})
+	opts.SetSort(bson.D{{Key: "created_at", Value: -1}})
 
 	cursor, err := collection.Find(context.TODO(), bson.D{}, opts)
 	if err != nil {
@@ -101,14 +101,15 @@ func (p *problemDatabase) GetProblemById(ctx context.Context, id request.Problem
 }
 
 func (p *problemDatabase) GetProblemByDifficulty(ctx context.Context, difficulty string) ([]domain.Problem, error) {
+	fmt.Println("difficulty ", difficulty)
 	collection := p.DB.Database("problems").Collection("problems")
 	// var entry []domain.Problem
 
-	filter := bson.D{{"difficulty", difficulty}}
+	filter := bson.D{{Key: "difficulty", Value: difficulty}}
 
 	opts := options.Find()
 
-	opts.SetSort(bson.D{{"created_at", -1}})
+	opts.SetSort(bson.D{{Key: "created_at", Value: -1}})
 	// opts.
 	cursor, err := collection.Find(ctx, filter, opts)
 	if err != nil {
@@ -142,14 +143,15 @@ func (p *problemDatabase) GetProblemByDifficulty(ctx context.Context, difficulty
 }
 
 func (p *problemDatabase) GetProblemByTags(ctx context.Context, tag string) ([]domain.Problem, error) {
+	fmt.Println("tag ", tag)
 	collection := p.DB.Database("problems").Collection("problems")
 	// var entry []domain.Problem
 
-	filter := bson.D{{"tags", tag}}
+	filter := bson.D{{Key: "tags", Value: tag}}
 
 	opts := options.Find()
 
-	opts.SetSort(bson.D{{"created_at", -1}})
+	opts.SetSort(bson.D{{Key: "created_at", Value: -1}})
 	// opts.
 	cursor, err := collection.Find(ctx, filter, opts)
 	if err != nil {
@@ -181,4 +183,3 @@ func (p *problemDatabase) GetProblemByTags(ctx context.Context, tag string) ([]d
 	log.Println("total problems found :", len(problems))
 	return problems, nil
 }
-

@@ -84,3 +84,20 @@ func (u *userServiceImpl) ExecuteGoCodyById(ctx echo.Context, in request.SubmitC
 	fmt.Println("out", out)
 	return *out, nil
 }
+
+func (u *userServiceImpl) SortProblemBy(ctx echo.Context, in request.SearchBy) ([]response.Problem, error) {
+	fmt.Println("api gateway rpc")
+	fmt.Println("get problem ", in)
+	client := u.problemPool.Get().(*rpc.Client)
+	defer u.problemPool.Put(client)
+
+	out := new([]response.Problem)
+
+	err := client.Call("ProblemUserClient.GetProblemBy", in, out)
+	if err != nil {
+		return nil, err
+	}
+
+	fmt.Println("out ", out)
+	return *out, nil
+}

@@ -10,4 +10,5 @@ type UserHandler interface {
 	WriteCode(e echo.Context) error
 	ExecuteGoCodyById(echo.Context) error
 	ForgetPassword(echo.Context) error
+	GetProblemBy(e echo.Context) error
 }

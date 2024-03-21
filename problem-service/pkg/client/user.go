@@ -7,6 +7,7 @@ import (
 	"problem-service/pkg/domain"
 	usecase "problem-service/pkg/usecase/interfaces"
 	"problem-service/pkg/utils/request"
+	"time"
 )
 
 type ProblemUserClient struct {
@@ -58,4 +59,19 @@ func (p *ProblemUserClient) SubmitCodeById(req request.SubmitCodeIdRequest, repl
 
 	*reply = body
 	return nil
+}
+
+func (p *ProblemUserClient) GetProblemBy(req request.SearchBy, reply *[]domain.Problem) error {
+	log.Println("in get problem by ", req)
+
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+	out, err := p.user.GetProblemBy(ctx, req)
+	if err != nil {
+		return err
+	}
+	*reply = out
+	fmt.Println(*reply)
+	return nil
+
 }

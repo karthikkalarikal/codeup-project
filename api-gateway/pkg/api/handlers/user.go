@@ -251,3 +251,41 @@ func (u *userHandlerImp) ForgetPassword(e echo.Context) error {
 	return nil
 
 }
+
+// Problem godoc
+//
+//	@Summary		Search Problem
+//	@Description	Get Problem by difficulty or tags
+//	@Tags			general
+//	@Produce		json
+//	@Param			searchBy	query		string					true	"tags, difficulty "
+//	@Param			value		query		string					false	"Difficulty: easy, hard, medium. Tags:array, strigs,etc"
+//	@Success		200			{object}	string					"success"
+//	@Failure		400			{object}	response.JsonResponse	"Bad Request"
+//	@Failure		401			{object}	response.JsonResponse	"Unauthorized"
+//	@Failure		403			{object}	response.JsonResponse	"Forbidden"
+//	@Failure		500			{object}	response.JsonResponse	"Internal Server Error"
+//	@Router			/user/problem [get]
+func (u *userHandlerImp) GetProblemBy(e echo.Context) error {
+	fmt.Println("here get problem by")
+	search := e.QueryParam("searchBy")
+	value := e.QueryParam("value")
+	if search == "" || value == "" {
+		err := errors.New(customerrors.NilPointError)
+		u.utils.ErrorJson(e, err, http.StatusBadRequest)
+		return err
+	}
+	fmt.Println("search ", search, " value ", value)
+	body, err := u.user.GetProblemBy(e, request.SearchBy{
+		Field:  search,
+		Search: value,
+	})
+	if err != nil {
+		u.utils.ErrorJson(e, err, http.StatusBadGateway)
+		return err
+	}
+
+	u.utils.WriteJSON(e, http.StatusOK, body)
+	return nil
+
+}

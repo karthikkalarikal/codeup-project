@@ -62,3 +62,12 @@ func (u *userClientImpl) ForgetPassword(e echo.Context, req request.ForgotPasswo
 	}
 	return body, nil
 }
+
+func (u *userClientImpl) GetProblemBy(e echo.Context, req request.SearchBy) ([]response.Problem, error) {
+	fmt.Println("get problem ", req)
+	body, err := u.user.SortProblemBy(e, req)
+	if err != nil {
+		return nil, err
+	}
+	return body, nil
+}

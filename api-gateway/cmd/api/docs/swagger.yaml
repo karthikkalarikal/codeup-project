@@ -547,6 +547,45 @@ paths:
       summary: Forget Password
       tags:
       - User Panal
+  /user/problem:
+    get:
+      description: Get Problem by difficulty or tags
+      parameters:
+      - description: 'tags, difficulty '
+        in: query
+        name: searchBy
+        required: true
+        type: string
+      - description: 'Difficulty: easy, hard, medium. Tags:array, strigs,etc'
+        in: query
+        name: value
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: success
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.JsonResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/response.JsonResponse'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/response.JsonResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.JsonResponse'
+      summary: Search Problem
+      tags:
+      - general
   /user/problem/{id}:
     get:
       consumes:

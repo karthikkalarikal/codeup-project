@@ -12,6 +12,7 @@ func SetupUserRoutes(e *echo.Group, authHandler handler.AuthHandler, userHandler
 	e.POST("/signup", authHandler.UserSignUp)
 	e.POST("/signin", authHandler.UserSignIn)
 	e.GET("/view", userHandler.ViewAllProblems)
+	e.GET("/problem", userHandler.GetProblemBy)
 	// fmt.Println("here in user/")
 	// e.PATCH("/password")
 	userPanal := e.Group("/panal")
