@@ -26,16 +26,18 @@ type JwtCustomClaims struct {
 	Id      int  `json:"id"`
 	Admin   bool `json:"admin"`
 	Blocked bool `json:"blocked"`
+	Prime   bool `json:"prime"`
 
 	jwt.RegisteredClaims
 }
 
-func (u *Utils) GetTokenString(userId int, admin bool, blocked bool) (string, error) {
+func (u *Utils) GetTokenString(userId int, admin bool, blocked bool, prime bool) (string, error) {
 
 	claims := &JwtCustomClaims{
 		userId,
 		admin,
 		blocked,
+		prime,
 		jwt.RegisteredClaims{
 			ExpiresAt: jwt.NewNumericDate(time.Now().Add(time.Hour * 72)),
 			IssuedAt:  jwt.NewNumericDate(time.Now()),

@@ -15,6 +15,7 @@ type Problem struct {
 	TimeLimit   int        `bson:"time_limit" json:"time_limit"`
 	MemoryLimit int        `bson:"memory_limit" json:"memory_limit"`
 	Tags        []string   `bson:"tags" json:"tags"`
+	Prime       bool       `bson:"prime" json:"prime"`
 }
 
 type ProblemById struct {

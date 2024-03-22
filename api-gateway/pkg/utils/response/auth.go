@@ -13,6 +13,7 @@ type UserSignUpResponse struct {
 	LastName  string    `json:"last_name"` // for proper representaion of null value in go sql.Null is used
 	CreatedAt time.Time `json:"created_at"`
 	UpdatedAt time.Time `json:"updated_at"`
+	Prime     bool      `json:"prime"`
 }
 
 type UserSignInResponse struct {
@@ -21,6 +22,7 @@ type UserSignInResponse struct {
 	Email    string `json:"email"`
 	Password string `json:"password"`
 	Blocked  bool   `json:"blocked"`
+	Prime    bool   `json:"prime"`
 }
 
 type SignUpWrapper struct {

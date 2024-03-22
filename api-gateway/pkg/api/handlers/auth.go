@@ -80,7 +80,7 @@ func (u *authHandlerImpl) UserSignUp(e echo.Context) error {
 		u.utils.ErrorJson(e, err, http.StatusBadRequest)
 		return err
 	}
-	token, err := u.utils.GetTokenString(userCreated.ID, false, false)
+	token, err := u.utils.GetTokenString(userCreated.ID, false, false, false)
 	if err != nil {
 		u.utils.ErrorJson(e, err, http.StatusBadRequest)
 		return err
@@ -139,7 +139,7 @@ func (u *authHandlerImpl) UserSignIn(e echo.Context) error {
 
 	}
 
-	token, err := u.utils.GetTokenString(userSignedIn.ID, userSignedIn.Admin, userSignedIn.Blocked)
+	token, err := u.utils.GetTokenString(userSignedIn.ID, userSignedIn.Admin, userSignedIn.Blocked, userSignedIn.Prime)
 	if err != nil {
 		u.utils.ErrorJson(e, err, http.StatusBadRequest)
 		return err

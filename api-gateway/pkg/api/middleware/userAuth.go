@@ -63,8 +63,16 @@ func UserMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
 			return errors.New("use is blocked")
 		}
 
+		prime, ok := claims["prime"].(bool)
+		if !ok {
+			c.JSON(http.StatusUnauthorized, echo.Map{"error": "the user is information is corrupted"})
+			return errors.New("use is blocked")
+		}
+
 		c.Set("id", int(id))
+		c.Set("prime", prime)
 		fmt.Println("id", id)
+		fmt.Println("prime", prime)
 		return next(c)
 	}
 }

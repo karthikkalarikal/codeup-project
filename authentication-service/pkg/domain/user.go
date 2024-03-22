@@ -16,6 +16,7 @@ type User struct {
 	UpdatedAt     time.Time `json:"updated_at" gorm:"not null"`
 	Admin         bool      `json:"isadmin" gorm:"default:false"`
 	Blocked       bool      `json:"blocked" gorm:"default:false"`
+	Prime         bool      `json:"prime" gorm:"default:false"`
 }
 
 type VerifyEmails struct {

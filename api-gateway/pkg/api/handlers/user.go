@@ -89,6 +89,14 @@ func (u *userHandlerImp) GetOneProblemById(e echo.Context) error {
 		u.utils.ErrorJson(e, err, http.StatusBadRequest)
 		return err
 	}
+	if body.Prime {
+		if !e.Get("prime").(bool) {
+			err := errors.New("this is a question for prime users only")
+			u.utils.ErrorJson(e, err, http.StatusUnauthorized)
+			return err
+		}
+	}
+
 	u.utils.WriteJSON(e, http.StatusCreated, body)
 	return nil
 }

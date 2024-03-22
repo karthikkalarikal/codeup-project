@@ -68,19 +68,19 @@ func (p *problemDatabase) ViewAllProblems(ctx context.Context) ([]domain.Problem
 
 		err := cursor.Decode(&item)
 		if err != nil {
-			log.Println("error decoding problems into slices", err)
+			// log.Println("error decoding problems into slices", err)
 			return nil, err
 		} else {
 			problems = append(problems, item)
-			log.Println("appended item: ", item.Title)
+			// log.Println("appended item: ", item.Title)
 		}
 		if err := cursor.Err(); err != nil {
-			log.Println("cursor error: ", err)
+			// log.Println("cursor error: ", err)
 			return nil, err
 		}
 
 	}
-	log.Println("total problems found :", len(problems))
+	log.Println(len(problems))
 	return problems, nil
 }
 
@@ -100,6 +100,7 @@ func (p *problemDatabase) GetProblemById(ctx context.Context, id request.Problem
 
 }
 
+// get problem by difficulty
 func (p *problemDatabase) GetProblemByDifficulty(ctx context.Context, difficulty string) ([]domain.Problem, error) {
 	fmt.Println("difficulty ", difficulty)
 	collection := p.DB.Database("problems").Collection("problems")
@@ -142,6 +143,7 @@ func (p *problemDatabase) GetProblemByDifficulty(ctx context.Context, difficulty
 	return problems, nil
 }
 
+// get problems by tags
 func (p *problemDatabase) GetProblemByTags(ctx context.Context, tag string) ([]domain.Problem, error) {
 	fmt.Println("tag ", tag)
 	collection := p.DB.Database("problems").Collection("problems")

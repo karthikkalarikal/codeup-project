@@ -23,4 +23,5 @@ type Problem struct {
 	SecondHalfCode []byte             `bson:"second_half" json:"second_half"`
 	Tags           []string           `bson:"tags" json:"tags"`
 	CreatedAt      time.Time          `bson:"created_at" json:"created_at"`
+	Prime          bool               `bson:"prime" json:"prime"`
 }
