@@ -25,6 +25,7 @@ type InsertProblem struct {
 	SecondHalfCode []byte     `bson:"second_half" json:"second_half"`
 	Tags           []string   `bson:"tags" json:"tags"`
 	CreatedAt      time.Time  `bson:"created_at" json:"created_at"`
+	Prime          bool       `bson:"prime" json:"prime"`
 }
 
 type GetOneProblemById struct {
@@ -41,6 +42,11 @@ type FirstHalfCode struct {
 	FirstHalfCode []byte             `bson:"first_half" json:"first_half"`
 }
 type SecondHalfCode struct {
-	ID primitive.ObjectID `bson:"_id,omitempty" json:"id,omitempty"`
-	SecondHalfCode []byte `bson:"second_half" json:"second_half"`
+	ID             primitive.ObjectID `bson:"_id,omitempty" json:"id,omitempty"`
+	SecondHalfCode []byte             `bson:"second_half" json:"second_half"`
+}
+
+type SearchBy struct {
+	Field  string `json:"field"`
+	Search string `json:"search"`
 }

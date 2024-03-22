@@ -13,13 +13,16 @@ type UserSignUpResponse struct {
 	LastName  string    `json:"last_name"` // for proper representaion of null value in go sql.Null is used
 	CreatedAt time.Time `json:"created_at"`
 	UpdatedAt time.Time `json:"updated_at"`
+	Prime     bool      `json:"prime"`
 }
 
 type UserSignInResponse struct {
-	ID      int    `json:"id"`
-	Admin   bool   `json:"admin"`
-	Email   string `json:"email"`
-	Blocked bool   `json:"blocked"`
+	ID       int    `json:"id"`
+	Admin    bool   `json:"admin"`
+	Email    string `json:"email"`
+	Password string `json:"password"`
+	Blocked  bool   `json:"blocked"`
+	Prime    bool   `json:"prime"`
 }
 
 type SignUpWrapper struct {

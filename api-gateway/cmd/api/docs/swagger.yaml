@@ -30,6 +30,13 @@ definitions:
       title:
         type: string
     type: object
+  request.NewPassword:
+    properties:
+      confirmpassword:
+        type: string
+      password:
+        type: string
+    type: object
   request.TestCase:
     properties:
       input:
@@ -500,6 +507,85 @@ paths:
       summary: Execute code
       tags:
       - Problem Execution Service
+  /user/panal/password:
+    put:
+      consumes:
+      - application/json
+      description: to replace the password with new one
+      parameters:
+      - description: new password
+        in: body
+        name: password
+        required: true
+        schema:
+          $ref: '#/definitions/request.NewPassword'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: success
+          schema:
+            $ref: '#/definitions/response.JsonResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.JsonResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/response.JsonResponse'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/response.JsonResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.JsonResponse'
+      security:
+      - BearerAuth: []
+      summary: Forget Password
+      tags:
+      - User Panal
+  /user/problem:
+    get:
+      description: Get Problem by difficulty or tags
+      parameters:
+      - description: 'tags, difficulty '
+        in: query
+        name: searchBy
+        required: true
+        type: string
+      - description: 'Difficulty: easy, hard, medium. Tags:array, strigs,etc'
+        in: query
+        name: value
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: success
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.JsonResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/response.JsonResponse'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/response.JsonResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.JsonResponse'
+      summary: Search Problem
+      tags:
+      - general
   /user/problem/{id}:
     get:
       consumes:

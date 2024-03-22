@@ -12,4 +12,5 @@ type AuthService interface {
 	ViewUsers(e echo.Context) ([]response.User, error)
 	SearchUser(e echo.Context, req request.Search) ([]response.User, error)
 	BlockUser(e echo.Context, in int) (response.BlockedStatus, error)
+	ForgetPassword(e echo.Context, in request.ForgotPassword) (response.User, error)
 }

@@ -21,3 +21,8 @@ type Search struct {
 	SearchBy string `json:"seach_by"`
 	Keyword  string `json:"keyword"`
 }
+
+type ForgotPassword struct {
+	Id       int    `json:"id"`
+	Password string `json:"password"`
+}

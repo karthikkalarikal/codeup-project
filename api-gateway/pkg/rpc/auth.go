@@ -106,6 +106,7 @@ func (a *authServiceImpl) SearchUser(e echo.Context, req request.Search) ([]resp
 	return *out, nil
 }
 
+// block user
 func (a *authServiceImpl) BlockUser(e echo.Context, in int) (response.BlockedStatus, error) {
 	fmt.Println("block user rpc", in)
 
@@ -125,4 +126,21 @@ func (a *authServiceImpl) BlockUser(e echo.Context, in int) (response.BlockedSta
 		ID:      out.ID,
 		Blocked: out.Blocked,
 	}, nil
+}
+
+// forget password
+func (a *authServiceImpl) ForgetPassword(e echo.Context, in request.ForgotPassword) (response.User, error) {
+	fmt.Println("forget password")
+
+	client := a.authPool.Get().(*rpc.Client)
+	defer a.authPool.Put(client)
+
+	out := new(response.User)
+	err := client.Call("AuthUserService.ForgetPassword", in, out)
+	if err != nil {
+		fmt.Println("err ", err)
+		return response.User{}, err
+	}
+	fmt.Println("out ", out)
+	return *out, nil
 }

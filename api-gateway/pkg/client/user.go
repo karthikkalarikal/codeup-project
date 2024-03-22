@@ -11,15 +11,18 @@ import (
 )
 
 type userClientImpl struct {
-	user client.UserClient
+	user interfaces.UserRPCService
+	auth interfaces.AuthService
 }
 
-func NewUserClient(user interfaces.UserRPCService) client.UserClient {
+func NewUserClient(user interfaces.UserRPCService, auth interfaces.AuthService) client.UserClient {
 	return &userClientImpl{
 		user: user,
+		auth: auth,
 	}
 }
 
+// view all problems
 func (u *userClientImpl) ViewAllProblems(in request.AllProbles) ([]response.Problem, error) {
 	body, err := u.user.ViewAllProblems(in)
 
@@ -30,6 +33,7 @@ func (u *userClientImpl) ViewAllProblems(in request.AllProbles) ([]response.Prob
 	return body, nil
 }
 
+// get problem by id
 func (u *userClientImpl) GetProblemById(ctx echo.Context, in request.GetOneProblemById) (response.Problem, error) {
 	fmt.Println("in usecase")
 	body, err := u.user.GetProblemById(ctx, in)
@@ -46,6 +50,24 @@ func (u *userClientImpl) ExecuteGoCodyById(ctx echo.Context, in request.SubmitCo
 	body, err := u.user.ExecuteGoCodyById(ctx, in)
 	if err != nil {
 		return
+	}
+	return body, nil
+}
+
+// forget password
+func (u *userClientImpl) ForgetPassword(e echo.Context, req request.ForgotPassword) (response.User, error) {
+	body, err := u.auth.ForgetPassword(e, req)
+	if err != nil {
+		return response.User{}, err
+	}
+	return body, nil
+}
+
+func (u *userClientImpl) GetProblemBy(e echo.Context, req request.SearchBy) ([]response.Problem, error) {
+	fmt.Println("get problem ", req)
+	body, err := u.user.SortProblemBy(e, req)
+	if err != nil {
+		return nil, err
 	}
 	return body, nil
 }

@@ -10,4 +10,5 @@ type UserUseCase interface {
 	ViewAllProblems(context.Context) ([]domain.Problem, error)
 	GetProblemById(ctx context.Context, id request.ProblemById) (domain.Problem, error)
 	SubmitCodeById(ctx context.Context, req request.SubmitCodeIdRequest) ([]byte, error)
+	GetProblemBy(ctx context.Context, in request.SearchBy) ([]domain.Problem, error)
 }

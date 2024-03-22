@@ -2,7 +2,7 @@ package client
 
 import (
 	"authentication/pkg/domain"
-	"authentication/pkg/usecase/interfaces"
+	// "authentication/pkg/usecase/interfaces"
 	user "authentication/pkg/usecase/interfaces"
 	"authentication/pkg/utils/request"
 	"authentication/pkg/utils/response"
@@ -13,10 +13,10 @@ import (
 
 type AuthUserService struct {
 	useCase user.UserUseCase
-	admin   interfaces.AdminUsecase
+	admin   user.AdminUsecase
 }
 
-func NewUserService(user user.UserUseCase, admin interfaces.AdminUsecase) *AuthUserService {
+func NewUserService(user user.UserUseCase, admin user.AdminUsecase) *AuthUserService {
 	return &AuthUserService{
 		useCase: user,
 		admin:   admin,
@@ -85,6 +85,7 @@ func (u *AuthUserService) SearchUsers(req request.Search, reply *[]domain.User) 
 
 }
 
+// block user
 func (u *AuthUserService) BlockUser(req int, reply *domain.User) error {
 	fmt.Println("here in block user auth service ", req)
 	ctx := context.Background()
@@ -95,6 +96,19 @@ func (u *AuthUserService) BlockUser(req int, reply *domain.User) error {
 		return err
 	}
 	fmt.Println("out ", out)
+	*reply = out
+	return nil
+}
+
+// forget password
+func (u *AuthUserService) ForgetPassword(req request.ForgotPassword, reply *domain.User) error {
+	fmt.Println("here in forget password", req)
+	ctx := context.Background()
+
+	out, err := u.useCase.ForgotPassword(ctx, req)
+	if err != nil {
+		return err
+	}
 	*reply = out
 	return nil
 }

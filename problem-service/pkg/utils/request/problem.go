@@ -15,6 +15,7 @@ type Problem struct {
 	TimeLimit   int        `bson:"time_limit" json:"time_limit"`
 	MemoryLimit int        `bson:"memory_limit" json:"memory_limit"`
 	Tags        []string   `bson:"tags" json:"tags"`
+	Prime       bool       `bson:"prime" json:"prime"`
 }
 
 type ProblemById struct {
@@ -35,4 +36,9 @@ type SecondHalfCode struct {
 	ID primitive.ObjectID `bson:"_id,omitempty" json:"id,omitempty"`
 	// FirstHalfCode  []byte             `bson:"first_half" json:"first_half"`
 	SecondHalfCode []byte `bson:"second_half" json:"second_half"`
+}
+
+type SearchBy struct {
+	Field  string `json:"field"`
+	Search string `json:"search"`
 }
