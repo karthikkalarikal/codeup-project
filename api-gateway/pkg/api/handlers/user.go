@@ -4,7 +4,9 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"log"
 	"net/http"
+	"strconv"
 
 	handler "github.com/karthikkalarikal/api-gateway/pkg/api/handlers/interfaces"
 	"github.com/karthikkalarikal/api-gateway/pkg/client/interfaces"
@@ -16,16 +18,18 @@ import (
 )
 
 type userHandlerImp struct {
-	user   interfaces.UserClient
-	utils  utils.Utils
-	goexec interfaces.GoCodeExecClient
+	user    interfaces.UserClient
+	utils   utils.Utils
+	goexec  interfaces.GoCodeExecClient
+	payment interfaces.PaymentClient
 }
 
-func NewUserHandler(user interfaces.UserClient, utils *utils.Utils, goexec interfaces.GoCodeExecClient) handler.UserHandler {
+func NewUserHandler(payment interfaces.PaymentClient, user interfaces.UserClient, utils *utils.Utils, goexec interfaces.GoCodeExecClient) handler.UserHandler {
 	return &userHandlerImp{
-		user:   user,
-		utils:  *utils,
-		goexec: goexec,
+		user:    user,
+		utils:   *utils,
+		goexec:  goexec,
+		payment: payment,
 	}
 }
 
@@ -293,6 +297,125 @@ func (u *userHandlerImp) GetProblemBy(e echo.Context) error {
 		return err
 	}
 
+	u.utils.WriteJSON(e, http.StatusOK, body)
+	return nil
+
+}
+
+// render the payment frontend
+func (u *userHandlerImp) Payment(e echo.Context) error {
+	// Data to pass to the template
+	data := map[string]interface{}{
+		"Title": "Payment Page",
+	}
+
+	// Render the HTML template
+	if err := e.Render(http.StatusOK, "terminal.page.gohtml", data); err != nil {
+		log.Println(err)
+		return err
+	}
+
+	return nil
+}
+
+type stripePayload struct {
+	Amount   string `json:"amount"`
+	Currency string `json:"currency"`
+}
+
+// get payment intent, it gets called in the front end
+func (u *userHandlerImp) GetPaymentIntent(e echo.Context) error {
+	// payment-intent
+	var payload stripePayload
+	if err := e.Bind(&payload); err != nil {
+		u.utils.ErrorJson(e, err, http.StatusBadRequest)
+		return err
+	}
+
+	amount, err := strconv.Atoi(payload.Amount)
+	if err != nil {
+		u.utils.ErrorJson(e, err, http.StatusBadRequest)
+		return err
+	}
+
+	out, err := u.payment.Payment(e, request.Stripe{
+		Amount:   amount,
+		Currency: payload.Currency,
+	})
+	if err != nil {
+		u.utils.ErrorJson(e, err, http.StatusBadRequest)
+		return err
+	}
+
+	e.Response().Header().Set(echo.HeaderContentType, echo.MIMEApplicationJSON)
+	e.Response().Write(out)
+	// e.Blob(http.StatusOK, "Content-Type, application/json", out)
+
+	return nil
+}
+
+func (u *userHandlerImp) PaymentSuccess(e echo.Context) error {
+	fmt.Println("here in payment success")
+	err := e.Request().ParseForm()
+	if err != nil {
+		log.Println(err)
+		u.utils.ErrorJson(e, err)
+		return err
+
+	}
+
+	cardHolder := e.Request().Form.Get("cardholder_name")
+	email := e.Request().Form.Get("email")
+	paymentIntent := e.Request().Form.Get("payment_intent")
+	paymentMethod := e.Request().Form.Get("payment_method")
+	paymentAmount := e.Request().Form.Get("payment_amount")
+	paymentCurrency := e.Request().Form.Get("payment_currency")
+
+	data := make(map[string]any)
+
+	data["cardholder"] = cardHolder
+	data["email"] = email
+	data["pi"] = paymentIntent
+	data["pm"] = paymentMethod
+	data["pa"] = paymentAmount
+	data["pc"] = paymentCurrency
+	fmt.Println("data", data)
+
+	err = u.user.MakePrime(e, email)
+	if err != nil {
+		u.utils.ErrorJson(e, err, http.StatusBadGateway)
+		return err
+	}
+
+	if err := e.Render(http.StatusOK, "home.gohtml", data); err != nil {
+		log.Println(err)
+		return err
+	}
+	return nil
+}
+
+// unsubscribe
+
+// Problem godoc
+//
+//	@Summary		Unsubscribe
+//	@Description	Unsubscribe from prime membership
+//	@Tags			User Panal
+//	@Produce		json
+//	@Security		BearerAuth
+//	@Success		200	{object}	response.User	"success"
+//	@Failure		400	{object}	response.User	"Bad Request"
+//	@Failure		401	{object}	response.User	"Unauthorized"
+//	@Failure		403	{object}	response.User	"Forbidden"
+//	@Failure		500	{object}	response.User	"Internal Server Error"
+//	@Router			/user/panal/unsubscribe [patch]
+func (u *userHandlerImp) UnSubscrbe(e echo.Context) error {
+	id := e.Get("id").(int)
+	body, err := u.user.UnSubscrbe(e, id)
+	if err != nil {
+		u.utils.ErrorJson(e, err, http.StatusBadRequest)
+		return err
+	}
 	u.utils.WriteJSON(e, http.StatusOK, body)
 	return nil
 

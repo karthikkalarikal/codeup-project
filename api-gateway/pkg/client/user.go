@@ -71,3 +71,22 @@ func (u *userClientImpl) GetProblemBy(e echo.Context, req request.SearchBy) ([]r
 	}
 	return body, nil
 }
+
+func (u *userClientImpl) MakePrime(e echo.Context, email string) error {
+	fmt.Println("make prime")
+
+	err := u.auth.MakePrime(e, email)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (u *userClientImpl) UnSubscrbe(e echo.Context, id int) (response.User, error) {
+	fmt.Println("unsubscrbe")
+	body, err := u.auth.UnSubscribe(e, id)
+	if err != nil {
+		return response.User{}, err
+	}
+	return body, nil
+}

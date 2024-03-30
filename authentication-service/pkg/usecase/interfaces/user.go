@@ -14,4 +14,6 @@ type UserUseCase interface {
 	SearchTheUser(context.Context, request.Search) ([]domain.User, error)
 	ForgotPassword(context.Context, request.ForgotPassword) (domain.User, error)
 	// EmailVerify(context.Context, int) (string, error)
+	MakePrime(context.Context, string) (string, error)
+	UnSubscribe(ctx context.Context, id int) (domain.User, error)
 }

@@ -58,7 +58,7 @@ func (c *authServiceImpl) UserSignUp(ctx echo.Context, in request.UserSignUpRequ
 
 // sign in
 func (c *authServiceImpl) UserSignIn(ctx echo.Context, in request.UserSignInRequest) (*response.UserSignInResponse, error) {
-
+	fmt.Println("here in rpc auth")
 	client := c.authPool.Get().(*rpc.Client)
 	defer c.authPool.Put(client)
 
@@ -142,5 +142,53 @@ func (a *authServiceImpl) ForgetPassword(e echo.Context, in request.ForgotPasswo
 		return response.User{}, err
 	}
 	fmt.Println("out ", out)
+	return *out, nil
+}
+
+func (a *authServiceImpl) Payment(e echo.Context, in request.Stripe) ([]byte, error) {
+	client := a.authPool.Get().(*rpc.Client)
+	defer a.authPool.Put(client)
+
+	out := new([]byte)
+
+	err := client.Call("AuthUserService.Charge", in, out)
+	if err != nil {
+		fmt.Println("err", err)
+		return nil, err
+	}
+	return *out, nil
+}
+
+func (a *authServiceImpl) MakePrime(e echo.Context, email string) error {
+	client := a.authPool.Get().(*rpc.Client)
+	defer a.authPool.Put(client)
+
+	out := new(string)
+
+	err := client.Call("AuthUserService.MakePrime", email, out)
+	if err != nil {
+		fmt.Println("err", err)
+		return err
+	}
+
+	fmt.Println("out", out)
+	return nil
+
+}
+
+// unsubscrbe
+func (a *authServiceImpl) UnSubscribe(e echo.Context, id int) (response.User, error) {
+	client := a.authPool.Get().(*rpc.Client)
+	defer a.authPool.Put(client)
+
+	out := new(response.User)
+
+	err := client.Call("AuthUserService.UnSubscribe", id, out)
+	if err != nil {
+		fmt.Println("err", err)
+		return response.User{}, err
+	}
+
+	fmt.Println("out", out)
 	return *out, nil
 }

@@ -13,6 +13,8 @@ definitions:
         type: array
       memory_limit:
         type: integer
+      prime:
+        type: boolean
       second_half:
         items:
           type: integer
@@ -107,6 +109,8 @@ definitions:
         type: string
       memory_limit:
         type: integer
+      prime:
+        type: boolean
       tags:
         items:
           type: string
@@ -167,6 +171,8 @@ definitions:
       last_name:
         description: for proper representaion of null value in go sql.Null is used
         type: string
+      prime:
+        type: boolean
       updated_at:
         type: string
       username:
@@ -545,6 +551,37 @@ paths:
       security:
       - BearerAuth: []
       summary: Forget Password
+      tags:
+      - User Panal
+  /user/panal/unsubscribe:
+    patch:
+      description: Unsubscribe from prime membership
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: success
+          schema:
+            $ref: '#/definitions/response.User'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.User'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/response.User'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/response.User'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.User'
+      security:
+      - BearerAuth: []
+      summary: Unsubscribe
       tags:
       - User Panal
   /user/problem:

@@ -9,6 +9,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"strconv"
 	"time"
 
 	emailverifier "github.com/AfterShip/email-verifier"
@@ -32,9 +33,9 @@ func (u *userUseCase) UserSignUp(ctx context.Context, user request.UserSignUpReq
 	defer cancel()
 	// ch := make(chan error)
 	err = u.repo.Transactions(func(ur repo.UserRepository) error {
-		if err = EmailVerify(ctxDeadline, body); err != nil {
-			return err
-		}
+		// if err = EmailVerify(ctxDeadline, body); err != nil {
+		// 	return err
+		// }
 
 		body, err = u.repo.UserSignUp(ctxDeadline, user)
 		if err != nil {
@@ -187,13 +188,54 @@ func EmailVerify(ctx context.Context, body domain.User) (err error) {
 
 }
 
-// verify email by generating otp
-// func (u *userUseCase) EmailVerify(ctx context.Context, id int) (string, error) {
-// 	err := u.repo.Transactions(func(ur repo.UserRepository) error {
-// 		body, err := ur.GetUserById(ctx, id)
-// 		if err != nil {
-// 			return err
-// 		}
+func (u *userUseCase) MakePrime(ctx context.Context, email string) (string, error) {
+	idStr := ""
+	err := u.repo.Transactions(func(ur repo.UserRepository) error {
+		body, err := ur.GetUserByEmailWithoutTx(ctx, email)
+		if err != nil {
+			fmt.Println("err", err)
+			return err
+		}
+		fmt.Println("user is found", body)
 
-// 	})
-// }
+		err = u.repo.MakePrime(ctx, body.ID)
+		if err != nil {
+			fmt.Println("err", err)
+			return err
+		}
+		fmt.Println("user is made prime")
+		idStr = strconv.Itoa(body.ID)
+		return nil
+	})
+	if err != nil {
+		return "", err
+	}
+	return idStr, nil
+}
+
+func (u *userUseCase) UnSubscribe(ctx context.Context, id int) (domain.User, error) {
+	var body domain.User
+	var err error
+	err = u.repo.Transactions(func(ur repo.UserRepository) error {
+
+		// fmt.Println("user is found", body)
+
+		err = u.repo.MakePrime(ctx, body.ID)
+		if err != nil {
+			fmt.Println("err", err)
+			return err
+		}
+		fmt.Println("user is made prime")
+		// idStr = strconv.Itoa(body.ID)
+		body, err = ur.GetUserById(ctx, id)
+		if err != nil {
+			fmt.Println("err", err)
+			return err
+		}
+		return nil
+	})
+	if err != nil {
+		return domain.User{}, err
+	}
+	return body, nil
+}
