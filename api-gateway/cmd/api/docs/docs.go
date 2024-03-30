@@ -39,7 +39,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "admin"
+                    "Problem Management"
                 ],
                 "summary": "Create a Problem",
                 "parameters": [
@@ -96,7 +96,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "admin"
+                    "Problem Management"
                 ],
                 "summary": "Insert first half of problem",
                 "parameters": [
@@ -160,7 +160,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "admin"
+                    "Problem Management"
                 ],
                 "summary": "Insert second half of problem",
                 "parameters": [
@@ -209,6 +209,191 @@ const docTemplate = `{
                 }
             }
         },
+        "/admin/user/": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Admin Gets the list of all users",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "User Management"
+                ],
+                "summary": "Get Users",
+                "responses": {
+                    "201": {
+                        "description": "Success: get all users",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/response.User"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/response.User"
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/response.User"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/response.User"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/admin/user/{id}": {
+            "patch": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Admin Can block/unblock user by passing id",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "User Management"
+                ],
+                "summary": "Block user",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "user id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Success: get all users",
+                        "schema": {
+                            "$ref": "#/definitions/response.BlockedStatus"
+                        }
+                    },
+                    "204": {
+                        "description": "no users",
+                        "schema": {
+                            "$ref": "#/definitions/response.BlockedStatus"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request",
+                        "schema": {
+                            "$ref": "#/definitions/response.BlockedStatus"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/response.BlockedStatus"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/response.BlockedStatus"
+                        }
+                    }
+                }
+            }
+        },
+        "/admin/user/{keyword}": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Admin Gets the list of all users using keyworkd",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "User Management"
+                ],
+                "summary": "Search Users",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "keyword",
+                        "name": "keyword",
+                        "in": "path"
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Success: get all users",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/response.User"
+                            }
+                        }
+                    },
+                    "204": {
+                        "description": "no users",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/response.User"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/response.User"
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/response.User"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/response.User"
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/user/go/exec": {
             "post": {
                 "security": [
@@ -224,7 +409,7 @@ const docTemplate = `{
                     "text/plain"
                 ],
                 "tags": [
-                    "user"
+                    "Problem Execution Service"
                 ],
                 "summary": "Execute code",
                 "parameters": [
@@ -287,7 +472,7 @@ const docTemplate = `{
                     "text/plain"
                 ],
                 "tags": [
-                    "user"
+                    "Problem Execution Service"
                 ],
                 "summary": "Execute code",
                 "parameters": [
@@ -342,6 +527,177 @@ const docTemplate = `{
                 }
             }
         },
+        "/user/panal/password": {
+            "put": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "to replace the password with new one",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "User Panal"
+                ],
+                "summary": "Forget Password",
+                "parameters": [
+                    {
+                        "description": "new password",
+                        "name": "password",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/request.NewPassword"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "success",
+                        "schema": {
+                            "$ref": "#/definitions/response.JsonResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/response.JsonResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/response.JsonResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/response.JsonResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/response.JsonResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/user/panal/unsubscribe": {
+            "patch": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Unsubscribe from prime membership",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "User Panal"
+                ],
+                "summary": "Unsubscribe",
+                "responses": {
+                    "200": {
+                        "description": "success",
+                        "schema": {
+                            "$ref": "#/definitions/response.User"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/response.User"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/response.User"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/response.User"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/response.User"
+                        }
+                    }
+                }
+            }
+        },
+        "/user/problem": {
+            "get": {
+                "description": "Get Problem by difficulty or tags",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "general"
+                ],
+                "summary": "Search Problem",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "tags, difficulty ",
+                        "name": "searchBy",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Difficulty: easy, hard, medium. Tags:array, strigs,etc",
+                        "name": "value",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "success",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/response.JsonResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/response.JsonResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/response.JsonResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/response.JsonResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/user/problem/{id}": {
             "get": {
                 "security": [
@@ -357,7 +713,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "general"
+                    "Problem Execution Service"
                 ],
                 "summary": "get one problems",
                 "parameters": [
@@ -413,8 +769,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "user",
-                    "admin"
+                    "Authentication"
                 ],
                 "summary": "User signin",
                 "parameters": [
@@ -472,7 +827,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "user"
+                    "Authentication"
                 ],
                 "summary": "User signup",
                 "parameters": [
@@ -597,13 +952,22 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "first_half": {
-                    "type": "string"
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
                 },
                 "memory_limit": {
                     "type": "integer"
                 },
+                "prime": {
+                    "type": "boolean"
+                },
                 "second_half": {
-                    "type": "string"
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
                 },
                 "tags": {
                     "type": "array",
@@ -621,6 +985,17 @@ const docTemplate = `{
                     "type": "integer"
                 },
                 "title": {
+                    "type": "string"
+                }
+            }
+        },
+        "request.NewPassword": {
+            "type": "object",
+            "properties": {
+                "confirmpassword": {
+                    "type": "string"
+                },
+                "password": {
                     "type": "string"
                 }
             }
@@ -687,6 +1062,17 @@ const docTemplate = `{
                 }
             }
         },
+        "response.BlockedStatus": {
+            "type": "object",
+            "properties": {
+                "blocked": {
+                    "type": "boolean"
+                },
+                "id": {
+                    "type": "integer"
+                }
+            }
+        },
         "response.JsonResponse": {
             "type": "object",
             "properties": {
@@ -714,6 +1100,9 @@ const docTemplate = `{
                 },
                 "memory_limit": {
                     "type": "integer"
+                },
+                "prime": {
+                    "type": "boolean"
                 },
                 "tags": {
                     "type": "array",
@@ -757,6 +1146,36 @@ const docTemplate = `{
                 }
             }
         },
+        "response.User": {
+            "type": "object",
+            "properties": {
+                "blocked": {
+                    "type": "boolean"
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "first_name": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "last_name": {
+                    "description": "for proper representaion of null value in go sql.Null is used",
+                    "type": "string"
+                },
+                "updated_at": {
+                    "type": "string"
+                },
+                "username": {
+                    "type": "string"
+                }
+            }
+        },
         "response.UserSignUpResponse": {
             "type": "object",
             "properties": {
@@ -775,6 +1194,9 @@ const docTemplate = `{
                 "last_name": {
                     "description": "for proper representaion of null value in go sql.Null is used",
                     "type": "string"
+                },
+                "prime": {
+                    "type": "boolean"
                 },
                 "updated_at": {
                     "type": "string"

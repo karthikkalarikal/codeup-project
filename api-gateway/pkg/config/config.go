@@ -12,7 +12,8 @@ type Config struct {
 	AuthServiceUrl    string `mapstructure:"AUTH_SERVICE_URL"`
 	ProblemServiceUrl string `mapstructure:"PROBLEM_SERVICE_URL"`
 	GoSandboxUrl      string `mapstructure:"GO_SANDBOX_PORTAL"`
-	JWT               *echojwt.Config
+
+	JWT *echojwt.Config
 }
 
 func NewConfig() (*Config, error) {

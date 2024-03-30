@@ -9,4 +9,6 @@ import (
 type UserRepository interface {
 	ViewAllProblems(context.Context) ([]domain.Problem, error)
 	GetProblemById(ctx context.Context, id request.ProblemById) (domain.Problem, error)
+	GetProblemByDifficulty(ctx context.Context, difficulty string) ([]domain.Problem, error)
+	GetProblemByTags(ctx context.Context, tag string) ([]domain.Problem, error)
 }

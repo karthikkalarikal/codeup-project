@@ -21,12 +21,27 @@ func ConnectDatabase(cfg *config.Config) (*gorm.DB, error) {
 	if err != nil {
 		return nil, err
 	}
-	err = db.AutoMigrate(
+	// user table
+	if err = db.AutoMigrate(
 		&domain.User{},
-	)
-	if err != nil {
+	); err != nil {
 		return nil, err
 	}
+
+	// verify emails table
+	if err = db.AutoMigrate(
+		&domain.VerifyEmails{},
+	); err != nil {
+		return nil, err
+	}
+
+	// payment table
+	// if err := db.AutoMigrate(
+	// 	&domain.Stripe{},
+	// ); err != nil {
+	// 	return nil, err
+	// }
+
 	return db, nil
 
 }

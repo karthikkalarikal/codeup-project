@@ -36,8 +36,9 @@ func (p *problemDatabaseAdmin) InsertProblem(ctx context.Context, entry request.
 		return primitive.ObjectID{}, err
 	}
 	problem.CreatedAt = time.Now()
+
 	fmt.Println("problem", problem)
-	body, err := collection.InsertOne(context.TODO(), problem)
+	body, err := collection.InsertOne(ctx, problem)
 	fmt.Println("body", body)
 	if err != nil {
 		log.Println("error inerting into problems: ", err)

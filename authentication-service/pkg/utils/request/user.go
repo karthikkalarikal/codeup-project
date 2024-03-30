@@ -14,3 +14,16 @@ type UserSignInRequest struct {
 	Email    string `json:"email"`
 	Password string `json:"password"`
 }
+
+type AllUsers struct{}
+
+type Search struct {
+	SearchBy string `json:"seach_by"`
+	Keyword  string `json:"keyword"`
+}
+
+type ForgotPassword struct {
+	Id       int    `json:"id"`
+	Password string `json:"password"`
+}
+

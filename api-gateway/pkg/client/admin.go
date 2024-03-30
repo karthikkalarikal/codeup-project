@@ -12,12 +12,14 @@ import (
 )
 
 type adminClientImpl struct {
-	user client.AdminClient
+	user interfaces.AdminRPCService
+	auth interfaces.AuthService
 }
 
-func NewAdminClient(user interfaces.AdminRPCService) client.AdminClient {
+func NewAdminClient(user interfaces.AdminRPCService, auth interfaces.AuthService) client.AdminClient {
 	return &adminClientImpl{
 		user: user,
+		auth: auth,
 	}
 }
 
@@ -47,4 +49,32 @@ func (u *adminClientImpl) InsertSecondHalfProblem(e echo.Context, in request.Sec
 		return response.InsertProblem{}, err
 	}
 	return body, nil
+}
+
+// get all the users
+func (u *adminClientImpl) ViewUsers(e echo.Context) ([]response.User, error) {
+	body, err := u.auth.ViewUsers(e)
+	if err != nil {
+		return nil, err
+	}
+	return body, nil
+}
+
+// search users
+func (a *adminClientImpl) SearchUser(e echo.Context, req request.Search) ([]response.User, error) {
+	res, err := a.auth.SearchUser(e, req)
+	if err != nil {
+		return nil, err
+	}
+
+	return res, nil
+}
+
+// block user
+func (a *adminClientImpl) BlockUser(e echo.Context, id int) (response.BlockedStatus, error) {
+	res, err := a.auth.BlockUser(e, id)
+	if err != nil {
+		return response.BlockedStatus{}, err
+	}
+	return res, nil
 }

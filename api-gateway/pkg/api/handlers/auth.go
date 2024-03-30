@@ -8,6 +8,7 @@ import (
 	"github.com/go-playground/validator/v10"
 	"github.com/karthikkalarikal/api-gateway/pkg/api/handlers/interfaces"
 	client "github.com/karthikkalarikal/api-gateway/pkg/client/interfaces"
+	"golang.org/x/crypto/bcrypt"
 
 	"github.com/karthikkalarikal/api-gateway/pkg/utils"
 	customerrors "github.com/karthikkalarikal/api-gateway/pkg/utils/customErrors"
@@ -32,7 +33,7 @@ func NewAuthHandler(client client.AuthClient, utils *utils.Utils) interfaces.Aut
 //
 //	@Summary		User signup
 //	@Description	signup to code-up
-//	@Tags			user
+//	@Tags			Authentication
 //	@Accept			json
 //	@Produce		json
 //	@Param			user	body		request.UserSignUpRequest	true	"user details"
@@ -79,7 +80,7 @@ func (u *authHandlerImpl) UserSignUp(e echo.Context) error {
 		u.utils.ErrorJson(e, err, http.StatusBadRequest)
 		return err
 	}
-	token, err := u.utils.GetTokenString(userCreated.ID, false)
+	token, err := u.utils.GetTokenString(userCreated.ID, false, false, false)
 	if err != nil {
 		u.utils.ErrorJson(e, err, http.StatusBadRequest)
 		return err
@@ -94,7 +95,7 @@ func (u *authHandlerImpl) UserSignUp(e echo.Context) error {
 //
 //	@Summary		User signin
 //	@Description	signin to code-up
-//	@Tags			user,admin
+//	@Tags			Authentication
 //	@Accept			json
 //	@Produce		json
 //	@Param			user	body		request.UserSignInRequest	true	"user details"
@@ -105,7 +106,7 @@ func (u *authHandlerImpl) UserSignUp(e echo.Context) error {
 //	@Failure		500		{object}	response.SignUpWrapper
 //	@Router			/user/signin [post]
 func (u *authHandlerImpl) UserSignIn(e echo.Context) error {
-	fmt.Println("inside user sign up handler 1")
+	fmt.Println("inside user sign in handler 1")
 	var user request.UserSignInRequest
 
 	if err := e.Bind(&user); err != nil {
@@ -126,7 +127,19 @@ func (u *authHandlerImpl) UserSignIn(e echo.Context) error {
 		u.utils.ErrorJson(e, err, http.StatusBadRequest)
 		return err
 	}
-	token, err := u.utils.GetTokenString(userSignedIn.ID, userSignedIn.Admin)
+	fmt.Println("Retrieved hashed password:", user.Password)  // Inspect this
+	fmt.Println("Plaintext password:", userSignedIn.Password) // Inspect this
+	err = bcrypt.CompareHashAndPassword([]byte(userSignedIn.Password), []byte(user.Password))
+	if err != nil {
+		if errors.Is(err, bcrypt.ErrMismatchedHashAndPassword) {
+			return errors.New("wrong password")
+		} else {
+			return err
+		}
+
+	}
+
+	token, err := u.utils.GetTokenString(userSignedIn.ID, userSignedIn.Admin, userSignedIn.Blocked, userSignedIn.Prime)
 	if err != nil {
 		u.utils.ErrorJson(e, err, http.StatusBadRequest)
 		return err

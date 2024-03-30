@@ -10,4 +10,6 @@ type UserRPCService interface {
 	ViewAllProblems(request.AllProbles) ([]response.Problem, error)
 	GetProblemById(ctx echo.Context, in request.GetOneProblemById) (response.Problem, error)
 	ExecuteGoCodyById(ctx echo.Context, in request.SubmitCodeIdRequest) (code []byte, err error)
+	SortProblemBy(ctx echo.Context, in request.SearchBy) ([]response.Problem, error)
+	// MakePrime(echo.Context, string) error
 }

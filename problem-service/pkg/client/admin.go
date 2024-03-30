@@ -7,6 +7,8 @@ import (
 	"problem-service/pkg/domain"
 	"problem-service/pkg/usecase/interfaces"
 	"problem-service/pkg/utils/request"
+
+	"github.com/go-playground/validator/v10"
 )
 
 type AdminClientImpl struct {
@@ -20,6 +22,16 @@ func NewAdminClient(admin interfaces.AdminUseCase) *AdminClientImpl {
 }
 
 func (a *AdminClientImpl) InsertProblem(req request.Problem, reply *domain.Problem) error {
+
+	validate := validator.New()
+
+	err := validate.Struct(req)
+	if err != nil {
+
+		fmt.Println(err)
+		return err
+	}
+
 	log.Println("Admin wants to insert a problems", req)
 	ctx := context.Background()
 	body, err := a.admin.InsertProblem(ctx, req)
@@ -61,3 +73,5 @@ func (a *AdminClientImpl) InsertSecondHalfProblem(req request.SecondHalfCode, re
 	*reply = body
 	return nil
 }
+
+// func (a *AdminClientImpl) GetAllUsers(req any,reply *doma)

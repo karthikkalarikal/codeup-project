@@ -1,6 +1,8 @@
 package client
 
 import (
+	"fmt"
+
 	"github.com/karthikkalarikal/api-gateway/pkg/client/interfaces"
 	service "github.com/karthikkalarikal/api-gateway/pkg/rpc/interfaces"
 	"github.com/karthikkalarikal/api-gateway/pkg/utils/request"
@@ -28,9 +30,10 @@ func (auth *authClientImpl) UserSignUp(e echo.Context, in request.UserSignUpRequ
 }
 
 func (auth *authClientImpl) UserSignIn(ctx echo.Context, in request.UserSignInRequest) (*response.UserSignInResponse, error) {
+	fmt.Println("here in user sign in")
 	res, err := auth.client.UserSignIn(ctx, in)
 	if err != nil {
 		return &response.UserSignInResponse{}, err
 	}
-	return res, err
+	return res, nil
 }

@@ -16,14 +16,24 @@ import (
 
 func InitializeServices(cfg *config.Config) (*api.RpcServer, error) {
 	wire.Build(
+		ProvideStripeConfig,
 
 		db.ConnectDatabase,
 		client.NewUserService,
 		repository.NewUserRepository,
+
 		usecase.NewUserUseCase,
+		usecase.NewAdminUsecase,
+		usecase.NewPaymentUsecase,
+
+		repository.NewAdminRepo,
+		repository.NewPaymentRepo,
 
 		api.NewRPCServer,
 	)
 
 	return &api.RpcServer{}, nil
+}
+func ProvideStripeConfig() (*config.StripeConfig, error) {
+	return config.NewStripeConfig()
 }

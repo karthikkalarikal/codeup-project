@@ -7,9 +7,12 @@ import (
 	"authentication/pkg/utils/request"
 	"authentication/pkg/utils/response"
 	"context"
+	"errors"
 	"fmt"
+	"strconv"
 	"time"
 
+	emailverifier "github.com/AfterShip/email-verifier"
 	"github.com/jinzhu/copier"
 
 	"gorm.io/gorm"
@@ -25,13 +28,43 @@ func NewUserUseCase(repo repo.UserRepository) interfaces.UserUseCase {
 	}
 }
 
-func (u *userUseCase) UserSignUp(ctx context.Context, user request.UserSignUpRequest) (domain.User, error) {
-	body, err := u.repo.UserSignUp(ctx, user)
-	if err != nil {
-		return domain.User{}, err
-	}
+func (u *userUseCase) UserSignUp(ctx context.Context, user request.UserSignUpRequest) (body domain.User, err error) {
+	ctxDeadline, cancel := context.WithTimeout(ctx, 15*time.Second)
+	defer cancel()
+	// ch := make(chan error)
+	err = u.repo.Transactions(func(ur repo.UserRepository) error {
+		// if err = EmailVerify(ctxDeadline, body); err != nil {
+		// 	return err
+		// }
 
+		body, err = u.repo.UserSignUp(ctxDeadline, user)
+		if err != nil {
+			return err
+		}
+		return nil
+		// select {
+		// case emailErr := <-ch:
+		// 	if emailErr != nil {
+		// 		return emailErr
+		// 	}
+		// case <-ctxDeadline.Done():
+		// 	return ctxDeadline.Err()
+		// default:
+		// 	return errors.New("time out")
+		// }
+		// return <-ch
+
+	})
+	if err != nil {
+		return
+	}
 	return body, nil
+	// body, err := u.repo.UserSignUp(ctx, user)
+	// if err != nil {
+	// 	return domain.User{}, err
+	// }
+
+	// return body, nil
 }
 
 func (u *userUseCase) UserSignIn(ctx context.Context, user request.UserSignInRequest) (out response.UserSignInResponse, err error) {
@@ -54,4 +87,155 @@ func (u *userUseCase) UserSignIn(ctx context.Context, user request.UserSignInReq
 	}
 	fmt.Println("out: ", out)
 	return out, nil
+}
+
+// get all users
+func (u *userUseCase) GetAllUsers(ctx context.Context) ([]domain.User, error) {
+	ctxDeadline, cancel := context.WithTimeout(ctx, 5*time.Second)
+	defer cancel()
+
+	body, err := u.repo.GetAllUsers(ctxDeadline)
+	if err != nil {
+		return nil, err
+	}
+
+	return body, nil
+}
+
+// search by email , username
+func (u *userUseCase) SearchTheUser(ctx context.Context, s request.Search) ([]domain.User, error) {
+	ctxDeadlin, cancel := context.WithTimeout(ctx, 5*time.Second)
+	defer cancel()
+	switch s.SearchBy {
+	case "email":
+		body, err := u.repo.SearchUserByEmail(ctxDeadlin, s.Keyword)
+		if err != nil {
+			return nil, err
+		}
+		if body == nil {
+			s.SearchBy = "username"
+			body, err = u.SearchTheUser(ctxDeadlin, s)
+			if err != nil {
+				return nil, err
+			}
+			return body, nil
+		}
+		return body, err
+	case "username":
+		body, err := u.repo.SearchUserByUsername(ctxDeadlin, s.Keyword)
+		if err != nil {
+			return nil, err
+		}
+		return body, err
+	default:
+		err := fmt.Errorf("unsupported search type: %s", s.Keyword)
+		return nil, err
+	}
+
+}
+
+// forget password
+func (a *userUseCase) ForgotPassword(ctx context.Context, req request.ForgotPassword) (out domain.User, err error) {
+	fmt.Println("in usecase block user")
+	ctxDeadline, cancel := context.WithTimeout(ctx, 5*time.Second)
+	defer cancel()
+	// Transactions(func(UserRepository) error) error
+
+	err = a.repo.Transactions(func(repo repo.UserRepository) error {
+		_, err = repo.GetUserById(ctxDeadline, req.Id)
+		if err != nil {
+			return err
+		}
+		err = repo.ForgetPassword(ctxDeadline, req)
+		if err != nil {
+			return err
+		}
+		out, err = repo.GetUserById(ctxDeadline, req.Id)
+		if err != nil {
+			return err
+		}
+		return nil
+
+	})
+	if err != nil {
+		return domain.User{}, err
+	}
+	return out, err
+}
+
+func EmailVerify(ctx context.Context, body domain.User) (err error) {
+	verifier := emailverifier.NewVerifier()
+	ret, err := verifier.Verify(body.Email)
+	if err != nil {
+		err = errors.New("verify email address failed, error is: " + err.Error())
+		// ch <- err
+		return
+	}
+	if !ret.Syntax.Valid {
+		err = errors.New("email address syntax is invalid")
+		// ch <- err
+		return
+	}
+	// _, err = verifier.CheckSMTP("", "")
+	// if err != nil {
+	// 	err = errors.New("check smtp failed: " + err.Error())
+	// 	// ch <- err
+	// 	return
+	// }
+	// smtp.CatchAll
+	// ch <- nil
+	return nil
+
+}
+
+func (u *userUseCase) MakePrime(ctx context.Context, email string) (string, error) {
+	idStr := ""
+	err := u.repo.Transactions(func(ur repo.UserRepository) error {
+		body, err := ur.GetUserByEmailWithoutTx(ctx, email)
+		if err != nil {
+			fmt.Println("err", err)
+			return err
+		}
+		fmt.Println("user is found", body)
+
+		err = u.repo.MakePrime(ctx, body.ID)
+		if err != nil {
+			fmt.Println("err", err)
+			return err
+		}
+		fmt.Println("user is made prime")
+		idStr = strconv.Itoa(body.ID)
+		return nil
+	})
+	if err != nil {
+		return "", err
+	}
+	return idStr, nil
+}
+
+func (u *userUseCase) UnSubscribe(ctx context.Context, id int) (domain.User, error) {
+	var body domain.User
+	var err error
+	err = u.repo.Transactions(func(ur repo.UserRepository) error {
+
+		// fmt.Println("user is found", body)
+
+		err = u.repo.MakePrime(ctx, body.ID)
+		if err != nil {
+			fmt.Println("err", err)
+			return err
+		}
+		fmt.Println("user is made prime")
+		// idStr = strconv.Itoa(body.ID)
+		body, err = ur.GetUserById(ctx, id)
+		if err != nil {
+			fmt.Println("err", err)
+			return err
+		}
+		return nil
+	})
+	if err != nil {
+		return domain.User{}, err
+	}
+	return body, nil
 }

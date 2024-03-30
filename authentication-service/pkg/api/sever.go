@@ -10,12 +10,13 @@ import (
 )
 
 type RpcServer struct {
-	lis  net.Listener
-	port string
-	auth *client.AuthUserService
+	lis    net.Listener
+	port   string
+	auth   *client.AuthUserService
+	stripe *config.StripeConfig
 }
 
-func NewRPCServer(cfg *config.Config, auth *client.AuthUserService) *RpcServer {
+func NewRPCServer(stripe *config.StripeConfig, cfg *config.Config, auth *client.AuthUserService) *RpcServer {
 	// log.Println("starting rpc server on port ", rpcPort)
 	listen, err := net.Listen("tcp", fmt.Sprintf("0.0.0.0:%s", cfg.ServicePort))
 	if err != nil {
@@ -28,9 +29,10 @@ func NewRPCServer(cfg *config.Config, auth *client.AuthUserService) *RpcServer {
 	}
 
 	return &RpcServer{
-		lis:  listen,
-		port: cfg.ServicePort,
-		auth: auth,
+		lis:    listen,
+		port:   cfg.ServicePort,
+		auth:   auth,
+		stripe: stripe,
 	}
 }
 

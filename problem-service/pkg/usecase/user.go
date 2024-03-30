@@ -2,6 +2,7 @@ package usecase
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"problem-service/pkg/domain"
 	"problem-service/pkg/repository/interfaces"
@@ -60,4 +61,23 @@ func (u *userUseCase) SubmitCodeById(ctx context.Context, req request.SubmitCode
 	}
 
 	return code, nil
+}
+
+func (u *userUseCase) GetProblemBy(ctx context.Context, in request.SearchBy) ([]domain.Problem, error) {
+
+	if in.Field == "tag" {
+		body, err := u.repo.GetProblemByTags(ctx, in.Search)
+		if err != nil {
+			return nil, err
+		}
+		return body, nil
+	} else if in.Field == "difficulty" {
+		body, err := u.repo.GetProblemByDifficulty(ctx, in.Search)
+		if err != nil {
+			return nil, err
+		}
+		return body, nil
+	} else {
+		return nil, errors.New("invalid input")
+	}
 }

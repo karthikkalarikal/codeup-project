@@ -18,6 +18,7 @@ services:
     build:
       context: ./api-gateway
       dockerfile: api-gateway.dockerfile
+    image: karthikkalarikal/code-up:api-gateway-${TAG:-latest}
     restart: always
     ports:
       - "8080:80"
@@ -30,6 +31,7 @@ services:
     build:
       context: ./authentication-service
       dockerfile: ./authentication-service.dockerfile
+    image: karthikkalarikal/code-up:authentication-service-${TAG:-latest}
     restart: always
     deploy:
       mode: replicated
@@ -41,6 +43,7 @@ services:
     build:
       context: ./problem-service
       dockerfile: problem-service.dockerfile
+    image: karthikkalarikal/code-up:problem-service-${TAG:-latest}
     restart: always
     deploy:
       mode: replicated
@@ -50,6 +53,7 @@ services:
     build:
       context: ./sandbox-go
       dockerfile: go-sandbox.dockerfile
+    image: karthikkalarikal/code-up:go-sandbox-${TAG:-latest}
     restart: always
     deploy:
       mode: replicated

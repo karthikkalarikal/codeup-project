@@ -32,6 +32,7 @@ func NewUserService(cfg *config.Config) interfaces.UserRPCService {
 	}
 }
 
+// get all problems
 func (u *userServiceImpl) ViewAllProblems(in request.AllProbles) ([]response.Problem, error) {
 	client := u.problemPool.Get().(*rpc.Client)
 
@@ -49,6 +50,7 @@ func (u *userServiceImpl) ViewAllProblems(in request.AllProbles) ([]response.Pro
 	return *out, nil
 }
 
+// get problem by id
 func (u *userServiceImpl) GetProblemById(ctx echo.Context, in request.GetOneProblemById) (response.Problem, error) {
 	fmt.Println("in rpc ")
 	client := u.problemPool.Get().(*rpc.Client)
@@ -65,6 +67,7 @@ func (u *userServiceImpl) GetProblemById(ctx echo.Context, in request.GetOneProb
 	return *out, nil
 }
 
+// execute the problem
 func (u *userServiceImpl) ExecuteGoCodyById(ctx echo.Context, in request.SubmitCodeIdRequest) (code []byte, err error) {
 	fmt.Println("api gateway rpc")
 
@@ -81,3 +84,21 @@ func (u *userServiceImpl) ExecuteGoCodyById(ctx echo.Context, in request.SubmitC
 	fmt.Println("out", out)
 	return *out, nil
 }
+
+func (u *userServiceImpl) SortProblemBy(ctx echo.Context, in request.SearchBy) ([]response.Problem, error) {
+	fmt.Println("api gateway rpc")
+	fmt.Println("get problem ", in)
+	client := u.problemPool.Get().(*rpc.Client)
+	defer u.problemPool.Put(client)
+
+	out := new([]response.Problem)
+
+	err := client.Call("ProblemUserClient.GetProblemBy", in, out)
+	if err != nil {
+		return nil, err
+	}
+
+	fmt.Println("out ", out)
+	return *out, nil
+}
+

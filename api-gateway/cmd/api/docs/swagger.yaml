@@ -8,11 +8,17 @@ definitions:
       difficulty:
         type: string
       first_half:
-        type: string
+        items:
+          type: integer
+        type: array
       memory_limit:
         type: integer
+      prime:
+        type: boolean
       second_half:
-        type: string
+        items:
+          type: integer
+        type: array
       tags:
         items:
           type: string
@@ -24,6 +30,13 @@ definitions:
       time_limit:
         type: integer
       title:
+        type: string
+    type: object
+  request.NewPassword:
+    properties:
+      confirmpassword:
+        type: string
+      password:
         type: string
     type: object
   request.TestCase:
@@ -70,6 +83,13 @@ definitions:
     - password
     - username
     type: object
+  response.BlockedStatus:
+    properties:
+      blocked:
+        type: boolean
+      id:
+        type: integer
+    type: object
   response.JsonResponse:
     properties:
       data: {}
@@ -89,6 +109,8 @@ definitions:
         type: string
       memory_limit:
         type: integer
+      prime:
+        type: boolean
       tags:
         items:
           type: string
@@ -116,6 +138,26 @@ definitions:
       output:
         type: string
     type: object
+  response.User:
+    properties:
+      blocked:
+        type: boolean
+      created_at:
+        type: string
+      email:
+        type: string
+      first_name:
+        type: string
+      id:
+        type: integer
+      last_name:
+        description: for proper representaion of null value in go sql.Null is used
+        type: string
+      updated_at:
+        type: string
+      username:
+        type: string
+    type: object
   response.UserSignUpResponse:
     properties:
       created_at:
@@ -129,6 +171,8 @@ definitions:
       last_name:
         description: for proper representaion of null value in go sql.Null is used
         type: string
+      prime:
+        type: boolean
       updated_at:
         type: string
       username:
@@ -182,7 +226,7 @@ paths:
       - BearerAuth: []
       summary: Create a Problem
       tags:
-      - admin
+      - Problem Management
   /admin/problem/first/{id}:
     put:
       consumes:
@@ -223,7 +267,7 @@ paths:
       - BearerAuth: []
       summary: Insert first half of problem
       tags:
-      - admin
+      - Problem Management
   /admin/problem/second/{id}:
     put:
       consumes:
@@ -264,7 +308,125 @@ paths:
       - BearerAuth: []
       summary: Insert second half of problem
       tags:
-      - admin
+      - Problem Management
+  /admin/user/:
+    get:
+      description: Admin Gets the list of all users
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: 'Success: get all users'
+          schema:
+            items:
+              $ref: '#/definitions/response.User'
+            type: array
+        "400":
+          description: Bad request
+          schema:
+            items:
+              $ref: '#/definitions/response.User'
+            type: array
+        "401":
+          description: Unauthorized
+          schema:
+            items:
+              $ref: '#/definitions/response.User'
+            type: array
+        "500":
+          description: Internal server error
+          schema:
+            items:
+              $ref: '#/definitions/response.User'
+            type: array
+      security:
+      - BearerAuth: []
+      summary: Get Users
+      tags:
+      - User Management
+  /admin/user/{id}:
+    patch:
+      description: Admin Can block/unblock user by passing id
+      parameters:
+      - description: user id
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: 'Success: get all users'
+          schema:
+            $ref: '#/definitions/response.BlockedStatus'
+        "204":
+          description: no users
+          schema:
+            $ref: '#/definitions/response.BlockedStatus'
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/response.BlockedStatus'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/response.BlockedStatus'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/response.BlockedStatus'
+      security:
+      - BearerAuth: []
+      summary: Block user
+      tags:
+      - User Management
+  /admin/user/{keyword}:
+    get:
+      description: Admin Gets the list of all users using keyworkd
+      parameters:
+      - description: keyword
+        in: path
+        name: keyword
+        type: string
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: 'Success: get all users'
+          schema:
+            items:
+              $ref: '#/definitions/response.User'
+            type: array
+        "204":
+          description: no users
+          schema:
+            items:
+              $ref: '#/definitions/response.User'
+            type: array
+        "400":
+          description: Bad request
+          schema:
+            items:
+              $ref: '#/definitions/response.User'
+            type: array
+        "401":
+          description: Unauthorized
+          schema:
+            items:
+              $ref: '#/definitions/response.User'
+            type: array
+        "500":
+          description: Internal server error
+          schema:
+            items:
+              $ref: '#/definitions/response.User'
+            type: array
+      security:
+      - BearerAuth: []
+      summary: Search Users
+      tags:
+      - User Management
   /user/go/{id}:
     post:
       consumes:
@@ -310,7 +472,7 @@ paths:
       - BearerAuth: []
       summary: Execute code
       tags:
-      - user
+      - Problem Execution Service
   /user/go/exec:
     post:
       consumes:
@@ -350,7 +512,117 @@ paths:
       - BearerAuth: []
       summary: Execute code
       tags:
-      - user
+      - Problem Execution Service
+  /user/panal/password:
+    put:
+      consumes:
+      - application/json
+      description: to replace the password with new one
+      parameters:
+      - description: new password
+        in: body
+        name: password
+        required: true
+        schema:
+          $ref: '#/definitions/request.NewPassword'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: success
+          schema:
+            $ref: '#/definitions/response.JsonResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.JsonResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/response.JsonResponse'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/response.JsonResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.JsonResponse'
+      security:
+      - BearerAuth: []
+      summary: Forget Password
+      tags:
+      - User Panal
+  /user/panal/unsubscribe:
+    patch:
+      description: Unsubscribe from prime membership
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: success
+          schema:
+            $ref: '#/definitions/response.User'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.User'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/response.User'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/response.User'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.User'
+      security:
+      - BearerAuth: []
+      summary: Unsubscribe
+      tags:
+      - User Panal
+  /user/problem:
+    get:
+      description: Get Problem by difficulty or tags
+      parameters:
+      - description: 'tags, difficulty '
+        in: query
+        name: searchBy
+        required: true
+        type: string
+      - description: 'Difficulty: easy, hard, medium. Tags:array, strigs,etc'
+        in: query
+        name: value
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: success
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.JsonResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/response.JsonResponse'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/response.JsonResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.JsonResponse'
+      summary: Search Problem
+      tags:
+      - general
   /user/problem/{id}:
     get:
       consumes:
@@ -389,7 +661,7 @@ paths:
       - BearerAuth: []
       summary: get one problems
       tags:
-      - general
+      - Problem Execution Service
   /user/signin:
     post:
       consumes:
@@ -427,8 +699,7 @@ paths:
             $ref: '#/definitions/response.SignUpWrapper'
       summary: User signin
       tags:
-      - user
-      - admin
+      - Authentication
   /user/signup:
     post:
       consumes:
@@ -466,7 +737,7 @@ paths:
             $ref: '#/definitions/response.SignUpWrapper'
       summary: User signup
       tags:
-      - user
+      - Authentication
   /user/view:
     get:
       consumes:
