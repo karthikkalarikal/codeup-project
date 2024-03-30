@@ -5,5 +5,5 @@ type UserSignInResponse struct {
 	Password string `json:"password" copier:"must,nopanic"`
 	Admin    bool   `json:"admin" copier:"must,nopanic"`
 	Email    string `json:"email" copier:"must,nopanic"`
-	Prime    string `json:"prime" copier:"must,nopanic"`
+	Prime    bool   `json:"prime" copier:"must,nopanic"`
 }

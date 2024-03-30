@@ -19,6 +19,7 @@ func InitializeAPI(cfg config.Config) (*api.Server, error) {
 		client.NewUserClient,
 		client.NewAdminClient,
 		client.NewGoExecClient,
+		client.NewPaymentClient,
 
 		handlers.NewAuthHandler,
 		handlers.NewUserHandler,

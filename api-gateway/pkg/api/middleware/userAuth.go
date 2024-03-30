@@ -60,13 +60,13 @@ func UserMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
 		blocked, ok := claims["blocked"].(bool)
 		if !ok || blocked {
 			c.JSON(http.StatusUnauthorized, echo.Map{"error": "the user is blocked"})
-			return errors.New("use is blocked")
+			return errors.New("user is blocked")
 		}
 
 		prime, ok := claims["prime"].(bool)
 		if !ok {
 			c.JSON(http.StatusUnauthorized, echo.Map{"error": "the user is information is corrupted"})
-			return errors.New("use is blocked")
+			return errors.New("user is unauthorized")
 		}
 
 		c.Set("id", int(id))
@@ -104,6 +104,7 @@ func AdminMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
 		token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
 			return []byte("secret"), nil
 		})
+		fmt.Println("here", token.Valid)
 		if err != nil || !token.Valid {
 			c.JSON(http.StatusUnauthorized, echo.Map{"error": customerrors.JwtTokenMissingError})
 			return err
@@ -116,12 +117,15 @@ func AdminMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
 		}
 
 		id, ok := claims["id"].(float64)
+		fmt.Println("id", id)
 		if !ok || id == 0 {
 
 			return errors.New("error error in retrieving id")
 
 		}
+
 		admin, ok := claims["admin"].(bool)
+		fmt.Println("admin", admin)
 		if !ok || !admin {
 			return errors.New("authorization error")
 		}

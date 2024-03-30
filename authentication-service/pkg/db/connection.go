@@ -35,6 +35,13 @@ func ConnectDatabase(cfg *config.Config) (*gorm.DB, error) {
 		return nil, err
 	}
 
+	// payment table
+	// if err := db.AutoMigrate(
+	// 	&domain.Stripe{},
+	// ); err != nil {
+	// 	return nil, err
+	// }
+
 	return db, nil
 
 }

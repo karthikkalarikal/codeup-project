@@ -20,6 +20,7 @@ func SetupUserRoutes(e *echo.Group, authHandler handler.AuthHandler, userHandler
 	{
 		// fmt.Println("here in panal/")
 		userPanal.PUT("/password", userHandler.ForgetPassword)
+		userPanal.PATCH("/unsubscribe",userHandler.UnSubscrbe)
 	}
 
 	problem := e.Group("/problem")
@@ -29,7 +30,7 @@ func SetupUserRoutes(e *echo.Group, authHandler handler.AuthHandler, userHandler
 		problem.GET("/:id", userHandler.GetOneProblemById)
 	}
 	execGoCode := e.Group("/go")
-	execGoCode.Use(middleware.UserMiddleware)
+	// execGoCode.Use(middleware.UserMiddleware)
 	{
 		execGoCode.POST("/exec", userHandler.WriteCode)
 		execGoCode.POST("/:id", userHandler.ExecuteGoCodyById)

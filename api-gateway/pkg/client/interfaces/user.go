@@ -12,4 +12,6 @@ type UserClient interface {
 	ExecuteGoCodyById(ctx echo.Context, in request.SubmitCodeIdRequest) (code []byte, err error)
 	ForgetPassword(echo.Context, request.ForgotPassword) (response.User, error)
 	GetProblemBy(e echo.Context, req request.SearchBy) ([]response.Problem, error)
+	MakePrime(echo.Context, string) error
+	UnSubscrbe(e echo.Context, id int) (response.User, error)
 }

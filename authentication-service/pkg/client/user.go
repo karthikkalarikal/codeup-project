@@ -2,6 +2,8 @@ package client
 
 import (
 	"authentication/pkg/domain"
+	"time"
+
 	// "authentication/pkg/usecase/interfaces"
 	user "authentication/pkg/usecase/interfaces"
 	"authentication/pkg/utils/request"
@@ -14,12 +16,14 @@ import (
 type AuthUserService struct {
 	useCase user.UserUseCase
 	admin   user.AdminUsecase
+	payment user.PaymentUsecase
 }
 
-func NewUserService(user user.UserUseCase, admin user.AdminUsecase) *AuthUserService {
+func NewUserService(user user.UserUseCase, admin user.AdminUsecase, payment user.PaymentUsecase) *AuthUserService {
 	return &AuthUserService{
 		useCase: user,
 		admin:   admin,
+		payment: payment,
 	}
 }
 
@@ -106,6 +110,48 @@ func (u *AuthUserService) ForgetPassword(req request.ForgotPassword, reply *doma
 	ctx := context.Background()
 
 	out, err := u.useCase.ForgotPassword(ctx, req)
+	if err != nil {
+		return err
+	}
+	*reply = out
+	return nil
+}
+
+// charge
+func (u *AuthUserService) Charge(req request.Payment, reply *[]byte) error {
+	fmt.Println("here in charge")
+	ctx := context.Background()
+	out, err := u.payment.GetPaymentIntent(ctx, req)
+	if err != nil {
+		return err
+	}
+	fmt.Println(out)
+
+	*reply = out
+	return nil
+}
+
+// make prime
+func (u *AuthUserService) MakePrime(req string, reply *string) error {
+
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	out, err := u.useCase.MakePrime(ctx, req)
+	if err != nil {
+		return err
+	}
+	*reply = out
+	return nil
+}
+
+// unsubscribe
+func (u *AuthUserService) UnSubscribe(req int, reply *domain.User) error {
+
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	out, err := u.useCase.UnSubscribe(ctx, req)
 	if err != nil {
 		return err
 	}

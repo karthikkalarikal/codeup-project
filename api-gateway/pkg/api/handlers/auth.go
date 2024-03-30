@@ -106,7 +106,7 @@ func (u *authHandlerImpl) UserSignUp(e echo.Context) error {
 //	@Failure		500		{object}	response.SignUpWrapper
 //	@Router			/user/signin [post]
 func (u *authHandlerImpl) UserSignIn(e echo.Context) error {
-	fmt.Println("inside user sign up handler 1")
+	fmt.Println("inside user sign in handler 1")
 	var user request.UserSignInRequest
 
 	if err := e.Bind(&user); err != nil {

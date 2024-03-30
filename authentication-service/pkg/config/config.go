@@ -11,11 +11,15 @@ type Config struct {
 	DBName     string `mapstructure:"AUTH_DB_NAME"`
 	DBUser     string `mapstructure:"AUTH_DB_USER"`
 	DBPassword string `mapstructure:"AUTH_DB_PASSWORD"`
+
+	StripeKey    string `mapstructure:"STRIPE_PUB_KEY"`
+	StripeSecret string `mapstructure:"STRIPE_SECRET_KEY"`
 }
 
 var envs = []string{
 	"AUTH_SERVICE_PORT", "USER_SERVICE_URL",
 	"AUTH_DB_HOST", "AUTH_DB_PORT", "AUTH_DB_NAME", "AUTH_DB_USER", "AUTH_DB_PASSWORD",
+	"STRIPE_SECRET_KEY", "STRIPE_PUB_KEY",
 }
 
 func LoadConfig() (config *Config, err error) {

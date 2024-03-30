@@ -7,6 +7,7 @@ require (
 	github.com/google/wire v0.6.0
 	github.com/jinzhu/copier v0.4.0
 	github.com/spf13/viper v1.18.2
+	github.com/stripe/stripe-go v70.15.0+incompatible
 	golang.org/x/crypto v0.21.0
 	gorm.io/driver/postgres v1.5.6
 	gorm.io/gorm v1.25.7

@@ -115,9 +115,11 @@ func (u *userDatabase) FindUserByEmail(ctx context.Context, email string) (domai
 		First(&user)
 
 	if result.Error != nil {
+		tx.Rollback()
 		fmt.Println("err ", result.Error)
 		return domain.User{}, result.Error
 	}
+	tx.Commit()
 	fmt.Println("user", user)
 	return user, nil
 }
@@ -206,4 +208,46 @@ func (u *userDatabase) GetUserById(ctx context.Context, id int) (domain.User, er
 	}
 
 	return *user, nil
+}
+
+func (u *userDatabase) GetUserByEmailWithoutTx(ctx context.Context, email string) (domain.User, error) {
+	user := new(domain.User)
+
+	query := "select * from users where email=$1"
+	err := u.DB.WithContext(ctx).Raw(query, email).Scan(&user).Error
+	if err != nil {
+		if errors.Is(err, context.DeadlineExceeded) {
+			return domain.User{}, fmt.Errorf("database query timed out: %w", err)
+		}
+		return domain.User{}, err
+	}
+	fmt.Println("user")
+
+	return *user, nil
+}
+
+func (u *userDatabase) MakePrime(ctx context.Context, id int) error {
+	// user := new(domain.User)
+
+	query := `UPDATE users
+	SET prime = $1
+	WHERE id = $2`
+	err := u.DB.WithContext(ctx).Exec(query, true, id).Error
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (u *userDatabase) UnSubscribe(ctx context.Context, id int) error {
+	query := `UPDATE users
+	SET prime = $1
+	WHERE id = $2`
+	err := u.DB.WithContext(ctx).Exec(query, false, id).Error
+	if err != nil {
+		return err
+	}
+
+	return nil
 }

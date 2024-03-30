@@ -45,7 +45,7 @@ func NewAdminHandler(client client.AdminClient, utils *utils.Utils) interfaces.A
 //	@Failure		500		{object}	response.JsonResponse	"Internal server error"
 //	@Router			/admin/problem/ [post]
 func (a *adminHandlerImpl) CreateProblem(e echo.Context) error {
-	fmt.Println("here in creat a problem handler")
+	fmt.Println("here in create a problem handler")
 	var problem request.InsertProblem
 
 	if err := e.Bind(&problem); err != nil {

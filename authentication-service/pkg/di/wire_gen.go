@@ -18,6 +18,10 @@ import (
 // Injectors from wire.go:
 
 func InitializeServices(cfg *config.Config) (*api.RpcServer, error) {
+	stripeConfig, err := ProvideStripeConfig()
+	if err != nil {
+		return nil, err
+	}
 	gormDB, err := db.ConnectDatabase(cfg)
 	if err != nil {
 		return nil, err
@@ -26,7 +30,15 @@ func InitializeServices(cfg *config.Config) (*api.RpcServer, error) {
 	userUseCase := usecase.NewUserUseCase(userRepository)
 	adminRepository := repository.NewAdminRepo(gormDB)
 	adminUsecase := usecase.NewAdminUsecase(adminRepository)
-	authUserService := client.NewUserService(userUseCase, adminUsecase)
-	rpcServer := api.NewRPCServer(cfg, authUserService)
+	paymentRepo := repository.NewPaymentRepo(gormDB, stripeConfig)
+	paymentUsecase := usecase.NewPaymentUsecase(paymentRepo)
+	authUserService := client.NewUserService(userUseCase, adminUsecase, paymentUsecase)
+	rpcServer := api.NewRPCServer(stripeConfig, cfg, authUserService)
 	return rpcServer, nil
+}
+
+// wire.go:
+
+func ProvideStripeConfig() (*config.StripeConfig, error) {
+	return config.NewStripeConfig()
 }

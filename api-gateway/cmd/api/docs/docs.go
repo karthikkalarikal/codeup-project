@@ -590,6 +590,55 @@ const docTemplate = `{
                 }
             }
         },
+        "/user/panal/unsubscribe": {
+            "patch": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Unsubscribe from prime membership",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "User Panal"
+                ],
+                "summary": "Unsubscribe",
+                "responses": {
+                    "200": {
+                        "description": "success",
+                        "schema": {
+                            "$ref": "#/definitions/response.User"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/response.User"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/response.User"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/response.User"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/response.User"
+                        }
+                    }
+                }
+            }
+        },
         "/user/problem": {
             "get": {
                 "description": "Get Problem by difficulty or tags",
@@ -911,6 +960,9 @@ const docTemplate = `{
                 "memory_limit": {
                     "type": "integer"
                 },
+                "prime": {
+                    "type": "boolean"
+                },
                 "second_half": {
                     "type": "array",
                     "items": {
@@ -1049,6 +1101,9 @@ const docTemplate = `{
                 "memory_limit": {
                     "type": "integer"
                 },
+                "prime": {
+                    "type": "boolean"
+                },
                 "tags": {
                     "type": "array",
                     "items": {
@@ -1139,6 +1194,9 @@ const docTemplate = `{
                 "last_name": {
                     "description": "for proper representaion of null value in go sql.Null is used",
                     "type": "string"
+                },
+                "prime": {
+                    "type": "boolean"
                 },
                 "updated_at": {
                     "type": "string"

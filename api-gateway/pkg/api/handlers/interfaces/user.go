@@ -11,4 +11,8 @@ type UserHandler interface {
 	ExecuteGoCodyById(echo.Context) error
 	ForgetPassword(echo.Context) error
 	GetProblemBy(e echo.Context) error
+	Payment(e echo.Context) error
+	GetPaymentIntent(e echo.Context) error
+	PaymentSuccess(e echo.Context) error
+	UnSubscrbe(e echo.Context) error
 }
