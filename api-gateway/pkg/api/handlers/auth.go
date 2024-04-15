@@ -141,6 +141,7 @@ func (u *authHandlerImpl) UserSignIn(e echo.Context) error {
 
 	token, err := u.utils.GetTokenString(userSignedIn.ID, userSignedIn.Admin, userSignedIn.Blocked, userSignedIn.Prime)
 	if err != nil {
+		fmt.Println("err", err)
 		u.utils.ErrorJson(e, err, http.StatusBadRequest)
 		return err
 	}

@@ -25,6 +25,9 @@ type Server struct {
 //go:embed templates-dir/*.gohtml
 var content embed.FS
 
+
+
+
 func NewServerHTTP(cfg *config.Config, authHandler handler.AuthHandler, userHandler handler.UserHandler, adminHandler handler.AdminHandler) *Server {
 	fmt.Println("here in server")
 	e := echo.New()

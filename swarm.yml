@@ -1,0 +1,96 @@
+version: '3'
+
+networks:
+  codeup_network:
+    driver: overlay
+
+
+services:
+
+  caddy:
+    image: karthikkalarikal/micro-caddy-production:1.0.0
+    deploy:
+      mode: replicated
+      replicas: 1
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - caddy_data:/data
+      - caddy_config:/config
+    networks:
+      - codeup_network
+
+  api-gateway:
+    image: karthikkalarikal/code-up:api-gateway-latest
+    ports:
+      - "8080:80"
+    deploy:
+      mode: replicated
+      replicas: 1
+    networks:
+      - codeup_network
+
+  authentication-service:
+    image: karthikkalarikal/code-up:authentication-service-latest
+    deploy: 
+      mode: replicated
+      replicas: 1
+    environment:
+      DSN: "host=postgres port=5432 user=postgres password=password dbname=postgres sslmode=disable timezone=UTC connect_timeout=5"
+    networks:
+      - codeup_network
+
+  problem-service:
+    image: karthikkalarikal/code-up:problem-service-latest
+    deploy:
+      mode: replicated
+      replicas: 1
+    networks:
+      - codeup_network
+
+  go-sandbox:
+    image: karthikkalarikal/code-up:go-sandbox-latest
+    deploy: 
+      mode: replicated
+      replicas: 1
+    networks:
+        - codeup_network
+
+  postgres:
+    image: 'postgres:14.2'
+    ports:
+      - "5432:5432"
+    environment:
+     POSTGRES_USER: postgres
+     POSTGRES_PASSWORD: password
+     POSTGRES_DB: users
+    deploy: 
+      mode: global
+    volumes:
+      - ./db-data/postgres/:/var/lib/postgresql/data/
+    networks:
+      - codeup_network
+
+  mongo:
+    image: 'mongo:4.2.16-bionic'
+    ports:
+      - "27017:27017"
+    deploy:
+      mode: global
+    environment:
+      MONGO_INITDB_DATABASE: problems
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: password
+    volumes:
+      - ./db-data/mongo/:/data/db
+    networks:
+      - codeup_network
+    
+
+
+
+volumes:
+  caddy_data:
+    external: true
+  caddy_config:
