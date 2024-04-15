@@ -542,7 +542,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "User Panal"
+                    "User Panel"
                 ],
                 "summary": "Forget Password",
                 "parameters": [
@@ -602,7 +602,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "User Panal"
+                    "User Panel"
                 ],
                 "summary": "Unsubscribe",
                 "responses": {

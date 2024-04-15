@@ -217,7 +217,7 @@ func (u *userHandlerImp) ExecuteGoCodyById(e echo.Context) error {
 //
 //	@Summary		Forget Password
 //	@Description	to replace the password with new one
-//	@Tags			User Panal
+//	@Tags			User Panel
 //	@Accept			json
 //	@Produce		json
 //	@Security		BearerAuth
@@ -400,7 +400,7 @@ func (u *userHandlerImp) PaymentSuccess(e echo.Context) error {
 //
 //	@Summary		Unsubscribe
 //	@Description	Unsubscribe from prime membership
-//	@Tags			User Panal
+//	@Tags			User Panel
 //	@Produce		json
 //	@Security		BearerAuth
 //	@Success		200	{object}	response.User	"success"

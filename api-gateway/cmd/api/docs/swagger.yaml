@@ -552,7 +552,7 @@ paths:
       - BearerAuth: []
       summary: Forget Password
       tags:
-      - User Panal
+      - User Panel
   /user/panal/unsubscribe:
     patch:
       description: Unsubscribe from prime membership
@@ -583,7 +583,7 @@ paths:
       - BearerAuth: []
       summary: Unsubscribe
       tags:
-      - User Panal
+      - User Panel
   /user/problem:
     get:
       description: Get Problem by difficulty or tags

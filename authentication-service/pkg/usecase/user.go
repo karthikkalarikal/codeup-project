@@ -220,7 +220,7 @@ func (u *userUseCase) UnSubscribe(ctx context.Context, id int) (domain.User, err
 
 		// fmt.Println("user is found", body)
 
-		err = u.repo.MakePrime(ctx, body.ID)
+		err = u.repo.UnSubscribe(ctx, body.ID)
 		if err != nil {
 			fmt.Println("err", err)
 			return err
